@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * Saves the page source into a file in case of a test error
- *
+ * <p>
  * Created by liptak on 2016.08.24..
  */
 public class PageSource extends AbstractRule {
@@ -28,7 +28,7 @@ public class PageSource extends AbstractRule {
         super.onError(description, testFailure);
         String pageSource = webDriverProvider.getWebDriver().getPageSource();
         File destFile = TestReportFile.forTest(description).withPostix(".html").build().getFile();
-        Files.write(pageSource, destFile, StandardCharsets.UTF_8 );
-        LOGGER.info("Saved page source as " + destFile.getAbsolutePath() );
+        Files.write(pageSource, destFile, StandardCharsets.UTF_8);
+        LOGGER.info("Saved page source as " + destFile.getAbsolutePath());
     }
 }

@@ -11,13 +11,13 @@ import org.junit.runners.model.Statement;
  * Created by liptak on 2016.08.24..
  */
 public abstract class AbstractRule implements TestRule {
-    protected void before( Description description ) throws Throwable {
+    protected void before(Description description) throws Throwable {
     }
 
     protected void after(Description description, Throwable testFailure) throws Throwable {
     }
 
-    protected void onError( Description description, Throwable testFailure ) throws Throwable {
+    protected void onError(Description description, Throwable testFailure) throws Throwable {
     }
 
     @Override
@@ -29,7 +29,7 @@ public abstract class AbstractRule implements TestRule {
         private final Description description;
         private final Statement base;
 
-        public SafeStatement(Description description, Statement base) {
+        SafeStatement(Description description, Statement base) {
             this.description = description;
             this.base = base;
         }
@@ -40,22 +40,19 @@ public abstract class AbstractRule implements TestRule {
             try {
                 before(description);
                 base.evaluate();
-            } catch ( Throwable th ) {
+            } catch (Throwable th) {
                 testFailure = th;
                 try {
-                    onError(description, th );
-                }
-                catch( Throwable errorHappenedInOnError ) {
+                    onError(description, th);
+                } catch (Throwable errorHappenedInOnError) {
                     th.addSuppressed(errorHappenedInOnError);
                 }
                 throw th;
-            }
-            finally {
+            } finally {
                 try {
-                    after(description, testFailure );
-                }
-                catch( Throwable errorHappenedInAfter ) {
-                    if ( testFailure != null ) {
+                    after(description, testFailure);
+                } catch (Throwable errorHappenedInAfter) {
+                    if (testFailure != null) {
                         testFailure.addSuppressed(errorHappenedInAfter);
                     } else {
                         throw errorHappenedInAfter;

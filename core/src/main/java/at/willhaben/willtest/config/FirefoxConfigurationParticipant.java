@@ -7,6 +7,9 @@ import org.openqa.selenium.firefox.FirefoxProfile;
  * Created by liptak on 2016.08.25..
  */
 public interface FirefoxConfigurationParticipant {
-    default void adjustFirefoxProfile(FirefoxProfile firefoxProfile) {}
-    default void adjustFirefoxBinary(FirefoxBinary firefoxBinary) {}
+    default void adjustFirefoxProfile(FirefoxProfile firefoxProfile) {
+    }
+
+    default void adjustFirefoxBinary(FirefoxBinary firefoxBinary) {
+    }
 }

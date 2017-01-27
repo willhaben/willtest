@@ -13,20 +13,19 @@ public enum FileDetectorConfigurator implements WebDriverConfigurationParticipan
     private static final String ERROR_THROWN_BY_FIREFOX_LOCAL_DRIVER_WHICH_MEANS_NO_FILEDETECTOR_IS_NEEDED =
             "Setting the file detector only works on remote webdriver instances obtained via RemoteWebDriver";
 
-    public static <T extends WebDriverProvider> T supportingFileUpload( T webDriverProvider ) {
+    public static <T extends WebDriverProvider> T supportingFileUpload(T webDriverProvider) {
         webDriverProvider.addWebDriverConfigurationParticipant(INSTANCE);
         return webDriverProvider;
     }
 
     @Override
     public void postConstruct(WebDriver webDriver) {
-        if (webDriver instanceof RemoteWebDriver)  {
+        if (webDriver instanceof RemoteWebDriver) {
             try {
                 ((RemoteWebDriver) webDriver).setFileDetector(new LocalFileDetector());
-            }
-            catch( WebDriverException e ) {
+            } catch (WebDriverException e) {
                 String message = e.getMessage();
-                if ( message != null &&
+                if (message != null &&
                         !message.contains(ERROR_THROWN_BY_FIREFOX_LOCAL_DRIVER_WHICH_MEANS_NO_FILEDETECTOR_IS_NEEDED)) {
                     throw e;
                 }

@@ -17,11 +17,10 @@ public class DefaultFirefoxBinaryProvider implements FirefoxBinaryProvider {
     public FirefoxBinary getFirefoxBinary() {
         FirefoxBinary result;
         String firefoxBinaryLocation = System.getProperty(FIREFOX_BINARY_LOCATION_SYSTEM_PROPERTY_KEY);
-        if ( firefoxBinaryLocation != null ) {
+        if (firefoxBinaryLocation != null) {
             File pathToBinary = new File(firefoxBinaryLocation);
             result = new FirefoxBinary(pathToBinary);
-        }
-        else {
+        } else {
             result = new FirefoxBinary();
         }
         return result;

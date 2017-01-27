@@ -26,11 +26,11 @@ public class TimeoutsConfigurationParticipant implements WebDriverConfigurationP
     @Override
     public void postConstruct(WebDriver webDriver) {
         Optional.ofNullable(implicitWait)
-                .ifPresent( wait -> webDriver.manage().timeouts().implicitlyWait(wait, implicitWaitUnit));
+                .ifPresent(wait -> webDriver.manage().timeouts().implicitlyWait(wait, implicitWaitUnit));
         Optional.ofNullable(scriptTimeout)
-                .ifPresent( wait -> webDriver.manage().timeouts().setScriptTimeout(wait, scriptTimeoutUnit));
+                .ifPresent(wait -> webDriver.manage().timeouts().setScriptTimeout(wait, scriptTimeoutUnit));
         Optional.ofNullable(pageLoadTimeout)
-                .ifPresent( wait -> webDriver.manage().timeouts().implicitlyWait(wait, pageLoadTimeoutUnit));
+                .ifPresent(wait -> webDriver.manage().timeouts().implicitlyWait(wait, pageLoadTimeoutUnit));
     }
 
     public Optional<Long> getImplicitWaitInMilliSeconds() {

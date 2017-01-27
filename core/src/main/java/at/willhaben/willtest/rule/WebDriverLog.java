@@ -18,7 +18,7 @@ import java.util.logging.Level;
 
 /**
  * In case of test error dumps the logs of selenium into the standard logger
- *
+ * <p>
  * Created by liptak on 2016.08.24..
  */
 public class WebDriverLog extends AbstractRule implements WebDriverConfigurationParticipant {
@@ -26,8 +26,8 @@ public class WebDriverLog extends AbstractRule implements WebDriverConfiguration
     private static final ThreadLocal<SimpleDateFormat> LOG_TIMESTAMP_FORMAT =
             ThreadLocal.withInitial(() -> new SimpleDateFormat("HH.mm.ss.SSS"));
 
-    private static final Map<String,Level> WEBDRIVER_LOG_LEVELS = ImmutableMap
-            .<String,Level>builder()
+    private static final Map<String, Level> WEBDRIVER_LOG_LEVELS = ImmutableMap
+            .<String, Level>builder()
             .put(LogType.BROWSER, Level.INFO)
             .put(LogType.CLIENT, Level.INFO)
             .put(LogType.DRIVER, Level.INFO)
@@ -48,7 +48,7 @@ public class WebDriverLog extends AbstractRule implements WebDriverConfiguration
 
     private static LoggingPreferences createLoggingPreferences() {
         LoggingPreferences loggingPreferences = new LoggingPreferences();
-        WEBDRIVER_LOG_LEVELS.forEach( loggingPreferences::enable );
+        WEBDRIVER_LOG_LEVELS.forEach(loggingPreferences::enable);
         return loggingPreferences;
     }
 
@@ -64,23 +64,19 @@ public class WebDriverLog extends AbstractRule implements WebDriverConfiguration
         for (String logType : WEBDRIVER_LOG_LEVELS.keySet()) {
             LOGGER.info("Dumping webdriver log for log type " + logType);
             LogEntries logEntries = logs.get(logType);
-            for (LogEntry logEntry: logEntries) {
+            for (LogEntry logEntry : logEntries) {
                 String renderedMessage = "[" + logType + "] " +
-                        dateFormat.format( new Date(logEntry.getTimestamp())) + " " + logEntry.getMessage();
+                        dateFormat.format(new Date(logEntry.getTimestamp())) + " " + logEntry.getMessage();
                 Level logEntryLevel = logEntry.getLevel();
-                if ( logEntryLevel.equals(Level.FINE) ) {
+                if (logEntryLevel.equals(Level.FINE)) {
                     LOGGER.debug(renderedMessage);
-                }
-                else if ( logEntryLevel.equals(Level.INFO) ) {
+                } else if (logEntryLevel.equals(Level.INFO)) {
                     LOGGER.info(renderedMessage);
-                }
-                else if ( logEntryLevel.equals(Level.WARNING) ) {
+                } else if (logEntryLevel.equals(Level.WARNING)) {
                     LOGGER.warn(renderedMessage);
-                }
-                else if ( logEntryLevel.equals(Level.SEVERE) ) {
+                } else if (logEntryLevel.equals(Level.SEVERE)) {
                     LOGGER.error(renderedMessage);
-                }
-                else if ( logEntryLevel.equals(Level.FINER) ) {
+                } else if (logEntryLevel.equals(Level.FINER)) {
                     LOGGER.trace(renderedMessage);
                 }
             }

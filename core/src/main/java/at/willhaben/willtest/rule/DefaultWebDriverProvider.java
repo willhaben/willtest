@@ -33,18 +33,13 @@ public class DefaultWebDriverProvider extends AbstractRule implements WebDriverP
     private WebDriver webDriver;
 
     private Optional<URL> getSeleniumHubURL() {
-        if(Boolean.getBoolean("local"))
-        {
+        if (Boolean.getBoolean("local")) {
             return Optional.empty();
-        }
-        else
-        {
+        } else {
             String hubUrl = System.getProperty(SELENIUM_HUB_SYSTEM_PROPERTY_KEY, DEFAULT_SELENIUM_HUB);
             try {
                 return Optional.of(new URL(hubUrl));
-            }
-            catch (MalformedURLException e)
-            {
+            } catch (MalformedURLException e) {
                 throw new RuntimeException("Invalid selenium hub URL.", e);
             }
         }
@@ -52,9 +47,9 @@ public class DefaultWebDriverProvider extends AbstractRule implements WebDriverP
 
     @Override
     public WebDriver getWebDriver() {
-        if ( webDriver == null ) {
-            throw new RuntimeException( "WebDriver has not been created. Did you use this class as a junit rule? " +
-                    "Can it be, that the before method has not been called?" );
+        if (webDriver == null) {
+            throw new RuntimeException("WebDriver has not been created. Did you use this class as a junit rule? " +
+                    "Can it be, that the before method has not been called?");
         }
         return webDriver;
     }
@@ -67,8 +62,8 @@ public class DefaultWebDriverProvider extends AbstractRule implements WebDriverP
         desiredCapabilities.setCapability(FirefoxDriver.PROFILE, firefoxProfile);
         webDriver = callPostConstruct(
                 getSeleniumHubURL()
-                    .map( seleniumHubURL -> new RemoteWebDriver(seleniumHubURL, desiredCapabilities ) )
-                    .orElseGet( () ->  new FirefoxDriver(createFirefoxBinary(), firefoxProfile )));
+                        .map(seleniumHubURL -> new RemoteWebDriver(seleniumHubURL, desiredCapabilities))
+                        .orElseGet(() -> new FirefoxDriver(createFirefoxBinary(), firefoxProfile)));
     }
 
     private WebDriver callPostConstruct(WebDriver webDriverToBeChangedAfterConstruction) {
@@ -85,7 +80,7 @@ public class DefaultWebDriverProvider extends AbstractRule implements WebDriverP
         return desiredCapabilities;
     }
 
-    private DesiredCapabilities addPlatform( DesiredCapabilities desiredCapabilities ) {
+    private DesiredCapabilities addPlatform(DesiredCapabilities desiredCapabilities) {
         String platformString = Environment.getValue("platform", DEFAULT_PLATFORM_LINUX);
         Platform platform = Platform.fromString(platformString);
         desiredCapabilities.setPlatform(platform);
@@ -95,19 +90,15 @@ public class DefaultWebDriverProvider extends AbstractRule implements WebDriverP
     @Override
     protected void after(Description description, Throwable testFailure) throws Throwable {
         super.after(description, testFailure);
-        if ( webDriver != null ) {
-            try
-            {
+        if (webDriver != null) {
+            try {
                 webDriver.quit();
-            }
-            catch (Exception ex)
-            {
-                if(!ex.getMessage().contains("It may have died"))
-                {
+            } catch (Exception ex) {
+                if (!ex.getMessage().contains("It may have died")) {
                     throw ex;
                 }
                 LOGGER.warn("Error while closing browser. This error cannot be avoided somehow. " +
-                                "This is not a big problem.", ex);
+                        "This is not a big problem.", ex);
             }
             webDriver = null;
         }
@@ -129,7 +120,7 @@ public class DefaultWebDriverProvider extends AbstractRule implements WebDriverP
     }
 
 
-    private FirefoxProfile createFirefoxProfile( ) {
+    private FirefoxProfile createFirefoxProfile() {
         FirefoxProfile profile = new FirefoxProfile();
         for (FirefoxConfigurationParticipant firefoxConfigurationParticipant : this.firefoxConfigurationParticipantList) {
             firefoxConfigurationParticipant.adjustFirefoxProfile(profile);

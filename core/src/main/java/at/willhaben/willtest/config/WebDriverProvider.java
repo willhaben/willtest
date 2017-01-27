@@ -10,10 +10,12 @@ public interface WebDriverProvider {
     long FIND_ELEMENT_TIMEOUT = 30;
 
     WebDriver getWebDriver();
+
     default WebDriverWait getDefaultWebDriverWait() {
         return new WebDriverWait(getWebDriver(), FIND_ELEMENT_TIMEOUT);
     }
 
     WebDriverProvider addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant webDriverConfigurationParticipant);
+
     WebDriverProvider addFirefoxConfigurationParticipant(FirefoxConfigurationParticipant firefoxConfigurationParticipant);
 }

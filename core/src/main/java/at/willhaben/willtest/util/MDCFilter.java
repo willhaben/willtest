@@ -17,6 +17,6 @@ public class MDCFilter extends Filter {
 
     @Override
     public int decide(LoggingEvent event) {
-        return value.equals( event.getMDC(key) ) ? ACCEPT : DENY;
+        return value.equals(event.getMDC(key)) ? ACCEPT : DENY;
     }
 }

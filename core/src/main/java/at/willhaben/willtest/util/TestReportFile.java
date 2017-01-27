@@ -19,15 +19,15 @@ public class TestReportFile {
     private String prefix = "";
     private String postfix = "";
 
-    public File getFile( ) {
-        File surefireReportsFolder = new File( "surefire-reports" );
+    public File getFile() {
+        File surefireReportsFolder = new File("surefire-reports");
         if (!surefireReportsFolder.exists() && !surefireReportsFolder.mkdirs()) {
             throw new RuntimeException("Could not create folder " + surefireReportsFolder + "!");
         }
-        return new File(surefireReportsFolder, generateFileName() );
+        return new File(surefireReportsFolder, generateFileName());
     }
 
-    private String generateFileName( ) {
+    private String generateFileName() {
         String className = testDescription.getTestClass().getSimpleName();
         String methodName = testDescription.getMethodName().replace('.', '_');
         String timeStamp = DATE_FORMAT.get().format(new Date());
@@ -41,12 +41,12 @@ public class TestReportFile {
             testReportFile.testDescription = testDescription;
         }
 
-        public Builder withPrefix( String prefix ) {
+        public Builder withPrefix(String prefix) {
             testReportFile.prefix = prefix;
             return this;
         }
 
-        public Builder withPostix( String postfix ) {
+        public Builder withPostix(String postfix) {
             testReportFile.postfix = postfix;
             return this;
         }
@@ -56,7 +56,7 @@ public class TestReportFile {
         }
     }
 
-    public static Builder forTest( Description testDescription ) {
+    public static Builder forTest(Description testDescription) {
         return new Builder(testDescription);
     }
 }

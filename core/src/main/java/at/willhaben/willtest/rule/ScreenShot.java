@@ -27,18 +27,17 @@ public class ScreenShot extends AbstractRule {
     protected void onError(Description description, Throwable testFailure) throws Throwable {
         super.onError(description, testFailure);
         WebDriver webDriver = webDriverProvider.getWebDriver();
-        if ( webDriver instanceof TakesScreenshot ) {
+        if (webDriver instanceof TakesScreenshot) {
             byte[] screenshot = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES);
             File destFile = TestReportFile.forTest(description).withPostix(".png").build().getFile();
             Files.write(screenshot, destFile);
-            LOGGER.info("Saved screenshot as " + destFile.getAbsolutePath() );
-        }
-        else {
+            LOGGER.info("Saved screenshot as " + destFile.getAbsolutePath());
+        } else {
             testFailure.addSuppressed(
                     new RuntimeException(
                             "Could not take screenshot, since webdriver is not a " +
                                     TakesScreenshot.class.getName() + " instance as expected. Actual class is " +
-                                    webDriver.getClass().getName() ) );
+                                    webDriver.getClass().getName()));
         }
     }
 }

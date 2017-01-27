@@ -19,7 +19,7 @@ public class JavascriptError extends AbstractRule implements FirefoxConfiguratio
     private boolean initialized;
     private final boolean throwExceptionForSuccessfulTests;
 
-    public JavascriptError(WebDriverProvider webDriverProvider, boolean throwExceptionForSuccessfulTests ) {
+    public JavascriptError(WebDriverProvider webDriverProvider, boolean throwExceptionForSuccessfulTests) {
         this.webDriverProvider = webDriverProvider;
         webDriverProvider.addFirefoxConfigurationParticipant(this);
         this.throwExceptionForSuccessfulTests = throwExceptionForSuccessfulTests;
@@ -29,24 +29,22 @@ public class JavascriptError extends AbstractRule implements FirefoxConfiguratio
     protected void after(Description description, Throwable testFailure) throws Throwable {
         super.after(description, testFailure);
         try {
-            if ( initialized ) {
+            if (initialized) {
                 List<JavaScriptError> jsErrors = JavaScriptError.readErrors(webDriverProvider.getWebDriver());
                 if (!jsErrors.isEmpty()) {
                     JavascriptErrorException javascriptErrorException = new JavascriptErrorException(
                             "Javascript errors are detected!",
-                            jsErrors );
-                    if ( testFailure != null ) {
-                        testFailure.addSuppressed( javascriptErrorException );
-                    }
-                    else {
-                        if ( throwExceptionForSuccessfulTests ) {
+                            jsErrors);
+                    if (testFailure != null) {
+                        testFailure.addSuppressed(javascriptErrorException);
+                    } else {
+                        if (throwExceptionForSuccessfulTests) {
                             throw javascriptErrorException;
                         }
                     }
                 }
             }
-        }
-        finally {
+        } finally {
             initialized = false;
         }
     }

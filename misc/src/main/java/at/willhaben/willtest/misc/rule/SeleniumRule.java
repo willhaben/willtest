@@ -25,14 +25,14 @@ public class SeleniumRule implements WebDriverProvider, TestRule {
     private final FirefoxConfig firefoxConfig = new FirefoxConfig();
     private final TimeoutsConfigurationParticipant timeoutsConfigurationParticipant =
             new TimeoutsConfigurationParticipant()
-                .withImplicitWait(DEFAULT_IMPLICIT_WAIT,DEFAULT_TIME_UNIT)
-                .withScriptTimeout(DEFAULT_SCRIPT_TIMOUT_REQUIRED_BY_NG_DRIVER_SECONDS,DEFAULT_TIME_UNIT);
+                    .withImplicitWait(DEFAULT_IMPLICIT_WAIT, DEFAULT_TIME_UNIT)
+                    .withScriptTimeout(DEFAULT_SCRIPT_TIMOUT_REQUIRED_BY_NG_DRIVER_SECONDS, DEFAULT_TIME_UNIT);
 
     private final DefaultWebDriverProvider defaultWebDriverProvider =
             FileDetectorConfigurator.supportingFileUpload(
-                timeoutsConfigurationParticipant.addTo(
-                        firefoxConfig.addTo(
-                                new DefaultWebDriverProvider() )));
+                    timeoutsConfigurationParticipant.addTo(
+                            firefoxConfig.addTo(
+                                    new DefaultWebDriverProvider())));
 
     private final LogContext logContext = new LogContext();
     private final LogFile logFile = new LogFile();
@@ -77,6 +77,7 @@ public class SeleniumRule implements WebDriverProvider, TestRule {
     /**
      * Removes the implicit wait and creates a new explicit wait with a custom timeout. It can speed up the test
      * if the default implicit wait is not required.
+     *
      * @param seconds explicit wait timeout in seconds
      * @return explicit webdriver wait
      */
@@ -94,11 +95,12 @@ public class SeleniumRule implements WebDriverProvider, TestRule {
 
     /**
      * See {@link ElementScrollBehaviourConfigurator} for details
+     *
      * @param elementScrollBehaviour
      * @return
      */
     public SeleniumRule setElementScrollBehaviour(ElementScrollBehavior elementScrollBehaviour) {
-        this.addWebDriverConfigurationParticipant( new ElementScrollBehaviourConfigurator(elementScrollBehaviour));
+        this.addWebDriverConfigurationParticipant(new ElementScrollBehaviourConfigurator(elementScrollBehaviour));
         return this;
     }
 

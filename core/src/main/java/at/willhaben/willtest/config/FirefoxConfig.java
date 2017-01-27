@@ -10,9 +10,9 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 /**
  * Features:
  * <ul>
- *     <li>Usual default settings of firefox profile</li>
- *     <li>Provides a way to use a non default firefox binary (different versions etc.)</li>
- *     <li>Enables using a different display, for instance a virtual framebuffer</li>
+ * <li>Usual default settings of firefox profile</li>
+ * <li>Provides a way to use a non default firefox binary (different versions etc.)</li>
+ * <li>Enables using a different display, for instance a virtual framebuffer</li>
  * </ul>
  * Created by liptak on 2016.08.25..
  */
@@ -29,8 +29,8 @@ public class FirefoxConfig implements FirefoxConfigurationParticipant, WebDriver
 
     private void setDisplay(FirefoxBinary result) {
         String display = System.getProperty(DISPLAY_SYSTEM_PROPERTY_KEY);
-        if ( display != null ) {
-            result.setEnvironmentProperty("DISPLAY",display);
+        if (display != null) {
+            result.setEnvironmentProperty("DISPLAY", display);
         }
     }
 
@@ -49,13 +49,14 @@ public class FirefoxConfig implements FirefoxConfigurationParticipant, WebDriver
 
     /**
      * Moves window to the first display, and maximizes there. This is practical in case of local testing.
+     *
      * @param webDriver
      */
     @Override
     public void postConstruct(WebDriver webDriver) {
         Window window = webDriver.manage().window();
         //Requirement for Jobs, Resolution greater than 1280 in width
-        Dimension dimension = new Dimension(1920,1080);
+        Dimension dimension = new Dimension(1920, 1080);
         Point thisPointIsAlwaysOnFirstDisplay = new Point(0, 0);
         window.setPosition(thisPointIsAlwaysOnFirstDisplay);
         window.setSize(dimension);
