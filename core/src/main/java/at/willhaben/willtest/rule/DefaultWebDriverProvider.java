@@ -25,7 +25,7 @@ import java.util.Optional;
 public class DefaultWebDriverProvider extends AbstractRule implements WebDriverProvider {
     private static final Logger LOGGER = Logger.getLogger(DefaultWebDriverProvider.class);
     private static final String DEFAULT_PLATFORM_LINUX = "Linux";
-    private static final String DEFAULT_SELENIUM_HUB = "http://enter_your_hub_url_using_seleniumHub_system_property";
+    private static final String DEFAULT_SELENIUM_HUB = "http://enter_your_hub_url_using_seleniumHub_system_property.io";
     private static final String SELENIUM_HUB_SYSTEM_PROPERTY_KEY = "seleniumHub";
     private final List<WebDriverConfigurationParticipant> webDriverConfigurationParticipantList = new ArrayList<>();
     private final List<FirefoxConfigurationParticipant> firefoxConfigurationParticipantList = new ArrayList<>();
@@ -39,8 +39,7 @@ public class DefaultWebDriverProvider extends AbstractRule implements WebDriverP
         }
         else
         {
-            String hubUrl = Optional.ofNullable(System.getProperty(SELENIUM_HUB_SYSTEM_PROPERTY_KEY))
-                    .orElse(DEFAULT_SELENIUM_HUB);
+            String hubUrl = System.getProperty(SELENIUM_HUB_SYSTEM_PROPERTY_KEY, DEFAULT_SELENIUM_HUB);
             try {
                 return Optional.of(new URL(hubUrl));
             }
@@ -87,19 +86,9 @@ public class DefaultWebDriverProvider extends AbstractRule implements WebDriverP
     }
 
     private DesiredCapabilities addPlatform( DesiredCapabilities desiredCapabilities ) {
-        String platform = Environment.getValue("platform", DEFAULT_PLATFORM_LINUX);
-        switch (platform) {
-            case "Win8_1":
-                desiredCapabilities.setPlatform(Platform.WIN8_1);
-                break;
-            case "WinXP":
-                desiredCapabilities.setPlatform(Platform.XP);
-                break;
-            case DEFAULT_PLATFORM_LINUX:
-            default:
-                desiredCapabilities.setPlatform(Platform.LINUX);
-                break;
-        }
+        String platformString = Environment.getValue("platform", DEFAULT_PLATFORM_LINUX);
+        Platform platform = Platform.fromString(platformString);
+        desiredCapabilities.setPlatform(platform);
         return desiredCapabilities;
     }
 
