@@ -14,7 +14,6 @@
       <module name="core" target="1.8" />
       <module name="misc" target="1.8" />
       <module name="parent" target="1.5" />
-      <module name="willtest" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>
