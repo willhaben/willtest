@@ -5,7 +5,6 @@ package at.willhaben.willtest.util;
  */
 public final class Environment {
     private Environment() {
-        throw new UnsupportedOperationException();
     }
 
     public static String getValue(String key, String defaultValue) {
