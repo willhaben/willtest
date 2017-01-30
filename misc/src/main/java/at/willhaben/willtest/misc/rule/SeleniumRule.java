@@ -38,7 +38,7 @@ public class SeleniumRule implements WebDriverProvider, TestRule {
     private final LogFile logFile = new LogFile();
     private final ResourceHelper resourceHelper = new ResourceHelper();
     private final PageSource pageSource = new PageSource(defaultWebDriverProvider);
-    private final ScreenShot screenShot = new ScreenShot(defaultWebDriverProvider);
+    private final ScreenShotX screenShot = new ScreenShotX(defaultWebDriverProvider);
     private final WebDriverLog webDriverLog = new WebDriverLog(defaultWebDriverProvider);
     private final JavascriptAlert javascriptAlert = new JavascriptAlert(defaultWebDriverProvider);
     private final JavascriptError javascriptError = new JavascriptError(defaultWebDriverProvider, false);

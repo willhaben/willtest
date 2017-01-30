@@ -14,12 +14,12 @@ import java.io.File;
 /**
  * Created by liptak on 2016.08.24..
  */
-public class ScreenShot extends AbstractRule {
-    private static final Logger LOGGER = Logger.getLogger(ScreenShot.class);
+public class ScreenShotX extends AbstractRule {
+    private static final Logger LOGGER = Logger.getLogger(ScreenShotX.class);
 
     private final WebDriverProvider webDriverProvider;
 
-    public ScreenShot(WebDriverProvider webDriverProvider) {
+    public ScreenShotX(WebDriverProvider webDriverProvider) {
         this.webDriverProvider = webDriverProvider;
     }
 
