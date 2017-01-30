@@ -1,6 +1,8 @@
-package at.willhaben.willtest.rule;
+package at.willhaben.willtest.misc.rule;
 
-import at.willhaben.willtest.util.MDCFilter;
+import at.willhaben.willtest.rule.AbstractRule;
+import at.willhaben.willtest.rule.LogContext;
+import at.willhaben.willtest.misc.util.MDCFilter;
 import at.willhaben.willtest.util.TestReportFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.*;

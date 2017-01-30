@@ -5,7 +5,6 @@ import at.willhaben.willtest.config.FirefoxConfigurationParticipant;
 import at.willhaben.willtest.config.SeleniumProvider;
 import at.willhaben.willtest.config.WebDriverConfigurationParticipant;
 import at.willhaben.willtest.util.Environment;
-import org.apache.log4j.Logger;
 import org.junit.runner.Description;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
@@ -14,6 +13,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -23,7 +24,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class DefaultSeleniumProvider extends AbstractRule implements SeleniumProvider {
-    private static final Logger LOGGER = Logger.getLogger(DefaultSeleniumProvider.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSeleniumProvider.class);
     private static final String DEFAULT_PLATFORM_LINUX = "Linux";
     private static final String SELENIUM_HUB_SYSTEM_PROPERTY_KEY = "seleniumHub";
     private static final String LOCAL_BROWSER_SYSTEM_PROPERTY_KEY = "local";

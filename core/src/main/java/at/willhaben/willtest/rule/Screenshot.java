@@ -3,11 +3,12 @@ package at.willhaben.willtest.rule;
 import at.willhaben.willtest.config.SeleniumProvider;
 import at.willhaben.willtest.util.TestReportFile;
 import com.google.common.io.Files;
-import org.apache.log4j.Logger;
 import org.junit.runner.Description;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -18,7 +19,7 @@ import java.io.File;
  * Created by liptak on 2016.08.24..
  */
 public class Screenshot extends AbstractRule {
-    private static final Logger LOGGER = Logger.getLogger(Screenshot.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Screenshot.class);
 
     private final SeleniumProvider seleniumProvider;
 

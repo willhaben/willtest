@@ -11,6 +11,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.ElementScrollBehavior;
 import org.openqa.selenium.support.ui.Wait;
 
+import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -18,15 +19,14 @@ import java.util.concurrent.TimeUnit;
  * A sample default configuration we are using. Basicly a composite made from the building blocks.
  */
 public class SeleniumRule implements SeleniumProvider, TestRule {
-    private static final long DEFAULT_IMPLICIT_WAIT = 15;
-    private static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.SECONDS;
-    private static final long DEFAULT_SCRIPT_TIMOUT_REQUIRED_BY_NG_DRIVER_SECONDS = 15;
+    private static final Duration DEFAULT_IMPLICIT_WAIT = Duration.ofSeconds(15);
+    private static final Duration DEFAULT_SCRIPT_TIMOUT_REQUIRED_BY_NG_DRIVER = Duration.ofSeconds(15);
 
     private final FirefoxConfig firefoxConfig = new FirefoxConfig();
     private final TimeoutsConfigurationParticipant timeoutsConfigurationParticipant =
             new TimeoutsConfigurationParticipant()
-                    .withImplicitWait(DEFAULT_IMPLICIT_WAIT, DEFAULT_TIME_UNIT)
-                    .withScriptTimeout(DEFAULT_SCRIPT_TIMOUT_REQUIRED_BY_NG_DRIVER_SECONDS, DEFAULT_TIME_UNIT);
+                    .withImplicitWait(DEFAULT_IMPLICIT_WAIT)
+                    .withScriptTimeout(DEFAULT_SCRIPT_TIMOUT_REQUIRED_BY_NG_DRIVER);
 
     private final DefaultSeleniumProvider defaultSeleniumProvider =
             FileDetectorConfigurator.supportingFileUpload(
@@ -109,18 +109,18 @@ public class SeleniumRule implements SeleniumProvider, TestRule {
         return this;
     }
 
-    public SeleniumRule withImplicitWait(Long timeout, TimeUnit timeUnit) {
-        timeoutsConfigurationParticipant.withImplicitWait(timeout, timeUnit);
+    public SeleniumRule withImplicitWait(Duration implicitWait) {
+        timeoutsConfigurationParticipant.withImplicitWait(implicitWait);
         return this;
     }
 
-    public SeleniumRule withScriptTimeout(Long timeout, TimeUnit timeUnit) {
-        timeoutsConfigurationParticipant.withScriptTimeout(timeout, timeUnit);
+    public SeleniumRule withScriptTimeout(Duration scriptTimeout) {
+        timeoutsConfigurationParticipant.withScriptTimeout(scriptTimeout);
         return this;
     }
 
-    public SeleniumRule withPageLoadTimeout(Long timeout, TimeUnit timeUnit) {
-        timeoutsConfigurationParticipant.withPageLoadTimeout(timeout, timeUnit);
+    public SeleniumRule withPageLoadTimeout(Duration pageLoadTimeout) {
+        timeoutsConfigurationParticipant.withPageLoadTimeout(pageLoadTimeout);
         return this;
     }
 
@@ -139,15 +139,15 @@ public class SeleniumRule implements SeleniumProvider, TestRule {
         return this;
     }
 
-    public Optional<Long> getImplicitWaitInMilliSeconds() {
-        return timeoutsConfigurationParticipant.getImplicitWaitInMilliSeconds();
+    public Optional<Duration> getImplicitWaitInMilliSeconds() {
+        return timeoutsConfigurationParticipant.getImplicitWait();
     }
 
-    public Optional<Long> getScriptTimeoutInMilliSeconds() {
-        return timeoutsConfigurationParticipant.getScriptTimeoutInMilliSeconds();
+    public Optional<Duration> getScriptTimeoutInMilliSeconds() {
+        return timeoutsConfigurationParticipant.getScriptTimeout();
     }
 
-    public Optional<Long> getPageLoadTimeoutInMilliSeconds() {
-        return timeoutsConfigurationParticipant.getPageLoadTimeoutInMilliSeconds();
+    public Optional<Duration> getPageLoadTimeoutInMilliSeconds() {
+        return timeoutsConfigurationParticipant.getPageLoadTimeout();
     }
 }

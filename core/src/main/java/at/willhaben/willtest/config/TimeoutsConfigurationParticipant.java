@@ -6,6 +6,7 @@ import org.openqa.selenium.WebDriver.Timeouts;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -14,13 +15,13 @@ import java.util.concurrent.TimeUnit;
  * Adjusts timeouts available by using <code>webDriver.manage().timeouts()</code>.
  * Please note, that if some of the 3 timeouts are not defined, then it will use the defaults settings of the given
  * {@link WebDriver} implementation.<br/>
- * If all timouts are set through this class, then there is a possibility to get the current timeout settings of the
+ * If all timeouts are set through this class, then there is a possibility to get the current timeout settings of the
  * {@link WebDriver}, which is not possible out of the box in Selenium.
  */
 public class TimeoutsConfigurationParticipant implements WebDriverConfigurationParticipant {
-    private Long implicitWait;
-    private Long scriptTimeout;
-    private Long pageLoadTimeout;
+    private Duration implicitWait;
+    private Duration scriptTimeout;
+    private Duration pageLoadTimeout;
 
     private static final long CONDITION_POLL_INTERVAL = 200;
 
@@ -28,13 +29,13 @@ public class TimeoutsConfigurationParticipant implements WebDriverConfigurationP
     public void postConstruct(WebDriver webDriver) {
         Timeouts timeouts = webDriver.manage().timeouts();
         if (implicitWait != null) {
-            timeouts.implicitlyWait(implicitWait,TimeUnit.MILLISECONDS);
+            timeouts.implicitlyWait(implicitWait.getNano(),TimeUnit.NANOSECONDS);
         }
         if (scriptTimeout != null) {
-            timeouts.setScriptTimeout(scriptTimeout,TimeUnit.MILLISECONDS);
+            timeouts.setScriptTimeout(scriptTimeout.getNano(),TimeUnit.NANOSECONDS);
         }
         if (pageLoadTimeout != null) {
-            timeouts.pageLoadTimeout(pageLoadTimeout,TimeUnit.MILLISECONDS);
+            timeouts.pageLoadTimeout(pageLoadTimeout.getNano(),TimeUnit.NANOSECONDS);
         }
     }
 
@@ -43,7 +44,7 @@ public class TimeoutsConfigurationParticipant implements WebDriverConfigurationP
      * incorrect. Always set timeouts using this class.
      * @return
      */
-    public Optional<Long> getImplicitWaitInMilliSeconds() {
+    public Optional<Duration> getImplicitWait() {
         return Optional.ofNullable(implicitWait);
     }
 
@@ -52,7 +53,7 @@ public class TimeoutsConfigurationParticipant implements WebDriverConfigurationP
      * incorrect. Always set timeouts using this class.
      * @return
      */
-    public Optional<Long> getScriptTimeoutInMilliSeconds() {
+    public Optional<Duration> getScriptTimeout() {
         return Optional.ofNullable(scriptTimeout);
     }
 
@@ -61,7 +62,7 @@ public class TimeoutsConfigurationParticipant implements WebDriverConfigurationP
      * incorrect. Always set timeouts using this class.
      * @return
      */
-    public Optional<Long> getPageLoadTimeoutInMilliSeconds() {
+    public Optional<Duration> getPageLoadTimeout() {
         return Optional.ofNullable(pageLoadTimeout);
     }
 
@@ -81,7 +82,7 @@ public class TimeoutsConfigurationParticipant implements WebDriverConfigurationP
                     timeouts.implicitlyWait(0, TimeUnit.SECONDS);
                     return new WebDriverWait(webDriver, seconds, CONDITION_POLL_INTERVAL).until(function);
                 } finally {
-                    timeouts.implicitlyWait(implicitWait, TimeUnit.MILLISECONDS);
+                    timeouts.implicitlyWait(implicitWait.getNano(), TimeUnit.NANOSECONDS);
                 }
             }
         };
@@ -100,40 +101,34 @@ public class TimeoutsConfigurationParticipant implements WebDriverConfigurationP
 
     /**
      * See {@link Timeouts#implicitlyWait(long, TimeUnit)}
-     * @param timeout
-     * @param timeUnit
+     * @param implicitWait
      * @return
      */
-    public TimeoutsConfigurationParticipant withImplicitWait(Long timeout, TimeUnit timeUnit) {
-        Objects.requireNonNull(timeout);
-        Objects.requireNonNull(timeUnit);
-        this.implicitWait = TimeUnit.MILLISECONDS.convert(timeout,timeUnit);
+    public TimeoutsConfigurationParticipant withImplicitWait(Duration implicitWait) {
+        Objects.requireNonNull(implicitWait);
+        this.implicitWait = implicitWait;
         return this;
     }
 
     /**
      * See {@link Timeouts#setScriptTimeout(long, TimeUnit)}
-     * @param timeout
-     * @param timeUnit
+     * @param scriptTimeout
      * @return
      */
-    public TimeoutsConfigurationParticipant withScriptTimeout(Long timeout, TimeUnit timeUnit) {
-        Objects.requireNonNull(timeout);
-        Objects.requireNonNull(timeUnit);
-        this.scriptTimeout = TimeUnit.MILLISECONDS.convert(timeout,timeUnit);
+    public TimeoutsConfigurationParticipant withScriptTimeout(Duration scriptTimeout) {
+        Objects.requireNonNull(scriptTimeout);
+        this.scriptTimeout = scriptTimeout;
         return this;
     }
 
     /**
      * See {@link Timeouts#pageLoadTimeout(long, TimeUnit)}
-     * @param timeout
-     * @param timeUnit
+     * @param pageLoadTimeout
      * @return
      */
-    public TimeoutsConfigurationParticipant withPageLoadTimeout(Long timeout, TimeUnit timeUnit) {
-        Objects.requireNonNull(timeout);
-        Objects.requireNonNull(timeUnit);
-        this.pageLoadTimeout = TimeUnit.MILLISECONDS.convert(timeout,timeUnit);
+    public TimeoutsConfigurationParticipant withPageLoadTimeout(Duration pageLoadTimeout) {
+        Objects.requireNonNull(pageLoadTimeout);
+        this.pageLoadTimeout = pageLoadTimeout;
         return this;
     }
 

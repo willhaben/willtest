@@ -3,8 +3,9 @@ package at.willhaben.willtest.rule;
 import at.willhaben.willtest.config.SeleniumProvider;
 import at.willhaben.willtest.util.TestReportFile;
 import com.google.common.io.Files;
-import org.apache.log4j.Logger;
 import org.junit.runner.Description;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -15,7 +16,7 @@ import java.nio.charset.StandardCharsets;
  * Created by liptak on 2016.08.24..
  */
 public class PageSource extends AbstractRule {
-    private static final Logger LOGGER = Logger.getLogger(PageSource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PageSource.class);
 
     private final SeleniumProvider seleniumProvider;
 

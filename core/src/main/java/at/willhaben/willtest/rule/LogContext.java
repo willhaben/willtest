@@ -1,7 +1,7 @@
 package at.willhaben.willtest.rule;
 
-import org.apache.log4j.MDC;
 import org.junit.runner.Description;
+import org.slf4j.MDC;
 
 /**
  * Sets log pattern variables to make it clear which log entry belongs to which test in case of parallel execution.
@@ -9,10 +9,10 @@ import org.junit.runner.Description;
  * Created by liptak on 2016.07.14..
  */
 public class LogContext extends AbstractRule {
-    static final String TEST_CLASS = "testClass";
-    static final String TEST_DISPLAY_NAME = "displayName";
-    static final String TEST_METHOD = "testMethod";
-    static final String THREAD_ID = "threadId";
+    public static final String TEST_CLASS = "testClass";
+    public static final String TEST_DISPLAY_NAME = "displayName";
+    public static final String TEST_METHOD = "testMethod";
+    public static final String THREAD_ID = "threadId";
 
     @Override
     public void before(Description description) throws Throwable {

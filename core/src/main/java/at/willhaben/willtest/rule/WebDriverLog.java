@@ -1,15 +1,16 @@
 package at.willhaben.willtest.rule;
 
 
-import at.willhaben.willtest.config.WebDriverConfigurationParticipant;
 import at.willhaben.willtest.config.SeleniumProvider;
+import at.willhaben.willtest.config.WebDriverConfigurationParticipant;
 import com.google.common.collect.ImmutableMap;
-import org.apache.log4j.Logger;
 import org.junit.runner.Description;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.*;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,7 +23,7 @@ import java.util.logging.Level;
  * Created by liptak on 2016.08.24..
  */
 public class WebDriverLog extends AbstractRule implements WebDriverConfigurationParticipant {
-    private static final Logger LOGGER = Logger.getLogger(WebDriverLog.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverLog.class);
     private static final ThreadLocal<SimpleDateFormat> LOG_TIMESTAMP_FORMAT =
             ThreadLocal.withInitial(() -> new SimpleDateFormat("HH.mm.ss.SSS"));
 

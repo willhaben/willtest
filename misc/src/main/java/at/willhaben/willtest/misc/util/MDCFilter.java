@@ -1,4 +1,4 @@
-package at.willhaben.willtest.util;
+package at.willhaben.willtest.misc.util;
 
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
