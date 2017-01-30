@@ -3,8 +3,14 @@ package at.willhaben.willtest.config;
 import org.openqa.selenium.firefox.FirefoxBinary;
 
 /**
- * Created by liptak on 2017.01.26..
+ * You might want to run tests with different versions of Firefox. The implementations of this interface should
+ * return a {@link FirefoxBinary} instance.
  */
 public interface FirefoxBinaryProvider {
+
+    /**
+     * Creates a firefox binary (executable of firefox)
+     * @return
+     */
     FirefoxBinary getFirefoxBinary();
 }

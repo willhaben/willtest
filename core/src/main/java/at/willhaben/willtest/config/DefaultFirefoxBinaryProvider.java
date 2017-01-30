@@ -5,7 +5,9 @@ import org.openqa.selenium.firefox.FirefoxBinary;
 import java.io.File;
 
 /**
- * Created by liptak on 2017.01.26..
+ * Lets the user to customize the firefox installation to be used, when a test runs locally. This is useful,
+ * when the selenium version you are using does not support the latest firefox version. The place of the firefox
+ * binary can be defined by {@value FIREFOX_BINARY_LOCATION_SYSTEM_PROPERTY_KEY} system property.
  */
 public class DefaultFirefoxBinaryProvider implements FirefoxBinaryProvider {
     /**
