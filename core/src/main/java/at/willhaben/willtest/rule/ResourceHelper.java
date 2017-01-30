@@ -10,6 +10,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * Makes possible to upload a classpath resource file using Selenium.<br/>
+ * Selenium can upload only {@link File} instances (See {@link org.openqa.selenium.remote.FileDetector}).
+ * In tests you might want to upload a file, which is inside a JAR file you are having on the classpath.
+ * This rule can copy such resources into a temp file, which will be then available during the test for being uploaded.
+ * After the test the cleanup of such files happens automatically.
+ *
  * Created by liptak on 2016.11.21..
  */
 public class ResourceHelper extends AbstractRule {
@@ -30,8 +36,8 @@ public class ResourceHelper extends AbstractRule {
     /**
      * Gets resource either from a jar or from a file as stream, and writes its content into a temp file.
      *
-     * @param resourcePath
-     * @return
+     * @param resourcePath classpath resource path
+     * @return temp file path. This file will be cleaned up automatically after the test.
      */
     public File getResourceAsFile(final String resourcePath) {
         try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(resourcePath)) {
@@ -42,10 +48,18 @@ public class ResourceHelper extends AbstractRule {
             String normalizedPath = resourcePath.replace('/', File.separatorChar);
             String targetFilePath = temporaryFolder.getRoot().getAbsolutePath() + File.separatorChar + normalizedPath;
             File targetFile = new File(targetFilePath);
+            createParentFolderIfNeccessary(targetFile);
             Files.write(ByteStreams.toByteArray(resourceAsStream), targetFile);
             return targetFile;
         } catch (IOException e) {
             throw new RuntimeException("Could not copy resource into a temp file. Resource: '" + resourcePath + "'!", e);
+        }
+    }
+
+    private void createParentFolderIfNeccessary(File targetFile) {
+        File folderContainingTargetFile = targetFile.getParentFile();
+        if (!folderContainingTargetFile.exists() && !folderContainingTargetFile.mkdirs()) {
+            throw new RuntimeException("Could not create folder " + folderContainingTargetFile + "!");
         }
     }
 }
