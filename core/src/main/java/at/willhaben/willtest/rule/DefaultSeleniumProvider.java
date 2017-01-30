@@ -32,25 +32,18 @@ public class DefaultSeleniumProvider extends AbstractRule implements SeleniumPro
 
     private WebDriver webDriver;
 
-    private Optional<URL> getSeleniumHubURL() {
-        if (Boolean.getBoolean(LOCAL_BROWSER_SYSTEM_PROPERTY_KEY)) {
-            return Optional.empty();
-        } else {
-            String hubUrl = System.getProperty(SELENIUM_HUB_SYSTEM_PROPERTY_KEY);
-            if ( hubUrl != null ) {
-                try {
-                    return Optional.of(new URL(hubUrl));
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException("Invalid selenium hub URL set by '" + SELENIUM_HUB_SYSTEM_PROPERTY_KEY +
-                            "' system property: " + hubUrl, e);
-                }
-            } else {
-                throw new IllegalStateException(
-                        "You did not specify '" + LOCAL_BROWSER_SYSTEM_PROPERTY_KEY + "=true' system property. " +
-                        "This means, that you need to specify the URL of your Selenium HUB URL using '" +
-                        SELENIUM_HUB_SYSTEM_PROPERTY_KEY + "' system property!");
-            }
-        }
+    @Override
+    public SeleniumProvider addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant webDriverConfigurationParticipant) {
+        Objects.requireNonNull(webDriverConfigurationParticipant);
+        this.webDriverConfigurationParticipantList.add(webDriverConfigurationParticipant);
+        return this;
+    }
+
+    @Override
+    public SeleniumProvider addFirefoxConfigurationParticipant(FirefoxConfigurationParticipant firefoxConfigurationParticipant) {
+        Objects.requireNonNull(firefoxConfigurationParticipant);
+        this.firefoxConfigurationParticipantList.add(firefoxConfigurationParticipant);
+        return this;
     }
 
     @Override
@@ -74,6 +67,23 @@ public class DefaultSeleniumProvider extends AbstractRule implements SeleniumPro
                         .orElseGet(() -> new FirefoxDriver(createFirefoxBinary(), firefoxProfile)));
     }
 
+    @Override
+    protected void after(Description description, Throwable testFailure) throws Throwable {
+        super.after(description, testFailure);
+        if (webDriver != null) {
+            try {
+                webDriver.quit();
+            } catch (Exception ex) {
+                if (!ex.getMessage().contains("It may have died")) {
+                    throw ex;
+                }
+                LOGGER.warn("Error while closing browser. This error cannot be avoided somehow. " +
+                        "This is not a big problem.", ex);
+            }
+            webDriver = null;
+        }
+    }
+
     private WebDriver callPostConstruct(WebDriver webDriverToBeChangedAfterConstruction) {
         for (WebDriverConfigurationParticipant webDriverConfigurationParticipant : this.webDriverConfigurationParticipantList) {
             webDriverConfigurationParticipant.postConstruct(webDriverToBeChangedAfterConstruction);
@@ -93,23 +103,6 @@ public class DefaultSeleniumProvider extends AbstractRule implements SeleniumPro
         Platform platform = Platform.fromString(platformString);
         desiredCapabilities.setPlatform(platform);
         return desiredCapabilities;
-    }
-
-    @Override
-    protected void after(Description description, Throwable testFailure) throws Throwable {
-        super.after(description, testFailure);
-        if (webDriver != null) {
-            try {
-                webDriver.quit();
-            } catch (Exception ex) {
-                if (!ex.getMessage().contains("It may have died")) {
-                    throw ex;
-                }
-                LOGGER.warn("Error while closing browser. This error cannot be avoided somehow. " +
-                        "This is not a big problem.", ex);
-            }
-            webDriver = null;
-        }
     }
 
     private DesiredCapabilities createDesiredCapabilities() {
@@ -136,17 +129,24 @@ public class DefaultSeleniumProvider extends AbstractRule implements SeleniumPro
         return profile;
     }
 
-    @Override
-    public SeleniumProvider addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant webDriverConfigurationParticipant) {
-        Objects.requireNonNull(webDriverConfigurationParticipant);
-        this.webDriverConfigurationParticipantList.add(webDriverConfigurationParticipant);
-        return this;
-    }
-
-    @Override
-    public SeleniumProvider addFirefoxConfigurationParticipant(FirefoxConfigurationParticipant firefoxConfigurationParticipant) {
-        Objects.requireNonNull(firefoxConfigurationParticipant);
-        this.firefoxConfigurationParticipantList.add(firefoxConfigurationParticipant);
-        return this;
+    private Optional<URL> getSeleniumHubURL() {
+        if (Boolean.getBoolean(LOCAL_BROWSER_SYSTEM_PROPERTY_KEY)) {
+            return Optional.empty();
+        } else {
+            String hubUrl = System.getProperty(SELENIUM_HUB_SYSTEM_PROPERTY_KEY);
+            if ( hubUrl != null ) {
+                try {
+                    return Optional.of(new URL(hubUrl));
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException("Invalid selenium hub URL set by '" + SELENIUM_HUB_SYSTEM_PROPERTY_KEY +
+                            "' system property: " + hubUrl, e);
+                }
+            } else {
+                throw new IllegalStateException(
+                        "You did not specify '" + LOCAL_BROWSER_SYSTEM_PROPERTY_KEY + "=true' system property. " +
+                                "This means, that you need to specify the URL of your Selenium HUB URL using '" +
+                                SELENIUM_HUB_SYSTEM_PROPERTY_KEY + "' system property!");
+            }
+        }
     }
 }
