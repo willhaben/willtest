@@ -3,7 +3,7 @@ package at.willhaben.willtest.rule;
 import at.willhaben.willtest.config.DefaultFirefoxBinaryProvider;
 import at.willhaben.willtest.config.FirefoxConfigurationParticipant;
 import at.willhaben.willtest.config.WebDriverConfigurationParticipant;
-import at.willhaben.willtest.config.WebDriverProvider;
+import at.willhaben.willtest.config.SeleniumProvider;
 import at.willhaben.willtest.util.Environment;
 import org.apache.log4j.Logger;
 import org.junit.runner.Description;
@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class DefaultWebDriverProvider extends AbstractRule implements WebDriverProvider {
-    private static final Logger LOGGER = Logger.getLogger(DefaultWebDriverProvider.class);
+public class DefaultSeleniumProvider extends AbstractRule implements SeleniumProvider {
+    private static final Logger LOGGER = Logger.getLogger(DefaultSeleniumProvider.class);
     private static final String DEFAULT_PLATFORM_LINUX = "Linux";
     private static final String DEFAULT_SELENIUM_HUB = "http://enter_your_hub_url_using_seleniumHub_system_property.io";
     private static final String SELENIUM_HUB_SYSTEM_PROPERTY_KEY = "seleniumHub";
@@ -129,14 +129,14 @@ public class DefaultWebDriverProvider extends AbstractRule implements WebDriverP
     }
 
     @Override
-    public WebDriverProvider addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant webDriverConfigurationParticipant) {
+    public SeleniumProvider addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant webDriverConfigurationParticipant) {
         Objects.requireNonNull(webDriverConfigurationParticipant);
         this.webDriverConfigurationParticipantList.add(webDriverConfigurationParticipant);
         return this;
     }
 
     @Override
-    public WebDriverProvider addFirefoxConfigurationParticipant(FirefoxConfigurationParticipant firefoxConfigurationParticipant) {
+    public SeleniumProvider addFirefoxConfigurationParticipant(FirefoxConfigurationParticipant firefoxConfigurationParticipant) {
         Objects.requireNonNull(firefoxConfigurationParticipant);
         this.firefoxConfigurationParticipantList.add(firefoxConfigurationParticipant);
         return this;

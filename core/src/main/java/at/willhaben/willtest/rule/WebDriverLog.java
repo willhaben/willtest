@@ -2,7 +2,7 @@ package at.willhaben.willtest.rule;
 
 
 import at.willhaben.willtest.config.WebDriverConfigurationParticipant;
-import at.willhaben.willtest.config.WebDriverProvider;
+import at.willhaben.willtest.config.SeleniumProvider;
 import com.google.common.collect.ImmutableMap;
 import org.apache.log4j.Logger;
 import org.junit.runner.Description;
@@ -39,11 +39,11 @@ public class WebDriverLog extends AbstractRule implements WebDriverConfiguration
     private static final LoggingPreferences DEFAULT_LOGGING_PREFERENCES = createLoggingPreferences();
 
 
-    private final WebDriverProvider webDriverProvider;
+    private final SeleniumProvider seleniumProvider;
 
-    public WebDriverLog(WebDriverProvider webDriverProvider) {
-        this.webDriverProvider = webDriverProvider;
-        this.webDriverProvider.addWebDriverConfigurationParticipant(this);
+    public WebDriverLog(SeleniumProvider seleniumProvider) {
+        this.seleniumProvider = seleniumProvider;
+        this.seleniumProvider.addWebDriverConfigurationParticipant(this);
     }
 
     private static LoggingPreferences createLoggingPreferences() {
@@ -54,7 +54,7 @@ public class WebDriverLog extends AbstractRule implements WebDriverConfiguration
 
     @Override
     protected void onError(Description description, Throwable testFailure) {
-        WebDriver webDriver = webDriverProvider.getWebDriver();
+        WebDriver webDriver = seleniumProvider.getWebDriver();
         processWebDriverLogs(webDriver);
     }
 

@@ -50,10 +50,10 @@ public class FirefoxConfig implements FirefoxConfigurationParticipant, WebDriver
 
     }
 
-    public <T extends WebDriverProvider> T addTo(T webDriverProvider) {
-        webDriverProvider.addFirefoxConfigurationParticipant(this);
-        webDriverProvider.addWebDriverConfigurationParticipant(this);
-        return webDriverProvider;
+    public <T extends SeleniumProvider> T addTo(T seleniumProvider) {
+        seleniumProvider.addFirefoxConfigurationParticipant(this);
+        seleniumProvider.addWebDriverConfigurationParticipant(this);
+        return seleniumProvider;
     }
 
     private void setDisplay(FirefoxBinary result) {

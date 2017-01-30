@@ -4,12 +4,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 /**
- * Makes possible to adjust the behaviour of the {@link WebDriver} instances created by a {@link WebDriverProvider}.
- * Use {@link WebDriverProvider#addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant)} to
+ * Makes possible to adjust the behaviour of the {@link WebDriver} instances created by a {@link SeleniumProvider}.
+ * Use {@link SeleniumProvider#addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant)} to
  * make your {@link WebDriverConfigurationParticipant} work.<br/>
  * Example: setting window size using {@link #postConstruct(WebDriver)} method.<br/>
  * It makes possible to encapsulate some configuration aspects, which you can reuse with different kind of
- * {@link WebDriver} instances created by different implementations of {@link WebDriverProvider}.
+ * {@link WebDriver} instances created by different implementations of {@link SeleniumProvider}.
  * Created by liptak on 2016.08.24..
  */
 public interface WebDriverConfigurationParticipant {

@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * A sample default configuration we are using. Basicly a composite made from the building blocks.
  */
-public class SeleniumRule implements WebDriverProvider, TestRule {
+public class SeleniumRule implements SeleniumProvider, TestRule {
     private static final long DEFAULT_IMPLICIT_WAIT = 15;
     private static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.SECONDS;
     private static final long DEFAULT_SCRIPT_TIMOUT_REQUIRED_BY_NG_DRIVER_SECONDS = 15;
@@ -28,25 +28,25 @@ public class SeleniumRule implements WebDriverProvider, TestRule {
                     .withImplicitWait(DEFAULT_IMPLICIT_WAIT, DEFAULT_TIME_UNIT)
                     .withScriptTimeout(DEFAULT_SCRIPT_TIMOUT_REQUIRED_BY_NG_DRIVER_SECONDS, DEFAULT_TIME_UNIT);
 
-    private final DefaultWebDriverProvider defaultWebDriverProvider =
+    private final DefaultSeleniumProvider defaultSeleniumProvider =
             FileDetectorConfigurator.supportingFileUpload(
                     timeoutsConfigurationParticipant.addTo(
                             firefoxConfig.addTo(
-                                    new DefaultWebDriverProvider())));
+                                    new DefaultSeleniumProvider())));
 
     private final LogContext logContext = new LogContext();
     private final LogFile logFile = new LogFile();
     private final ResourceHelper resourceHelper = new ResourceHelper();
-    private final PageSource pageSource = new PageSource(defaultWebDriverProvider);
-    private final Screenshot screenshot = new Screenshot(defaultWebDriverProvider);
-    private final WebDriverLog webDriverLog = new WebDriverLog(defaultWebDriverProvider);
-    private final JavascriptAlert javascriptAlert = new JavascriptAlert(defaultWebDriverProvider);
-    private final JavascriptError javascriptError = new JavascriptError(defaultWebDriverProvider, false);
+    private final PageSource pageSource = new PageSource(defaultSeleniumProvider);
+    private final Screenshot screenshot = new Screenshot(defaultSeleniumProvider);
+    private final WebDriverLog webDriverLog = new WebDriverLog(defaultSeleniumProvider);
+    private final JavascriptAlert javascriptAlert = new JavascriptAlert(defaultSeleniumProvider);
+    private final JavascriptError javascriptError = new JavascriptError(defaultSeleniumProvider, false);
 
     private final RuleChain ruleChain = RuleChain
             .outerRule(logContext)
             .around(logFile)
-            .around(defaultWebDriverProvider)
+            .around(defaultSeleniumProvider)
             .around(webDriverLog)
             .around(pageSource)
             .around(screenshot)
@@ -56,17 +56,17 @@ public class SeleniumRule implements WebDriverProvider, TestRule {
 
     @Override
     public WebDriver getWebDriver() {
-        return defaultWebDriverProvider.getWebDriver();
+        return defaultSeleniumProvider.getWebDriver();
     }
 
     @Override
-    public WebDriverProvider addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant webDriverConfigurationParticipant) {
-        return defaultWebDriverProvider.addWebDriverConfigurationParticipant(webDriverConfigurationParticipant);
+    public SeleniumProvider addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant webDriverConfigurationParticipant) {
+        return defaultSeleniumProvider.addWebDriverConfigurationParticipant(webDriverConfigurationParticipant);
     }
 
     @Override
-    public WebDriverProvider addFirefoxConfigurationParticipant(FirefoxConfigurationParticipant firefoxConfigurationParticipant) {
-        return defaultWebDriverProvider.addFirefoxConfigurationParticipant(firefoxConfigurationParticipant);
+    public SeleniumProvider addFirefoxConfigurationParticipant(FirefoxConfigurationParticipant firefoxConfigurationParticipant) {
+        return defaultSeleniumProvider.addFirefoxConfigurationParticipant(firefoxConfigurationParticipant);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class SeleniumRule implements WebDriverProvider, TestRule {
      * @return explicit webdriver wait
      */
     public Wait<WebDriver> waitOverridingImplicitWait(int seconds) {
-        return timeoutsConfigurationParticipant.waitOverridingImplicitWait(defaultWebDriverProvider.getWebDriver(), seconds);
+        return timeoutsConfigurationParticipant.waitOverridingImplicitWait(defaultSeleniumProvider.getWebDriver(), seconds);
     }
 
     public SeleniumRule withAdBlocker() {

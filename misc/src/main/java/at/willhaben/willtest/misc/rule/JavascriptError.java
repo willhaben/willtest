@@ -1,7 +1,7 @@
 package at.willhaben.willtest.misc.rule;
 
 import at.willhaben.willtest.config.FirefoxConfigurationParticipant;
-import at.willhaben.willtest.config.WebDriverProvider;
+import at.willhaben.willtest.config.SeleniumProvider;
 import at.willhaben.willtest.misc.JavascriptErrorException;
 import at.willhaben.willtest.rule.AbstractRule;
 import net.jsourcerer.webdriver.jserrorcollector.JavaScriptError;
@@ -15,13 +15,13 @@ import java.util.List;
  * Created by liptak on 2016.09.26..
  */
 public class JavascriptError extends AbstractRule implements FirefoxConfigurationParticipant {
-    private final WebDriverProvider webDriverProvider;
+    private final SeleniumProvider seleniumProvider;
     private boolean initialized;
     private final boolean throwExceptionForSuccessfulTests;
 
-    public JavascriptError(WebDriverProvider webDriverProvider, boolean throwExceptionForSuccessfulTests) {
-        this.webDriverProvider = webDriverProvider;
-        webDriverProvider.addFirefoxConfigurationParticipant(this);
+    public JavascriptError(SeleniumProvider seleniumProvider, boolean throwExceptionForSuccessfulTests) {
+        this.seleniumProvider = seleniumProvider;
+        seleniumProvider.addFirefoxConfigurationParticipant(this);
         this.throwExceptionForSuccessfulTests = throwExceptionForSuccessfulTests;
     }
 
@@ -30,7 +30,7 @@ public class JavascriptError extends AbstractRule implements FirefoxConfiguratio
         super.after(description, testFailure);
         try {
             if (initialized) {
-                List<JavaScriptError> jsErrors = JavaScriptError.readErrors(webDriverProvider.getWebDriver());
+                List<JavaScriptError> jsErrors = JavaScriptError.readErrors(seleniumProvider.getWebDriver());
                 if (!jsErrors.isEmpty()) {
                     JavascriptErrorException javascriptErrorException = new JavascriptErrorException(
                             "Javascript errors are detected!",

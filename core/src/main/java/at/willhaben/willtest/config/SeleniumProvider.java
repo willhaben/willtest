@@ -8,7 +8,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  *
  * Created by liptak on 2016.08.24..
  */
-public interface WebDriverProvider {
+public interface SeleniumProvider {
     long FIND_ELEMENT_TIMEOUT = 30;
 
     /**
@@ -29,20 +29,20 @@ public interface WebDriverProvider {
     }
 
     /**
-     * After creating a new {@link WebDriver} instance, a {@link WebDriverProvider} implementation should pass that instance
+     * After creating a new {@link WebDriver} instance, a {@link SeleniumProvider} implementation should pass that instance
      * to all {@link WebDriverConfigurationParticipant} to let them to adjust it.
      * @param webDriverConfigurationParticipant
      * @return the provider itself to make method chaining possible
      */
-    WebDriverProvider addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant webDriverConfigurationParticipant);
+    SeleniumProvider addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant webDriverConfigurationParticipant);
 
     /**
-     * After creating a new {@link WebDriver} instance, a {@link WebDriverProvider} implementation should pass that instance
+     * After creating a new {@link WebDriver} instance, a {@link SeleniumProvider} implementation should pass that instance
      * to all {@link FirefoxConfigurationParticipant} to let them to adjust it. This is used for local Firefox instances
      * or for ones running on a Selenium Hub.
      * @param firefoxConfigurationParticipant
      * @return the provider itself to make method chaining possible
      */
     //TODO: is it good here?
-    WebDriverProvider addFirefoxConfigurationParticipant(FirefoxConfigurationParticipant firefoxConfigurationParticipant);
+    SeleniumProvider addFirefoxConfigurationParticipant(FirefoxConfigurationParticipant firefoxConfigurationParticipant);
 }

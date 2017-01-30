@@ -54,9 +54,9 @@ public enum AdBlockerConfigurator implements FirefoxConfigurationParticipant {
 
     private static final String ADBLOCK_XPI_RESOURCE_PATH = "/adblock.xpi";
 
-    public static <T extends WebDriverProvider> T usingAdBlocker(T webDriverProvider) {
-        webDriverProvider.addFirefoxConfigurationParticipant(INSTANCE);
-        return webDriverProvider;
+    public static <T extends SeleniumProvider> T usingAdBlocker(T seleniumProvider) {
+        seleniumProvider.addFirefoxConfigurationParticipant(INSTANCE);
+        return seleniumProvider;
     }
 
     @Override

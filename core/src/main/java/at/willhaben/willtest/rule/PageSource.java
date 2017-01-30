@@ -1,6 +1,6 @@
 package at.willhaben.willtest.rule;
 
-import at.willhaben.willtest.config.WebDriverProvider;
+import at.willhaben.willtest.config.SeleniumProvider;
 import at.willhaben.willtest.util.TestReportFile;
 import com.google.common.io.Files;
 import org.apache.log4j.Logger;
@@ -17,16 +17,16 @@ import java.nio.charset.StandardCharsets;
 public class PageSource extends AbstractRule {
     private static final Logger LOGGER = Logger.getLogger(PageSource.class);
 
-    private final WebDriverProvider webDriverProvider;
+    private final SeleniumProvider seleniumProvider;
 
-    public PageSource(WebDriverProvider webDriverProvider) {
-        this.webDriverProvider = webDriverProvider;
+    public PageSource(SeleniumProvider seleniumProvider) {
+        this.seleniumProvider = seleniumProvider;
     }
 
     @Override
     protected void onError(Description description, Throwable testFailure) throws Throwable {
         super.onError(description, testFailure);
-        String pageSource = webDriverProvider.getWebDriver().getPageSource();
+        String pageSource = seleniumProvider.getWebDriver().getPageSource();
         File destFile = TestReportFile.forTest(description).withPostix(".html").build().getFile();
         Files.write(pageSource, destFile, StandardCharsets.UTF_8);
         LOGGER.info("Saved page source as " + destFile.getAbsolutePath());

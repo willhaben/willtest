@@ -6,8 +6,6 @@ import org.openqa.selenium.WebDriver.Timeouts;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
-import java.time.temporal.TemporalUnit;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -90,14 +88,14 @@ public class TimeoutsConfigurationParticipant implements WebDriverConfigurationP
     }
 
     /**
-     * Adds this configurator to the given {@link WebDriverProvider}
-     * @param webDriverProvider
+     * Adds this configurator to the given {@link SeleniumProvider}
+     * @param seleniumProvider
      * @param <T>
-     * @return <code>webDriverProvider</code> to enable method chaining
+     * @return <code>seleniumProvider</code> to enable method chaining
      */
-    public <T extends WebDriverProvider> T addTo(T webDriverProvider) {
-        webDriverProvider.addWebDriverConfigurationParticipant(this);
-        return webDriverProvider;
+    public <T extends SeleniumProvider> T addTo(T seleniumProvider) {
+        seleniumProvider.addWebDriverConfigurationParticipant(this);
+        return seleniumProvider;
     }
 
     /**

@@ -1,6 +1,6 @@
 package at.willhaben.willtest.rule;
 
-import at.willhaben.willtest.config.WebDriverProvider;
+import at.willhaben.willtest.config.SeleniumProvider;
 import at.willhaben.willtest.util.TestReportFile;
 import com.google.common.io.Files;
 import org.apache.log4j.Logger;
@@ -20,16 +20,16 @@ import java.io.File;
 public class Screenshot extends AbstractRule {
     private static final Logger LOGGER = Logger.getLogger(Screenshot.class);
 
-    private final WebDriverProvider webDriverProvider;
+    private final SeleniumProvider seleniumProvider;
 
-    public Screenshot(WebDriverProvider webDriverProvider) {
-        this.webDriverProvider = webDriverProvider;
+    public Screenshot(SeleniumProvider seleniumProvider) {
+        this.seleniumProvider = seleniumProvider;
     }
 
     @Override
     protected void onError(Description description, Throwable testFailure) throws Throwable {
         super.onError(description, testFailure);
-        WebDriver webDriver = webDriverProvider.getWebDriver();
+        WebDriver webDriver = seleniumProvider.getWebDriver();
         if (webDriver instanceof TakesScreenshot) {
             byte[] screenshot = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES);
             File destFile = TestReportFile.forTest(description).withPostix(".png").build().getFile();

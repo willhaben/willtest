@@ -1,6 +1,6 @@
 package at.willhaben.willtest.rule;
 
-import at.willhaben.willtest.config.WebDriverProvider;
+import at.willhaben.willtest.config.SeleniumProvider;
 import org.junit.runner.Description;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
@@ -17,16 +17,16 @@ import org.openqa.selenium.WebDriver;
  * Created by liptak on 2016.09.26..
  */
 public class JavascriptAlert extends AbstractRule {
-    private final WebDriverProvider webDriverProvider;
+    private final SeleniumProvider seleniumProvider;
 
-    public JavascriptAlert(WebDriverProvider webDriverProvider) {
-        this.webDriverProvider = webDriverProvider;
+    public JavascriptAlert(SeleniumProvider seleniumProvider) {
+        this.seleniumProvider = seleniumProvider;
     }
 
     @Override
     protected void onError(Description description, Throwable testFailure) throws Throwable {
         super.onError(description, testFailure);
-        WebDriver webDriver = webDriverProvider.getWebDriver();
+        WebDriver webDriver = seleniumProvider.getWebDriver();
         try {
             Alert alert = webDriver.switchTo().alert();
             testFailure.addSuppressed(new RuntimeException("Unexpected alert with text: '" + alert.getText() + "'!"));

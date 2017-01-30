@@ -17,13 +17,13 @@ public enum FileDetectorConfigurator implements WebDriverConfigurationParticipan
 
     /**
      * Convinience method, which lets the caller to add this configurator using chained method calls.
-     * @param webDriverProvider
+     * @param seleniumProvider
      * @param <T>
-     * @return the webDriverProvider parameter, which was passed into the method as parameter. Enables method chaining.
+     * @return the seleniumProvider parameter, which was passed into the method as parameter. Enables method chaining.
      */
-    public static <T extends WebDriverProvider> T supportingFileUpload(T webDriverProvider) {
-        webDriverProvider.addWebDriverConfigurationParticipant(INSTANCE);
-        return webDriverProvider;
+    public static <T extends SeleniumProvider> T supportingFileUpload(T seleniumProvider) {
+        seleniumProvider.addWebDriverConfigurationParticipant(INSTANCE);
+        return seleniumProvider;
     }
 
     @Override
