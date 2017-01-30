@@ -2,8 +2,8 @@ package at.willhaben.willtest.rule;
 
 import at.willhaben.willtest.config.DefaultFirefoxBinaryProvider;
 import at.willhaben.willtest.config.FirefoxConfigurationParticipant;
-import at.willhaben.willtest.config.WebDriverConfigurationParticipant;
 import at.willhaben.willtest.config.SeleniumProvider;
+import at.willhaben.willtest.config.WebDriverConfigurationParticipant;
 import at.willhaben.willtest.util.Environment;
 import org.apache.log4j.Logger;
 import org.junit.runner.Description;
@@ -25,22 +25,30 @@ import java.util.Optional;
 public class DefaultSeleniumProvider extends AbstractRule implements SeleniumProvider {
     private static final Logger LOGGER = Logger.getLogger(DefaultSeleniumProvider.class);
     private static final String DEFAULT_PLATFORM_LINUX = "Linux";
-    private static final String DEFAULT_SELENIUM_HUB = "http://enter_your_hub_url_using_seleniumHub_system_property.io";
     private static final String SELENIUM_HUB_SYSTEM_PROPERTY_KEY = "seleniumHub";
+    private static final String LOCAL_BROWSER_SYSTEM_PROPERTY_KEY = "local";
     private final List<WebDriverConfigurationParticipant> webDriverConfigurationParticipantList = new ArrayList<>();
     private final List<FirefoxConfigurationParticipant> firefoxConfigurationParticipantList = new ArrayList<>();
 
     private WebDriver webDriver;
 
     private Optional<URL> getSeleniumHubURL() {
-        if (Boolean.getBoolean("local")) {
+        if (Boolean.getBoolean(LOCAL_BROWSER_SYSTEM_PROPERTY_KEY)) {
             return Optional.empty();
         } else {
-            String hubUrl = System.getProperty(SELENIUM_HUB_SYSTEM_PROPERTY_KEY, DEFAULT_SELENIUM_HUB);
-            try {
-                return Optional.of(new URL(hubUrl));
-            } catch (MalformedURLException e) {
-                throw new RuntimeException("Invalid selenium hub URL.", e);
+            String hubUrl = System.getProperty(SELENIUM_HUB_SYSTEM_PROPERTY_KEY);
+            if ( hubUrl != null ) {
+                try {
+                    return Optional.of(new URL(hubUrl));
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException("Invalid selenium hub URL set by '" + SELENIUM_HUB_SYSTEM_PROPERTY_KEY +
+                            "' system property: " + hubUrl, e);
+                }
+            } else {
+                throw new IllegalStateException(
+                        "You did not specify '" + LOCAL_BROWSER_SYSTEM_PROPERTY_KEY + "=true' system property. " +
+                        "This means, that you need to specify the URL of your Selenium HUB URL using '" +
+                        SELENIUM_HUB_SYSTEM_PROPERTY_KEY + "' system property!");
             }
         }
     }
