@@ -12,8 +12,10 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -24,8 +26,7 @@ import java.util.logging.Level;
  */
 public class WebDriverLog extends AbstractRule implements WebDriverConfigurationParticipant {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverLog.class);
-    private static final ThreadLocal<SimpleDateFormat> LOG_TIMESTAMP_FORMAT =
-            ThreadLocal.withInitial(() -> new SimpleDateFormat("HH.mm.ss.SSS"));
+    private static final DateTimeFormatter LOG_TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("HH.mm.ss.SSS");
 
     private static final Map<String, Level> WEBDRIVER_LOG_LEVELS = ImmutableMap
             .<String, Level>builder()
@@ -38,7 +39,7 @@ public class WebDriverLog extends AbstractRule implements WebDriverConfiguration
             .build();
 
     private static final LoggingPreferences DEFAULT_LOGGING_PREFERENCES = createLoggingPreferences();
-
+    private static final String MESSAGE_PATTERN = "[{}] {} {}";
 
     private final SeleniumProvider seleniumProvider;
 
@@ -47,45 +48,44 @@ public class WebDriverLog extends AbstractRule implements WebDriverConfiguration
         this.seleniumProvider.addWebDriverConfigurationParticipant(this);
     }
 
-    private static LoggingPreferences createLoggingPreferences() {
-        LoggingPreferences loggingPreferences = new LoggingPreferences();
-        WEBDRIVER_LOG_LEVELS.forEach(loggingPreferences::enable);
-        return loggingPreferences;
-    }
-
     @Override
     protected void onError(Description description, Throwable testFailure) {
         WebDriver webDriver = seleniumProvider.getWebDriver();
         processWebDriverLogs(webDriver);
     }
 
+    @Override
+    public void addDesiredCapabilities(DesiredCapabilities desiredCapabilities) {
+        desiredCapabilities.setCapability(CapabilityType.LOGGING_PREFS, DEFAULT_LOGGING_PREFERENCES);
+    }
+
     private void processWebDriverLogs(WebDriver webDriver) {
-        SimpleDateFormat dateFormat = LOG_TIMESTAMP_FORMAT.get();
         Logs logs = webDriver.manage().logs();
         for (String logType : WEBDRIVER_LOG_LEVELS.keySet()) {
             LOGGER.info("Dumping webdriver log for log type " + logType);
             LogEntries logEntries = logs.get(logType);
             for (LogEntry logEntry : logEntries) {
-                String renderedMessage = "[" + logType + "] " +
-                        dateFormat.format(new Date(logEntry.getTimestamp())) + " " + logEntry.getMessage();
+                String formattedOriginalTimestamp = LOG_TIMESTAMP_FORMAT
+                        .format(LocalDateTime.ofInstant(Instant.ofEpochMilli(logEntry.getTimestamp()), ZoneOffset.UTC));
                 Level logEntryLevel = logEntry.getLevel();
                 if (logEntryLevel.equals(Level.FINE)) {
-                    LOGGER.debug(renderedMessage);
+                    LOGGER.debug(MESSAGE_PATTERN, logType, formattedOriginalTimestamp, logEntry.getMessage());
                 } else if (logEntryLevel.equals(Level.INFO)) {
-                    LOGGER.info(renderedMessage);
+                    LOGGER.info(MESSAGE_PATTERN, logType, formattedOriginalTimestamp, logEntry.getMessage());
                 } else if (logEntryLevel.equals(Level.WARNING)) {
-                    LOGGER.warn(renderedMessage);
+                    LOGGER.warn(MESSAGE_PATTERN, logType, formattedOriginalTimestamp, logEntry.getMessage());
                 } else if (logEntryLevel.equals(Level.SEVERE)) {
-                    LOGGER.error(renderedMessage);
+                    LOGGER.error(MESSAGE_PATTERN, logType, formattedOriginalTimestamp, logEntry.getMessage());
                 } else if (logEntryLevel.equals(Level.FINER)) {
-                    LOGGER.trace(renderedMessage);
+                    LOGGER.trace(MESSAGE_PATTERN, logType, formattedOriginalTimestamp, logEntry.getMessage());
                 }
             }
         }
     }
 
-    @Override
-    public void addDesiredCapabilities(DesiredCapabilities desiredCapabilities) {
-        desiredCapabilities.setCapability(CapabilityType.LOGGING_PREFS, DEFAULT_LOGGING_PREFERENCES);
+    private static LoggingPreferences createLoggingPreferences() {
+        LoggingPreferences loggingPreferences = new LoggingPreferences();
+        WEBDRIVER_LOG_LEVELS.forEach(loggingPreferences::enable);
+        return loggingPreferences;
     }
 }

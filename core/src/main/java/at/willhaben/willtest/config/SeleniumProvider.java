@@ -5,7 +5,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * Creates a webdriver instance with respecting all configuration participants given to it.
- *
+ * <p>
  * Created by liptak on 2016.08.24..
  */
 public interface SeleniumProvider {
@@ -22,6 +22,7 @@ public interface SeleniumProvider {
      * different instances in page objects with different timeouts. This makes easy to change all timeouts at a single
      * place later. Default implementation returns a {@link WebDriverWait} with {@value FIND_ELEMENT_TIMEOUT} seconds
      * timeout.
+     *
      * @return the default {@link WebDriverWait} instance to be used with the WebDriver
      */
     default WebDriverWait getDefaultWebDriverWait() {
@@ -31,6 +32,7 @@ public interface SeleniumProvider {
     /**
      * After creating a new {@link WebDriver} instance, a {@link SeleniumProvider} implementation should pass that instance
      * to all {@link WebDriverConfigurationParticipant} to let them to adjust it.
+     *
      * @param webDriverConfigurationParticipant
      * @return the provider itself to make method chaining possible
      */
@@ -40,6 +42,7 @@ public interface SeleniumProvider {
      * After creating a new {@link WebDriver} instance, a {@link SeleniumProvider} implementation should pass that instance
      * to all {@link FirefoxConfigurationParticipant} to let them to adjust it. This is used for local Firefox instances
      * or for ones running on a Selenium Hub.
+     *
      * @param firefoxConfigurationParticipant
      * @return the provider itself to make method chaining possible
      */

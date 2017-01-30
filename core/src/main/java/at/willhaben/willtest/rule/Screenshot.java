@@ -15,7 +15,7 @@ import java.io.File;
 /**
  * Creates a PNG screenshot if there is a test failure. Please note, that creating the screenshot is not instant
  * when a failure happens. It happens a few milliseconds after the failure, and it can show a different state.
- *
+ * <p>
  * Created by liptak on 2016.08.24..
  */
 public class Screenshot extends AbstractRule {

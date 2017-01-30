@@ -13,7 +13,6 @@ import org.openqa.selenium.support.ui.Wait;
 
 import java.time.Duration;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A sample default configuration we are using. Basicly a composite made from the building blocks.

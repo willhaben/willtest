@@ -16,6 +16,7 @@ public interface WebDriverConfigurationParticipant {
 
     /**
      * Can add desired capabilities to a {@link WebDriver} before it gets created.
+     *
      * @param desiredCapabilities
      */
     default void addDesiredCapabilities(DesiredCapabilities desiredCapabilities) {
@@ -23,6 +24,7 @@ public interface WebDriverConfigurationParticipant {
 
     /**
      * Can make some changes on a newly created {@link WebDriver} before it gets used.
+     *
      * @param webDriver
      */
     default void postConstruct(WebDriver webDriver) {

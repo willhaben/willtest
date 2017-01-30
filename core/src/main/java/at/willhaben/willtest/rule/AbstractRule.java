@@ -14,6 +14,7 @@ import org.junit.runners.model.Statement;
 public abstract class AbstractRule implements TestRule {
     /**
      * Can do something before ein test. By default it does nothing.
+     *
      * @param description
      * @throws Throwable
      */
@@ -22,20 +23,22 @@ public abstract class AbstractRule implements TestRule {
 
     /**
      * Called after all tests always. By default it does nothing.
+     *
      * @param description
      * @param testFailure in case of failed test it contains an exception. Otherwise null
      * @throws Throwable if <code>testFailure</code> is null, it will fly, if <code>testFailure</code> is not null,
-     * it will be added to that as suppressed exception. See {@link Throwable#addSuppressed(Throwable)}
+     *                   it will be added to that as suppressed exception. See {@link Throwable#addSuppressed(Throwable)}
      */
     protected void after(Description description, Throwable testFailure) throws Throwable {
     }
 
     /**
      * Called if the test has thrown an error. By default it does nothing.
+     *
      * @param description
      * @param testFailure
      * @throws Throwable this will be added to <code>testFailure</code> as suppressed exception.
-     * See {@link Throwable#addSuppressed(Throwable)}
+     *                   See {@link Throwable#addSuppressed(Throwable)}
      */
     protected void onError(Description description, Throwable testFailure) throws Throwable {
     }

@@ -15,7 +15,7 @@ import java.io.InputStream;
  * In tests you might want to upload a file, which is inside a JAR file you are having on the classpath.
  * This rule can copy such resources into a temp file, which will be then available during the test for being uploaded.
  * After the test the cleanup of such files happens automatically.
- *
+ * <p>
  * Created by liptak on 2016.11.21..
  */
 public class ResourceHelper extends AbstractRule {

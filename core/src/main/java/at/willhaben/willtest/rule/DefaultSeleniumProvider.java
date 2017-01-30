@@ -135,7 +135,7 @@ public class DefaultSeleniumProvider extends AbstractRule implements SeleniumPro
             return Optional.empty();
         } else {
             String hubUrl = System.getProperty(SELENIUM_HUB_SYSTEM_PROPERTY_KEY);
-            if ( hubUrl != null ) {
+            if (hubUrl != null) {
                 try {
                     return Optional.of(new URL(hubUrl));
                 } catch (MalformedURLException e) {
