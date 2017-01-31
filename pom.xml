@@ -45,12 +45,12 @@
             </roles>
         </developer>
         <developer>
-            <email>michael.weissgrab@willhaben.at</email>
-            <name>Michael Weissgrab</name>
+            <email>michael.weisgrab@willhaben.at</email>
+            <name>Michael Weisgrab</name>
             <url>https://github.com/Micky002</url>
             <organization>willhaben internet service GmbH &amp; Co KG</organization>
             <organizationUrl>https://willhaben.at</organizationUrl>
-            <id>michael.weissgrab</id>
+            <id>michael.weisgrab</id>
             <roles>
                 <role>developer</role>
             </roles>
