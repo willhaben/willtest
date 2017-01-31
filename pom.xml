@@ -112,6 +112,7 @@
     <modules>
         <module>core</module>
         <module>misc</module>
+        <module>browserstack</module>
     </modules>
 
     <build>

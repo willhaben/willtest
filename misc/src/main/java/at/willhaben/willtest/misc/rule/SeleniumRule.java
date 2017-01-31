@@ -27,11 +27,11 @@ public class SeleniumRule implements SeleniumProvider, TestRule {
                     .withImplicitWait(DEFAULT_IMPLICIT_WAIT)
                     .withScriptTimeout(DEFAULT_SCRIPT_TIMOUT_REQUIRED_BY_NG_DRIVER);
 
-    private final DefaultSeleniumProvider defaultSeleniumProvider =
+    private final AbstractWebDriverRule defaultSeleniumProvider =
             FileDetectorConfigurator.supportingFileUpload(
                     timeoutsConfigurationParticipant.addTo(
                             firefoxConfig.addTo(
-                                    new DefaultSeleniumProvider())));
+                                    SeleniumRuleFactory.create())));
 
     private final LogContext logContext = new LogContext();
     private final LogFile logFile = new LogFile();

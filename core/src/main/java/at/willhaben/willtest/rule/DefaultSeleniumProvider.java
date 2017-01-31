@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class DefaultSeleniumProvider extends AbstractRule implements SeleniumProvider {
+public class DefaultSeleniumProvider extends AbstractWebDriverRule {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSeleniumProvider.class);
     private static final String DEFAULT_PLATFORM_LINUX = "Linux";
     private static final String SELENIUM_HUB_SYSTEM_PROPERTY_KEY = "seleniumHub";
@@ -32,6 +32,14 @@ public class DefaultSeleniumProvider extends AbstractRule implements SeleniumPro
     private final List<FirefoxConfigurationParticipant> firefoxConfigurationParticipantList = new ArrayList<>();
 
     private WebDriver webDriver;
+    private boolean isRunningLocal = false;
+
+    public DefaultSeleniumProvider() {
+    }
+
+    public DefaultSeleniumProvider(boolean local) {
+        isRunningLocal = local;
+    }
 
     @Override
     public SeleniumProvider addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant webDriverConfigurationParticipant) {
@@ -56,6 +64,8 @@ public class DefaultSeleniumProvider extends AbstractRule implements SeleniumPro
         return webDriver;
     }
 
+
+
     @Override
     protected void before(Description description) throws Throwable {
         super.before(description);
@@ -66,23 +76,6 @@ public class DefaultSeleniumProvider extends AbstractRule implements SeleniumPro
                 getSeleniumHubURL()
                         .map(seleniumHubURL -> new RemoteWebDriver(seleniumHubURL, desiredCapabilities))
                         .orElseGet(() -> new FirefoxDriver(createFirefoxBinary(), firefoxProfile)));
-    }
-
-    @Override
-    protected void after(Description description, Throwable testFailure) throws Throwable {
-        super.after(description, testFailure);
-        if (webDriver != null) {
-            try {
-                webDriver.quit();
-            } catch (Exception ex) {
-                if (!ex.getMessage().contains("It may have died")) {
-                    throw ex;
-                }
-                LOGGER.warn("Error while closing browser. This error cannot be avoided somehow. " +
-                        "This is not a big problem.", ex);
-            }
-            webDriver = null;
-        }
     }
 
     private WebDriver callPostConstruct(WebDriver webDriverToBeChangedAfterConstruction) {
@@ -149,5 +142,10 @@ public class DefaultSeleniumProvider extends AbstractRule implements SeleniumPro
                                 SELENIUM_HUB_SYSTEM_PROPERTY_KEY + "' system property!");
             }
         }
+    }
+
+    @Override
+    protected void setWebDriver(WebDriver webDriver) {
+        this.webDriver = webDriver;
     }
 }
