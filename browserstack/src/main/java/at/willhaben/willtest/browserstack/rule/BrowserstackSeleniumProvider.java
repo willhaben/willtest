@@ -16,6 +16,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by weisgrmi on 31.01.2017.
@@ -25,6 +28,8 @@ public class BrowserstackSeleniumProvider extends AbstractWebDriverRule {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSeleniumProvider.class);
     private static final String BROWSERSTACK_HUB_SYSTEM_PROPERTY_KEY = "browserstackHub";
     private static final DateTimeFormatter BUILD_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+
+    private final List<WebDriverConfigurationParticipant> webDriverConfigurationParticipantList = new ArrayList<>();
 
     private WebDriver webDriver;
     private String testName = "default_test_name";
@@ -55,13 +60,18 @@ public class BrowserstackSeleniumProvider extends AbstractWebDriverRule {
     @Override
     protected void before(Description description) throws Throwable {
         createTestName(description);
-        DesiredCapabilities desiredCapabilities = setupNameAndStandardConfig(new DesiredCapabilities());
-        webDriver = new RemoteWebDriver(getBrowserstackHubURL(), desiredCapabilities);
+        DesiredCapabilities desiredCapabilities =
+                addDesiredCapailities(
+                        setupNameAndStandardConfig(new DesiredCapabilities()));
+        callPostConstruct(webDriver =
+                new RemoteWebDriver(getBrowserstackHubURL(), desiredCapabilities));
     }
 
     @Override
     public SeleniumProvider addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant webDriverConfigurationParticipant) {
-        return null;
+        Objects.requireNonNull(webDriverConfigurationParticipant);
+        this.webDriverConfigurationParticipantList.add(webDriverConfigurationParticipant);
+        return this;
     }
 
     @Override
@@ -70,9 +80,19 @@ public class BrowserstackSeleniumProvider extends AbstractWebDriverRule {
         return null;
     }
 
+    private WebDriver callPostConstruct(WebDriver webDriverToBeChangedAfterConstruction) {
+        for (WebDriverConfigurationParticipant webDriverConfigurationParticipant : this.webDriverConfigurationParticipantList) {
+            webDriverConfigurationParticipant.postConstruct(webDriverToBeChangedAfterConstruction);
+        }
+        return webDriverToBeChangedAfterConstruction;
+    }
+
     private DesiredCapabilities setupNameAndStandardConfig(DesiredCapabilities desiredCapabilities) {
         desiredCapabilities.setCapability("build", BUILD_DATE_FORMAT.format(ZonedDateTime.now()));
         desiredCapabilities.setCapability("name", testName);
+        if(isRunningLocal) {
+            desiredCapabilities.setCapability("browserstack.local", "true");
+        }
         return desiredCapabilities;
     }
 
@@ -80,6 +100,13 @@ public class BrowserstackSeleniumProvider extends AbstractWebDriverRule {
         String className = description.getTestClass().getSimpleName();
         String methodName = description.getMethodName().replace('.', '_');
         testName = className + "_" + methodName;
+    }
+
+    private DesiredCapabilities addDesiredCapailities(DesiredCapabilities desiredCapabilities) {
+        for (WebDriverConfigurationParticipant webDriverConfigurationParticipant : this.webDriverConfigurationParticipantList) {
+            webDriverConfigurationParticipant.addDesiredCapabilities(desiredCapabilities);
+        }
+        return desiredCapabilities;
     }
 
     private URL getBrowserstackHubURL() {

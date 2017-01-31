@@ -27,7 +27,6 @@ public class DefaultSeleniumProvider extends AbstractWebDriverRule {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSeleniumProvider.class);
     private static final String DEFAULT_PLATFORM_LINUX = "Linux";
     private static final String SELENIUM_HUB_SYSTEM_PROPERTY_KEY = "seleniumHub";
-    private static final String LOCAL_BROWSER_SYSTEM_PROPERTY_KEY = "local";
     private final List<WebDriverConfigurationParticipant> webDriverConfigurationParticipantList = new ArrayList<>();
     private final List<FirefoxConfigurationParticipant> firefoxConfigurationParticipantList = new ArrayList<>();
 
@@ -124,7 +123,7 @@ public class DefaultSeleniumProvider extends AbstractWebDriverRule {
     }
 
     private Optional<URL> getSeleniumHubURL() {
-        if (Boolean.getBoolean(LOCAL_BROWSER_SYSTEM_PROPERTY_KEY)) {
+        if(isRunningLocal) {
             return Optional.empty();
         } else {
             String hubUrl = System.getProperty(SELENIUM_HUB_SYSTEM_PROPERTY_KEY);
@@ -137,7 +136,7 @@ public class DefaultSeleniumProvider extends AbstractWebDriverRule {
                 }
             } else {
                 throw new IllegalStateException(
-                        "You did not specify '" + LOCAL_BROWSER_SYSTEM_PROPERTY_KEY + "=true' system property. " +
+                        "You did specify that you want to run the tests on the seleniumHub with the system property 'selenEnv=willhub'. " +
                                 "This means, that you need to specify the URL of your Selenium HUB URL using '" +
                                 SELENIUM_HUB_SYSTEM_PROPERTY_KEY + "' system property!");
             }
