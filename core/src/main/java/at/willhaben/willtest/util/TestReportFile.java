@@ -3,8 +3,8 @@ package at.willhaben.willtest.util;
 import org.junit.runner.Description;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Created by liptak on 2016.08.24..
@@ -12,8 +12,7 @@ import java.util.Date;
 public class TestReportFile {
     private static final String COMMON_PREFIX_FOR_ALL_REPORT_FILES = "TR_";
 
-    private static final ThreadLocal<SimpleDateFormat> DATE_FORMAT = ThreadLocal
-            .withInitial(() -> new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss.SSS"));
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd-HH.mm.ss.SSS");
 
     private Description testDescription;
     private String prefix = "";
@@ -30,7 +29,7 @@ public class TestReportFile {
     private String generateFileName() {
         String className = testDescription.getTestClass().getSimpleName();
         String methodName = testDescription.getMethodName().replace('.', '_');
-        String timeStamp = DATE_FORMAT.get().format(new Date());
+        String timeStamp = DATE_FORMAT.format(ZonedDateTime.now());
         return COMMON_PREFIX_FOR_ALL_REPORT_FILES + prefix + className + "_" + methodName + "-" + timeStamp + postfix;
     }
 
