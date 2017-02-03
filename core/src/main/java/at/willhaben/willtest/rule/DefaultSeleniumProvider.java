@@ -33,11 +33,9 @@ public class DefaultSeleniumProvider extends AbstractWebDriverRule {
     private WebDriver webDriver;
     private boolean isRunningLocal = false;
 
-    public DefaultSeleniumProvider() {
-    }
-
-    public DefaultSeleniumProvider(boolean local) {
-        isRunningLocal = local;
+    public DefaultSeleniumProvider runLocal() {
+        isRunningLocal = true;
+        return this;
     }
 
     @Override

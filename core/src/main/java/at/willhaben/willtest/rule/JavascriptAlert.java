@@ -8,7 +8,7 @@ import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 
 /**
- * Adds the text of a possible alert to the normal test failure as suppressed exception.<b/>
+ * Adds the text of a possible alert to the normal test failure as suppressed exception.
  * The reason is that if an alert happens, there is usually a timeout from a {@link WebDriver#findElement(By)} call,
  * which is caused actually by the alert which hangs the javascript processing. Alerts are unfortunately not visible
  * on screenshots, they do not result in javascript console or webdriver log entries. So the only possibility to get

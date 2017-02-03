@@ -12,7 +12,7 @@ import org.junit.runners.model.Statement;
  */
 public abstract class AbstractRule implements TestRule {
     /**
-     * Can do something before ein test. By default it does nothing.
+     * Can do something before a test. By default it does nothing.
      *
      * @param description
      * @throws Throwable

@@ -25,15 +25,15 @@ public class SeleniumRuleFactory {
         String seleniumEnvironment = Environment.getValue("selenEnv", DEFAULT_SELENIUM_ENV);
         switch (seleniumEnvironment) {
             case "local":
-                return new DefaultSeleniumProvider(true);
+                return new DefaultSeleniumProvider().runLocal();
             case "willHub":
                 return new DefaultSeleniumProvider();
             case "brStack":
                 return new BrowserstackSeleniumProvider();
             case "brStackLocal":
-                return new BrowserstackSeleniumProvider(true);
+                return new BrowserstackSeleniumProvider().runLocal();
             default:
-                return new DefaultSeleniumProvider(true);
+                return new DefaultSeleniumProvider().runLocal();
         }
     }
 }

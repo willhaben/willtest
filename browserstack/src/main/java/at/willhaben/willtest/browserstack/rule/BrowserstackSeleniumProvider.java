@@ -32,12 +32,10 @@ public class BrowserstackSeleniumProvider extends AbstractWebDriverRule {
     private String testName = "default_test_name";
     private boolean isRunningLocal = false;
 
-    public BrowserstackSeleniumProvider() {
-    }
-
-    public BrowserstackSeleniumProvider(boolean isRunningLocal) {
-        this.isRunningLocal = isRunningLocal;
+    public BrowserstackSeleniumProvider runLocal() {
+        isRunningLocal = true;
         //TODO: implement local Browserstack run
+        return this;
     }
 
     @Override

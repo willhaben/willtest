@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
 
     <name>Willtest Browserstack</name>
-    <description></description>
+    <description>Seleniumprovider with default settings to run JUnit tests on Browserstack.</description>
 
     <dependencies>
         <dependency>
