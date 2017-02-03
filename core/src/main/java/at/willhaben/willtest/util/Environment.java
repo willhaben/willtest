@@ -2,7 +2,6 @@ package at.willhaben.willtest.util;
 
 /**
  * Used to get a system property or environment variable.
- * Created by weisgrmi on 02.09.2016.
  */
 public final class Environment {
     private Environment() {

@@ -11,9 +11,6 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Created by liptak on 2016.09.26..
- */
 public class JavascriptError extends AbstractRule implements FirefoxConfigurationParticipant {
     private final SeleniumProvider seleniumProvider;
     private boolean initialized;

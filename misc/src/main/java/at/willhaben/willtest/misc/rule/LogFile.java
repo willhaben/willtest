@@ -17,7 +17,6 @@ import static at.willhaben.willtest.rule.LogContext.*;
  * Saves thread (testcase) specific log file to help investigation.
  * Works only together with {@link LogContext}, since it is relying on its {@link MDC} values.
  * <p>
- * Created by liptak on 2016.07.14..
  */
 public class LogFile extends AbstractRule {
     private static final Logger LOGGER = Logger.getLogger(LogFile.class);

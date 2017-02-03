@@ -3,9 +3,6 @@ package at.willhaben.willtest.misc.util;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
 
-/**
- * Created by liptak on 2016.10.01..
- */
 public class MDCFilter extends Filter {
     private final String key;
     private final String value;

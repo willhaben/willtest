@@ -47,7 +47,6 @@ import java.net.URL;
 </plugin>}
  </pre>
  *
- * Created by liptak on 2016.11.21..
  */
 public enum AdBlockerConfigurator implements FirefoxConfigurationParticipant {
     INSTANCE;

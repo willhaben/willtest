@@ -6,7 +6,6 @@ import org.slf4j.MDC;
 /**
  * Sets log pattern variables to make it clear which log entry belongs to which test in case of parallel execution.
  * <p>
- * Created by liptak on 2016.07.14..
  */
 public class LogContext extends AbstractRule {
     public static final String TEST_CLASS = "testClass";

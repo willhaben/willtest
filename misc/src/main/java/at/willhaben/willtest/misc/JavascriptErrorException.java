@@ -5,9 +5,6 @@ import net.jsourcerer.webdriver.jserrorcollector.JavaScriptError;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Created by liptak on 2016.09.27..
- */
 public class JavascriptErrorException extends Exception {
     private static final long serialVersionUID = -6718614835487885991L;
     private final List<JavaScriptError> javaScriptErrors;

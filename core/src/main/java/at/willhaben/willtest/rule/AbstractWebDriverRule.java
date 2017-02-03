@@ -6,9 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Created by weisgrmi on 31.01.2017.
- */
+
 public abstract class AbstractWebDriverRule extends AbstractRule implements SeleniumProvider{
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractWebDriverRule.class);
 

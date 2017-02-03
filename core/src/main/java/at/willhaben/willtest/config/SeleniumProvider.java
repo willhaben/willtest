@@ -6,7 +6,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 /**
  * Creates a webdriver instance with respecting all configuration participants given to it.
  * <p>
- * Created by liptak on 2016.08.24..
  */
 public interface SeleniumProvider {
     long FIND_ELEMENT_TIMEOUT = 30;

@@ -13,7 +13,6 @@ import org.openqa.selenium.firefox.FirefoxProfile;
  * <li>default settings of firefox profile</li>
  * <li>Enables using a different display, for instance a virtual framebuffer</li>
  * </ul>
- * Created by liptak on 2016.08.25..
  */
 public class FirefoxConfig implements FirefoxConfigurationParticipant, WebDriverConfigurationParticipant {
     /**

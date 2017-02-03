@@ -6,9 +6,6 @@ import java.io.File;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-/**
- * Created by liptak on 2016.08.24..
- */
 public class TestReportFile {
     private static final String COMMON_PREFIX_FOR_ALL_REPORT_FILES = "TR_";
 

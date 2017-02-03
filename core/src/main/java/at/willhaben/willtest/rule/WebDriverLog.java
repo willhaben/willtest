@@ -22,7 +22,6 @@ import java.util.logging.Level;
 /**
  * In case of test error dumps the logs of selenium into the standard logger
  * <p>
- * Created by liptak on 2016.08.24..
  */
 public class WebDriverLog extends AbstractRule implements WebDriverConfigurationParticipant {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverLog.class);

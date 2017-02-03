@@ -20,9 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Created by weisgrmi on 31.01.2017.
- */
 //TODO: more options for selected OS and Browser, Multiple env run (see: https://github.com/browserstack/junit-browserstack)
 public class BrowserstackSeleniumProvider extends AbstractWebDriverRule {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSeleniumProvider.class);

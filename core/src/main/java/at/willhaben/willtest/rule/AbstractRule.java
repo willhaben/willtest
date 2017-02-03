@@ -9,7 +9,6 @@ import org.junit.runners.model.Statement;
  * Also if there is a test error, this class takes care, that errors from its implementations are added as
  * suppressed exceptions to the test error to avoid loosing that original problem. If the test was successful, but
  * {@link #after(Description, Throwable)} throws an error, then the test will fail.
- * Created by liptak on 2016.08.24..
  */
 public abstract class AbstractRule implements TestRule {
     /**

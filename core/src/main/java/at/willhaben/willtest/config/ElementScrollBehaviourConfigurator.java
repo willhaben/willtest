@@ -10,7 +10,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  * get problems with an fixed top menu bar, which would prevent your element from being clicked. This configurator
  * lets you decide if you want to get scrolled elements at the top or bottom of the viewport.
  * <p>
- * Created by liptak on 2016.11.30..
  */
 public class ElementScrollBehaviourConfigurator implements WebDriverConfigurationParticipant {
     private final ElementScrollBehavior elementScrollBehavior;

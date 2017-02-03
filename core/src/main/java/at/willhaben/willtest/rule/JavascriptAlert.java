@@ -14,7 +14,6 @@ import org.openqa.selenium.WebDriver;
  * on screenshots, they do not result in javascript console or webdriver log entries. So the only possibility to get
  * this information is to try to fetch a possible alert message. This helps then the investigation.
  * <p>
- * Created by liptak on 2016.09.26..
  */
 public class JavascriptAlert extends AbstractRule {
     private final SeleniumProvider seleniumProvider;

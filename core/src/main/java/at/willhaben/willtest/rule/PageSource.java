@@ -13,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 /**
  * Saves the page source into a file in case of a test error
  * <p>
- * Created by liptak on 2016.08.24..
  */
 public class PageSource extends AbstractRule {
     private static final Logger LOGGER = LoggerFactory.getLogger(PageSource.class);
