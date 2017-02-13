@@ -14,9 +14,6 @@
 
     <name>Willtest Core</name>
     <description>Core classes with as few dependencies as possible</description>
-    <url>http://maven.apache.org</url>
-
-
 
     <dependencies>
         <dependency>
