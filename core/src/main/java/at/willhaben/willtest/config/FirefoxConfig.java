@@ -1,5 +1,6 @@
 package at.willhaben.willtest.config;
 
+import at.willhaben.willtest.rule.FirefoxProvider;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
@@ -11,10 +12,11 @@ import org.openqa.selenium.firefox.FirefoxProfile;
  * Features:
  * <ul>
  * <li>default settings of firefox profile</li>
- * <li>Enables using a different display, for instance a virtual framebuffer</li>
+ * <li>Enables using a different display, for instance a virtual frame buffer</li>
  * </ul>
  */
-public class FirefoxConfig implements FirefoxConfigurationParticipant, WebDriverConfigurationParticipant {
+public class FirefoxConfig<D extends WebDriver>
+        implements FirefoxConfigurationParticipant, WebDriverConfigurationParticipant<D> {
     /**
      * Env entry, which can contain alternative display. For example ":99"
      */
@@ -35,10 +37,10 @@ public class FirefoxConfig implements FirefoxConfigurationParticipant, WebDriver
     /**
      * Moves window to the first display, and maximizes there. This is practical in case of local testing.
      *
-     * @param webDriver
+     * @see WebDriverConfigurationParticipant#postConstruct(WebDriver)
      */
     @Override
-    public void postConstruct(WebDriver webDriver) {
+    public void postConstruct(D webDriver) {
         Window window = webDriver.manage().window();
         //Requirement for Jobs, Resolution greater than 1280 in width
         Dimension dimension = new Dimension(1920, 1080);
@@ -49,10 +51,11 @@ public class FirefoxConfig implements FirefoxConfigurationParticipant, WebDriver
 
     }
 
-    public <T extends SeleniumProvider> T addTo(T seleniumProvider) {
-        seleniumProvider.addFirefoxConfigurationParticipant(this);
-        seleniumProvider.addWebDriverConfigurationParticipant(this);
-        return seleniumProvider;
+    public static <T extends FirefoxProvider<T,D>,D extends WebDriver> T addTo(T firefoxProvider) {
+        FirefoxConfig<D> config = new FirefoxConfig<D>();
+        firefoxProvider.addFirefoxConfigurationParticipant(config);
+        firefoxProvider.addWebDriverConfigurationParticipant(config);
+        return firefoxProvider;
     }
 
     private void setDisplay(FirefoxBinary result) {

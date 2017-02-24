@@ -1,5 +1,7 @@
 package at.willhaben.willtest.config;
 
+import at.willhaben.willtest.rule.FirefoxProvider;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
 import java.io.File;
@@ -48,13 +50,11 @@ import java.net.URL;
  </pre>
  *
  */
-public enum AdBlockerConfigurator implements FirefoxConfigurationParticipant {
-    INSTANCE;
-
+public class AdBlockerConfigurator implements FirefoxConfigurationParticipant {
     private static final String ADBLOCK_XPI_RESOURCE_PATH = "/adblock.xpi";
 
-    public static <T extends SeleniumProvider> T usingAdBlocker(T seleniumProvider) {
-        seleniumProvider.addFirefoxConfigurationParticipant(INSTANCE);
+    public static <T extends FirefoxProvider<T,D>,D extends WebDriver> T usingAdBlocker(T seleniumProvider) {
+        seleniumProvider.addFirefoxConfigurationParticipant(new AdBlockerConfigurator());
         return seleniumProvider;
     }
 

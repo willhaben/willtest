@@ -3,6 +3,7 @@ package at.willhaben.willtest.misc.rule;
 import at.willhaben.willtest.config.*;
 import at.willhaben.willtest.rule.*;
 import org.apache.log4j.Level;
+import org.junit.Before;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -15,57 +16,73 @@ import java.time.Duration;
 import java.util.Optional;
 
 /**
- * A sample default configuration we are using. Basicly a composite made from the building blocks.
+ * A sample default configuration we are using. Basically a composite made from the building blocks.
  */
-public class SeleniumRule implements SeleniumProvider, TestRule {
+public class SeleniumRule<W extends SeleniumProvider<W,D> & TestRule,D extends WebDriver> implements
+        FirefoxProvider<SeleniumRule<W,D>,D>, TestRule {
     private static final Duration DEFAULT_IMPLICIT_WAIT = Duration.ofSeconds(15);
-    private static final Duration DEFAULT_SCRIPT_TIMOUT_REQUIRED_BY_NG_DRIVER = Duration.ofSeconds(15);
+    private static final Duration DEFAULT_SCRIPT_TIMEOUT_REQUIRED_BY_NG_DRIVER = Duration.ofSeconds(15);
 
-    private final FirefoxConfig firefoxConfig = new FirefoxConfig();
-    private final TimeoutsConfigurationParticipant timeoutsConfigurationParticipant =
-            new TimeoutsConfigurationParticipant()
+    private final TimeoutsConfigurationParticipant<D> timeoutsConfigurationParticipant =
+            new TimeoutsConfigurationParticipant<D>()
                     .withImplicitWait(DEFAULT_IMPLICIT_WAIT)
-                    .withScriptTimeout(DEFAULT_SCRIPT_TIMOUT_REQUIRED_BY_NG_DRIVER);
+                    .withScriptTimeout(DEFAULT_SCRIPT_TIMEOUT_REQUIRED_BY_NG_DRIVER);
 
-    private final AbstractWebDriverRule defaultSeleniumProvider =
-            FileDetectorConfigurator.supportingFileUpload(
-                    timeoutsConfigurationParticipant.addTo(
-                            firefoxConfig.addTo(
-                                    SeleniumRuleFactory.create())));
+    private final W defaultSeleniumProvider = SeleniumProviderFactory.create();
 
     private final LogContext logContext = new LogContext();
     private final LogFile logFile = new LogFile();
     private final ResourceHelper resourceHelper = new ResourceHelper();
     private final PageSource pageSource = new PageSource(defaultSeleniumProvider);
     private final Screenshot screenshot = new Screenshot(defaultSeleniumProvider);
-    private final WebDriverLog webDriverLog = new WebDriverLog(defaultSeleniumProvider);
+    private final WebDriverLog<W,D> webDriverLog = new WebDriverLog<>(defaultSeleniumProvider);
     private final JavascriptAlert javascriptAlert = new JavascriptAlert(defaultSeleniumProvider);
-    private final JavascriptError javascriptError = new JavascriptError(defaultSeleniumProvider, false);
 
-    private final RuleChain ruleChain = RuleChain
-            .outerRule(logContext)
-            .around(logFile)
-            .around(defaultSeleniumProvider)
-            .around(webDriverLog)
-            .around(pageSource)
-            .around(screenshot)
-            .around(javascriptAlert)
-            .around(javascriptError)
-            .around(resourceHelper);
+    private RuleChain ruleChain;
+
+    public SeleniumRule() {
+        ruleChain = RuleChain
+                .outerRule(logContext)
+                .around(logFile)
+                .around(defaultSeleniumProvider)
+                .around(webDriverLog)
+                .around(pageSource)
+                .around(screenshot)
+                .around(javascriptAlert);
+
+        FileDetectorConfigurator.supportingFileUpload(defaultSeleniumProvider);
+        timeoutsConfigurationParticipant.addTo(defaultSeleniumProvider);
+        if ( defaultSeleniumProvider instanceof FirefoxProvider ) {
+            FirefoxProvider firefoxProvider = (FirefoxProvider) defaultSeleniumProvider;
+            FirefoxConfig.addTo(firefoxProvider);
+            ruleChain = ruleChain.around(new JavascriptError<>( firefoxProvider,false));
+        }
+        ruleChain = ruleChain.around(resourceHelper);
+    }
 
     @Override
-    public WebDriver getWebDriver() {
+    public D getWebDriver() {
         return defaultSeleniumProvider.getWebDriver();
     }
 
     @Override
-    public SeleniumProvider addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant webDriverConfigurationParticipant) {
-        return defaultSeleniumProvider.addWebDriverConfigurationParticipant(webDriverConfigurationParticipant);
+    public SeleniumRule<W, D> getThis() {
+        return this;
+    }
+
+
+    @Override
+    public SeleniumRule<W, D> addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant webDriverConfigurationParticipant) {
+        defaultSeleniumProvider.addWebDriverConfigurationParticipant(webDriverConfigurationParticipant);
+        return this;
     }
 
     @Override
-    public SeleniumProvider addFirefoxConfigurationParticipant(FirefoxConfigurationParticipant firefoxConfigurationParticipant) {
-        return defaultSeleniumProvider.addFirefoxConfigurationParticipant(firefoxConfigurationParticipant);
+    public SeleniumRule<W, D> addFirefoxConfigurationParticipant(FirefoxConfigurationParticipant firefoxConfigurationParticipant) {
+        if ( defaultSeleniumProvider instanceof FirefoxProvider ) {
+            ((FirefoxProvider)defaultSeleniumProvider).addFirefoxConfigurationParticipant(firefoxConfigurationParticipant);
+        }
+        return this;
     }
 
     @Override
@@ -78,7 +95,7 @@ public class SeleniumRule implements SeleniumProvider, TestRule {
      * if the default implicit wait is not required.
      *
      * @param seconds explicit wait timeout in seconds
-     * @return explicit webdriver wait
+     * @return explicit {@link WebDriver} wait
      */
     public Wait<WebDriver> waitOverridingImplicitWait(int seconds) {
         return timeoutsConfigurationParticipant.waitOverridingImplicitWait(defaultSeleniumProvider.getWebDriver(), seconds);
@@ -98,42 +115,42 @@ public class SeleniumRule implements SeleniumProvider, TestRule {
      * @param elementScrollBehaviour
      * @return
      */
-    public SeleniumRule setElementScrollBehaviour(ElementScrollBehavior elementScrollBehaviour) {
+    public SeleniumRule<W, D> setElementScrollBehaviour(ElementScrollBehavior elementScrollBehaviour) {
         this.addWebDriverConfigurationParticipant(new ElementScrollBehaviourConfigurator(elementScrollBehaviour));
         return this;
     }
 
-    public SeleniumRule withLogFileThreshold(Level threshold) {
+    public SeleniumRule<W, D> withLogFileThreshold(Level threshold) {
         this.logFile.setThreshold(threshold);
         return this;
     }
 
-    public SeleniumRule withImplicitWait(Duration implicitWait) {
+    public SeleniumRule<W, D> withImplicitWait(Duration implicitWait) {
         timeoutsConfigurationParticipant.withImplicitWait(implicitWait);
         return this;
     }
 
-    public SeleniumRule withScriptTimeout(Duration scriptTimeout) {
+    public SeleniumRule<W, D> withScriptTimeout(Duration scriptTimeout) {
         timeoutsConfigurationParticipant.withScriptTimeout(scriptTimeout);
         return this;
     }
 
-    public SeleniumRule withPageLoadTimeout(Duration pageLoadTimeout) {
+    public SeleniumRule<W, D> withPageLoadTimeout(Duration pageLoadTimeout) {
         timeoutsConfigurationParticipant.withPageLoadTimeout(pageLoadTimeout);
         return this;
     }
 
-    public SeleniumRule withoutImplicitWait() {
+    public SeleniumRule<W, D> withoutImplicitWait() {
         timeoutsConfigurationParticipant.withoutImplicitWait();
         return this;
     }
 
-    public SeleniumRule withoutPageLoadTimeout() {
+    public SeleniumRule<W, D> withoutPageLoadTimeout() {
         timeoutsConfigurationParticipant.withoutPageLoadTimeout();
         return this;
     }
 
-    public SeleniumRule withoutScriptTimeout() {
+    public SeleniumRule<W, D> withoutScriptTimeout() {
         timeoutsConfigurationParticipant.withoutScriptTimeout();
         return this;
     }

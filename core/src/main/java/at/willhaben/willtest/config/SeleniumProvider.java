@@ -4,16 +4,18 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
- * Creates a webdriver instance with respecting all configuration participants given to it.
+ * Creates a {@link WebDriver} instance with respecting all configuration participants given to it.
  * <p>
+ * @param <P> concrete implementation class. Makes type safe method chaining in implementations possible
+ * @param <D> concrete implementation of {@link WebDriver} provided
  */
-public interface SeleniumProvider {
+public interface SeleniumProvider<P extends SeleniumProvider,D extends WebDriver> {
     long FIND_ELEMENT_TIMEOUT = 30;
 
     /**
      * @return a new {@link WebDriver} instance
      */
-    WebDriver getWebDriver();
+    D getWebDriver();
 
     /**
      * Since {@link org.openqa.selenium.support.ui.Wait} is something, what is fast always used in selenium tests,
@@ -30,21 +32,16 @@ public interface SeleniumProvider {
 
     /**
      * After creating a new {@link WebDriver} instance, a {@link SeleniumProvider} implementation should pass that instance
-     * to all {@link WebDriverConfigurationParticipant} to let them to adjust it.
+     * to all {@link WebDriverConfigurationParticipant} to let them adjust it.
      *
      * @param webDriverConfigurationParticipant
      * @return the provider itself to make method chaining possible
      */
-    SeleniumProvider addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant webDriverConfigurationParticipant);
+    P addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant<D> webDriverConfigurationParticipant);
 
     /**
-     * After creating a new {@link WebDriver} instance, a {@link SeleniumProvider} implementation should pass that instance
-     * to all {@link FirefoxConfigurationParticipant} to let them to adjust it. This is used for local Firefox instances
-     * or for ones running on a Selenium Hub.
-     *
-     * @param firefoxConfigurationParticipant
-     * @return the provider itself to make method chaining possible
+     * Gives back the current instance as #P back to make method chaining possible in a type safe manner.
+     * @return
      */
-    //TODO: is it good here?
-    SeleniumProvider addFirefoxConfigurationParticipant(FirefoxConfigurationParticipant firefoxConfigurationParticipant);
+    P getThis();
 }

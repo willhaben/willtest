@@ -1,5 +1,6 @@
 package at.willhaben.willtest.config;
 
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.ElementScrollBehavior;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -11,7 +12,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  * lets you decide if you want to get scrolled elements at the top or bottom of the viewport.
  * <p>
  */
-public class ElementScrollBehaviourConfigurator implements WebDriverConfigurationParticipant {
+public class ElementScrollBehaviourConfigurator implements WebDriverConfigurationParticipant<WebDriver> {
     private final ElementScrollBehavior elementScrollBehavior;
 
     public ElementScrollBehaviourConfigurator(ElementScrollBehavior elementScrollBehavior) {

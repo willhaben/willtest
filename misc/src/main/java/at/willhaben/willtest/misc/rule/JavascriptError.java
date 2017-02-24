@@ -4,21 +4,25 @@ import at.willhaben.willtest.config.FirefoxConfigurationParticipant;
 import at.willhaben.willtest.config.SeleniumProvider;
 import at.willhaben.willtest.misc.JavascriptErrorException;
 import at.willhaben.willtest.rule.AbstractRule;
+import at.willhaben.willtest.rule.FirefoxProvider;
 import net.jsourcerer.webdriver.jserrorcollector.JavaScriptError;
 import org.junit.runner.Description;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
 import java.io.IOException;
 import java.util.List;
 
-public class JavascriptError extends AbstractRule implements FirefoxConfigurationParticipant {
-    private final SeleniumProvider seleniumProvider;
+public class JavascriptError<P extends FirefoxProvider<P,D>,D extends WebDriver>
+        extends AbstractRule
+        implements FirefoxConfigurationParticipant {
+    private final P firefoxProvider;
     private boolean initialized;
     private final boolean throwExceptionForSuccessfulTests;
 
-    public JavascriptError(SeleniumProvider seleniumProvider, boolean throwExceptionForSuccessfulTests) {
-        this.seleniumProvider = seleniumProvider;
-        seleniumProvider.addFirefoxConfigurationParticipant(this);
+    public JavascriptError(P firefoxProvider, boolean throwExceptionForSuccessfulTests) {
+        this.firefoxProvider = firefoxProvider;
+        firefoxProvider.addFirefoxConfigurationParticipant(this);
         this.throwExceptionForSuccessfulTests = throwExceptionForSuccessfulTests;
     }
 
@@ -27,7 +31,7 @@ public class JavascriptError extends AbstractRule implements FirefoxConfiguratio
         super.after(description, testFailure);
         try {
             if (initialized) {
-                List<JavaScriptError> jsErrors = JavaScriptError.readErrors(seleniumProvider.getWebDriver());
+                List<JavaScriptError> jsErrors = JavaScriptError.readErrors(firefoxProvider.getWebDriver());
                 if (!jsErrors.isEmpty()) {
                     JavascriptErrorException javascriptErrorException = new JavascriptErrorException(
                             "Javascript errors are detected!",

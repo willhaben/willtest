@@ -10,25 +10,24 @@ import org.openqa.selenium.remote.RemoteWebDriver;
  * {@link org.openqa.selenium.remote.UselessFileDetector}, otherwise a {@link LocalFileDetector}, which lets selenium to
  * uploads your file to a selenium hub for example. This class makes file upload work with both Firefox and Selenium Hub.
  */
-public enum FileDetectorConfigurator implements WebDriverConfigurationParticipant {
-    INSTANCE;
+public class FileDetectorConfigurator<D extends WebDriver> implements WebDriverConfigurationParticipant<D> {
     private static final String NO_FILE_DETECTOR_NEEDED =
             "Setting the file detector only works on remote webdriver instances obtained via RemoteWebDriver";
 
     /**
-     * Convinience method, which lets the caller to add this configurator using chained method calls.
+     * Convenience method, which lets the caller to add this configurator using chained method calls.
      *
-     * @param seleniumProvider
+     * @param seleniumProvider - adds this configurator to the provider
      * @param <T>
      * @return the seleniumProvider parameter, which was passed into the method as parameter. Enables method chaining.
      */
-    public static <T extends SeleniumProvider> T supportingFileUpload(T seleniumProvider) {
-        seleniumProvider.addWebDriverConfigurationParticipant(INSTANCE);
+    public static <T extends SeleniumProvider<T,D>,D extends WebDriver> T supportingFileUpload(T seleniumProvider) {
+        seleniumProvider.addWebDriverConfigurationParticipant(new FileDetectorConfigurator<>());
         return seleniumProvider;
     }
 
     @Override
-    public void postConstruct(WebDriver webDriver) {
+    public void postConstruct(D webDriver) {
         if (webDriver instanceof RemoteWebDriver) {
             try {
                 ((RemoteWebDriver) webDriver).setFileDetector(new LocalFileDetector());

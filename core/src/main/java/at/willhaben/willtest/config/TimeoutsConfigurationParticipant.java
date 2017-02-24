@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * If all timeouts are set through this class, then there is a possibility to get the current timeout settings of the
  * {@link WebDriver}, which is not possible out of the box in Selenium.
  */
-public class TimeoutsConfigurationParticipant implements WebDriverConfigurationParticipant {
+public class TimeoutsConfigurationParticipant<D extends WebDriver> implements WebDriverConfigurationParticipant<D> {
     private Duration implicitWait;
     private Duration scriptTimeout;
     private Duration pageLoadTimeout;
@@ -26,7 +26,7 @@ public class TimeoutsConfigurationParticipant implements WebDriverConfigurationP
     private static final long CONDITION_POLL_INTERVAL = 200;
 
     @Override
-    public void postConstruct(WebDriver webDriver) {
+    public void postConstruct(D webDriver) {
         Timeouts timeouts = webDriver.manage().timeouts();
         if (implicitWait != null) {
             timeouts.implicitlyWait(implicitWait.getNano(), TimeUnit.NANOSECONDS);
@@ -71,13 +71,15 @@ public class TimeoutsConfigurationParticipant implements WebDriverConfigurationP
 
     /**
      * If there is an implicit wait set, then you might need to wait for a shorter period. This
-     * method makes it possible with setting the implicit wait temporarly to 0.
+     * method makes it possible with setting the implicit wait temporarily to 0.
      *
      * @param webDriver
      * @param seconds
-     * @return a {@link Wait} instance, which set the implicit wait temporarly to 0.
+     * @return a {@link Wait} instance, which set the implicit wait temporarily to 0.
      */
     public Wait<WebDriver> waitOverridingImplicitWait(WebDriver webDriver, int seconds) {
+        //API comes from selenium -> cannot migrate guava to java 8
+        //noinspection Guava
         return new Wait<WebDriver>() {
             @Override
             public <T> T until(Function<? super WebDriver, T> function) {
@@ -99,7 +101,7 @@ public class TimeoutsConfigurationParticipant implements WebDriverConfigurationP
      * @param <T>
      * @return <code>seleniumProvider</code> to enable method chaining
      */
-    public <T extends SeleniumProvider> T addTo(T seleniumProvider) {
+    public <T extends SeleniumProvider<T,D>> T addTo(T seleniumProvider) {
         seleniumProvider.addWebDriverConfigurationParticipant(this);
         return seleniumProvider;
     }
@@ -110,7 +112,7 @@ public class TimeoutsConfigurationParticipant implements WebDriverConfigurationP
      * @param implicitWait
      * @return
      */
-    public TimeoutsConfigurationParticipant withImplicitWait(Duration implicitWait) {
+    public TimeoutsConfigurationParticipant<D> withImplicitWait(Duration implicitWait) {
         Objects.requireNonNull(implicitWait);
         this.implicitWait = implicitWait;
         return this;
@@ -122,7 +124,7 @@ public class TimeoutsConfigurationParticipant implements WebDriverConfigurationP
      * @param scriptTimeout
      * @return
      */
-    public TimeoutsConfigurationParticipant withScriptTimeout(Duration scriptTimeout) {
+    public TimeoutsConfigurationParticipant<D> withScriptTimeout(Duration scriptTimeout) {
         Objects.requireNonNull(scriptTimeout);
         this.scriptTimeout = scriptTimeout;
         return this;
@@ -134,7 +136,7 @@ public class TimeoutsConfigurationParticipant implements WebDriverConfigurationP
      * @param pageLoadTimeout
      * @return
      */
-    public TimeoutsConfigurationParticipant withPageLoadTimeout(Duration pageLoadTimeout) {
+    public TimeoutsConfigurationParticipant<D> withPageLoadTimeout(Duration pageLoadTimeout) {
         Objects.requireNonNull(pageLoadTimeout);
         this.pageLoadTimeout = pageLoadTimeout;
         return this;
@@ -145,7 +147,7 @@ public class TimeoutsConfigurationParticipant implements WebDriverConfigurationP
      *
      * @return
      */
-    public TimeoutsConfigurationParticipant withoutImplicitWait() {
+    public TimeoutsConfigurationParticipant<D> withoutImplicitWait() {
         this.implicitWait = null;
         return this;
     }
@@ -155,7 +157,7 @@ public class TimeoutsConfigurationParticipant implements WebDriverConfigurationP
      *
      * @return
      */
-    public TimeoutsConfigurationParticipant withoutPageLoadTimeout() {
+    public TimeoutsConfigurationParticipant<D> withoutPageLoadTimeout() {
         this.pageLoadTimeout = null;
         return this;
     }
@@ -165,7 +167,7 @@ public class TimeoutsConfigurationParticipant implements WebDriverConfigurationP
      *
      * @return
      */
-    public TimeoutsConfigurationParticipant withoutScriptTimeout() {
+    public TimeoutsConfigurationParticipant<D> withoutScriptTimeout() {
         this.scriptTimeout = null;
         return this;
     }

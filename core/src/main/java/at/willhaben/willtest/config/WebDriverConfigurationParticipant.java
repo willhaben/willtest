@@ -10,8 +10,9 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  * Example: setting window size using {@link #postConstruct(WebDriver)} method.<br/>
  * It makes possible to encapsulate some configuration aspects, which you can reuse with different kind of
  * {@link WebDriver} instances created by different implementations of {@link SeleniumProvider}.
+ * @param <D> concrete webDriver implementation class
  */
-public interface WebDriverConfigurationParticipant {
+public interface WebDriverConfigurationParticipant<D extends WebDriver> {
 
     /**
      * Can add desired capabilities to a {@link WebDriver} before it gets created.
@@ -26,6 +27,6 @@ public interface WebDriverConfigurationParticipant {
      *
      * @param webDriver
      */
-    default void postConstruct(WebDriver webDriver) {
+    default void postConstruct(D webDriver) {
     }
 }

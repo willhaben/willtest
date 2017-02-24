@@ -23,7 +23,9 @@ import java.util.logging.Level;
  * In case of test error dumps the logs of selenium into the standard logger
  * <p>
  */
-public class WebDriverLog extends AbstractRule implements WebDriverConfigurationParticipant {
+public class WebDriverLog<P extends SeleniumProvider<P,D>,D extends WebDriver>
+        extends AbstractRule
+        implements WebDriverConfigurationParticipant<D> {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverLog.class);
     private static final DateTimeFormatter LOG_TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("HH.mm.ss.SSS");
 
@@ -40,9 +42,9 @@ public class WebDriverLog extends AbstractRule implements WebDriverConfiguration
     private static final LoggingPreferences DEFAULT_LOGGING_PREFERENCES = createLoggingPreferences();
     private static final String MESSAGE_PATTERN = "[{}] {} {}";
 
-    private final SeleniumProvider seleniumProvider;
+    private final SeleniumProvider<P,D> seleniumProvider;
 
-    public WebDriverLog(SeleniumProvider seleniumProvider) {
+    public WebDriverLog(SeleniumProvider<P,D> seleniumProvider) {
         this.seleniumProvider = seleniumProvider;
         this.seleniumProvider.addWebDriverConfigurationParticipant(this);
     }
