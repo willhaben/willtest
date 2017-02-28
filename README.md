@@ -77,7 +77,7 @@ public class FirstExample {
 
 ```
 
-If the test class is executed (it can be found in examples module), screenshot, logfile and 
+If the test class is executed (it can be found in examples module), screenshot and 
 HTML source are automatically saved into the surefire reports case of the ```buggyTest``` method. This is done by the Willtest framework.
 
 ## Recipes
