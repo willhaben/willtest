@@ -51,22 +51,6 @@ ffBinary=YOUR_PATH_TO_FIREFOX_EXECUTABLE
 Now the environment is ready to be used like this:
 
 ```java
-package at.willhaben.willtest.examples;
-
-import at.willhaben.willtest.config.DefaultFirefoxBinaryProvider;
-import at.willhaben.willtest.misc.rule.SeleniumRule;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assume.assumeThat;
-
 public class FirstExample {
     private static final String REPO_HEADER_LOCATOR = "div.repohead-details-container h1";
     private static final String WILLTEST_GITHUB_PAGE = "https://github.com/willhaben/willtest";
