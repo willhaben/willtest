@@ -1,6 +1,6 @@
 package at.willhaben.willtest.log4j;
 
-import at.willhaben.willtest.rule.AbstractRule;
+import at.willhaben.willtest.rule.TestFailureAwareRule;
 import at.willhaben.willtest.rule.LogContext;
 import at.willhaben.willtest.util.TestReportFile;
 import org.apache.commons.io.FileUtils;
@@ -18,7 +18,7 @@ import static at.willhaben.willtest.rule.LogContext.*;
  * <br/>
  * See also {@link LogContext} and {@link at.willhaben.willtest.rule.WebDriverLog}
  */
-public class LogFileRule extends AbstractRule {
+public class LogFileRule extends TestFailureAwareRule {
     private static final Logger LOGGER = Logger.getLogger(LogFileRule.class);
     private static final String PATTERN = "[%5p] %d{HH:mm:ss} {%X{" + THREAD_ID +
             "}} %m [%X{" + TEST_CLASS + "}.%X{" +

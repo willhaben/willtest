@@ -3,7 +3,7 @@ package at.willhaben.willtest.misc.rule;
 import at.willhaben.willtest.config.FirefoxConfigurationParticipant;
 import at.willhaben.willtest.config.SeleniumProvider;
 import at.willhaben.willtest.misc.JavascriptErrorException;
-import at.willhaben.willtest.rule.AbstractRule;
+import at.willhaben.willtest.rule.TestFailureAwareRule;
 import net.jsourcerer.webdriver.jserrorcollector.JavaScriptError;
 import org.junit.runner.Description;
 import org.openqa.selenium.WebDriver;
@@ -23,7 +23,7 @@ import java.util.List;
  * @param <D> {@link WebDriver} implementation
  */
 public class JavascriptError<P extends SeleniumProvider<P, D>, D extends WebDriver>
-        extends AbstractRule
+        extends TestFailureAwareRule
         implements FirefoxConfigurationParticipant {
     private final P seleniumProvider;
     private boolean initialized;

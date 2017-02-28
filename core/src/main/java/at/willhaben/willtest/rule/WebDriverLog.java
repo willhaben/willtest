@@ -26,7 +26,7 @@ import java.util.logging.Level;
  * <p>
  */
 public class WebDriverLog<P extends SeleniumProvider<P, D>, D extends WebDriver>
-        extends AbstractRule
+        extends TestFailureAwareRule
         implements WebDriverConfigurationParticipant<D> {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverLog.class);
     private static final DateTimeFormatter LOG_TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("HH.mm.ss.SSS");

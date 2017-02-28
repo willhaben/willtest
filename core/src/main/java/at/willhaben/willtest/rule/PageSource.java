@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
  * Saves the page source into a file in case of a test error
  * <p>
  */
-public class PageSource extends AbstractRule {
+public class PageSource extends TestFailureAwareRule {
     private static final Logger LOGGER = LoggerFactory.getLogger(PageSource.class);
 
     private final SeleniumProvider seleniumProvider;

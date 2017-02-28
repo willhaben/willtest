@@ -10,8 +10,7 @@ like:
 ## Requirements
 * Currently Selenium 2.53.1 is used, upgrade to Selenium 3.x is planned
 * Firefox local and on Selenium Hub is supported _**(2.53.1 version of Selenium works with Firefox versions<=46.x!)**_. 
-Adding new Browsers should be possible
-easily with implementing the ```SeleniumProvider``` interface.
+Adding new Browsers is easily possible with implementing the ```SeleniumProvider``` interface.
 * Java 8
 ## Getting Started
 The code is built up from several small building blocks. There is a default setting we are using, which can be used 

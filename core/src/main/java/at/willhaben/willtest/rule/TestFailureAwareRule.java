@@ -10,7 +10,14 @@ import org.junit.runners.model.Statement;
  * suppressed exceptions to the test error to avoid loosing that original problem. If the test was successful, but
  * {@link #after(Description, Throwable)} throws an error, then the test will fail.
  */
-public abstract class AbstractRule implements TestRule {
+public class TestFailureAwareRule implements TestRule {
+
+    /**
+     * Just to make sure, that this class will not be instantiated, only its children
+     */
+    TestFailureAwareRule() {
+    }
+
     /**
      * Can do something before a test. By default it does nothing.
      *
@@ -48,8 +55,8 @@ public abstract class AbstractRule implements TestRule {
     }
 
     /**
-     * {@link Statement} implementation, which takes care of calling {@link AbstractRule#before(Description)},
-     * {@link AbstractRule#after(Description, Throwable)}, {@link AbstractRule#onError(Description, Throwable)}, and
+     * {@link Statement} implementation, which takes care of calling {@link TestFailureAwareRule#before(Description)},
+     * {@link TestFailureAwareRule#after(Description, Throwable)}, {@link TestFailureAwareRule#onError(Description, Throwable)}, and
      * handles their exceptions.
      */
     private class SafeStatement extends Statement {

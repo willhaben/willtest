@@ -18,7 +18,7 @@ import java.io.InputStream;
  * See also {@link at.willhaben.willtest.config.FileDetectorConfigurator}.
  * <p>
  */
-public class ResourceHelper extends AbstractRule {
+public class ResourceHelper extends TestFailureAwareRule {
     private final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Override

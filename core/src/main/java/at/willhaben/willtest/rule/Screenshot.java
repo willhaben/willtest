@@ -17,7 +17,7 @@ import java.io.File;
  * when a failure happens. It happens a few milliseconds after the failure, and it can show a different state.
  * <p>
  */
-public class Screenshot extends AbstractRule {
+public class Screenshot extends TestFailureAwareRule {
     private static final Logger LOGGER = LoggerFactory.getLogger(Screenshot.class);
 
     private final SeleniumProvider seleniumProvider;

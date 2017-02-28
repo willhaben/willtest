@@ -35,8 +35,8 @@ import java.util.function.Consumer;
  * {@link #withAdjustmentsOfFirefoxConfiguration(Consumer)}, {@link #secondOuterRule(TestRule)},
  * {@link #around(TestRule)} and other methods.
  */
-public class SeleniumRule<W extends SeleniumProvider<W, D> & TestRule, D extends WebDriver> implements
-        SeleniumProvider<SeleniumRule<W, D>, D>, TestRule {
+public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends WebDriver> implements
+        SeleniumProvider<SeleniumRule<P, D>, D>, TestRule {
     private static final Duration DEFAULT_IMPLICIT_WAIT = Duration.ofSeconds(15);
     private static final Duration DEFAULT_SCRIPT_TIMEOUT_REQUIRED_BY_NG_DRIVER = Duration.ofSeconds(15);
 
@@ -45,7 +45,7 @@ public class SeleniumRule<W extends SeleniumProvider<W, D> & TestRule, D extends
                     .withImplicitWait(DEFAULT_IMPLICIT_WAIT)
                     .withScriptTimeout(DEFAULT_SCRIPT_TIMEOUT_REQUIRED_BY_NG_DRIVER);
 
-    private final W defaultSeleniumProvider;
+    private final P defaultSeleniumProvider;
 
     private final ResourceHelper resourceHelper = new ResourceHelper();
     private final FirefoxConfiguration<D> firefoxConfiguration = new FirefoxConfiguration<>();
@@ -70,10 +70,10 @@ public class SeleniumRule<W extends SeleniumProvider<W, D> & TestRule, D extends
         defaultSeleniumProvider.addWebDriverConfigurationParticipant(defaultFirefoxConfigurationParticipant);
         firefoxConfiguration.addFirefoxConfigurationParticipant(defaultFirefoxConfigurationParticipant);
 
-        JavascriptError<W, D> javascriptErrorRule =
+        JavascriptError<P, D> javascriptErrorRule =
                 new JavascriptError<>(defaultSeleniumProvider, false);
         firefoxConfiguration.addFirefoxConfigurationParticipant(javascriptErrorRule);
-        WebDriverLog<W, D> webDriverLog = new WebDriverLog<>(defaultSeleniumProvider);
+        WebDriverLog<P, D> webDriverLog = new WebDriverLog<>(defaultSeleniumProvider);
         PageSource pageSource = new PageSource(defaultSeleniumProvider);
         Screenshot screenshot = new Screenshot(defaultSeleniumProvider);
         JavascriptAlert javascriptAlert = new JavascriptAlert(defaultSeleniumProvider);
@@ -94,13 +94,13 @@ public class SeleniumRule<W extends SeleniumProvider<W, D> & TestRule, D extends
     }
 
     @Override
-    public SeleniumRule<W, D> addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant<D> webDriverConfigurationParticipant) {
+    public SeleniumRule<P, D> addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant<D> webDriverConfigurationParticipant) {
         defaultSeleniumProvider.addWebDriverConfigurationParticipant(webDriverConfigurationParticipant);
         return this;
     }
 
     @Override
-    public SeleniumRule<W, D> getThis() {
+    public SeleniumRule<P, D> getThis() {
         return this;
     }
 
@@ -127,9 +127,9 @@ public class SeleniumRule<W extends SeleniumProvider<W, D> & TestRule, D extends
      * Activates AdBlocker in firefox. See {@link AdBlockerConfigurator}
      * @return
      */
-    public SeleniumRule withAdBlocker() {
+    public SeleniumRule<P, D> withAdBlocker() {
         firefoxConfiguration.addFirefoxConfigurationParticipant(new AdBlockerConfigurator());
-        return getThis();
+        return this;
     }
 
     public ResourceHelper getResourceHelper() {
@@ -142,9 +142,9 @@ public class SeleniumRule<W extends SeleniumProvider<W, D> & TestRule, D extends
      * @param elementScrollBehaviour
      * @return
      */
-    public SeleniumRule<W, D> setElementScrollBehaviour(ElementScrollBehavior elementScrollBehaviour) {
+    public SeleniumRule<P, D> setElementScrollBehaviour(ElementScrollBehavior elementScrollBehaviour) {
         this.addWebDriverConfigurationParticipant(new ElementScrollBehaviourConfigurator<>(elementScrollBehaviour));
-        return getThis();
+        return this;
     }
 
     /**
@@ -152,34 +152,34 @@ public class SeleniumRule<W extends SeleniumProvider<W, D> & TestRule, D extends
      * @param implicitWait
      * @return
      */
-    public SeleniumRule<W, D> withImplicitWait(Duration implicitWait) {
+    public SeleniumRule<P, D> withImplicitWait(Duration implicitWait) {
         timeoutsConfigurationParticipant.withImplicitWait(implicitWait);
-        return getThis();
+        return this;
     }
 
-    public SeleniumRule<W, D> withScriptTimeout(Duration scriptTimeout) {
+    public SeleniumRule<P, D> withScriptTimeout(Duration scriptTimeout) {
         timeoutsConfigurationParticipant.withScriptTimeout(scriptTimeout);
-        return getThis();
+        return this;
     }
 
-    public SeleniumRule<W, D> withPageLoadTimeout(Duration pageLoadTimeout) {
+    public SeleniumRule<P, D> withPageLoadTimeout(Duration pageLoadTimeout) {
         timeoutsConfigurationParticipant.withPageLoadTimeout(pageLoadTimeout);
-        return getThis();
+        return this;
     }
 
-    public SeleniumRule<W, D> withoutImplicitWait() {
+    public SeleniumRule<P, D> withoutImplicitWait() {
         timeoutsConfigurationParticipant.withoutImplicitWait();
-        return getThis();
+        return this;
     }
 
-    public SeleniumRule<W, D> withoutPageLoadTimeout() {
+    public SeleniumRule<P, D> withoutPageLoadTimeout() {
         timeoutsConfigurationParticipant.withoutPageLoadTimeout();
-        return getThis();
+        return this;
     }
 
-    public SeleniumRule<W, D> withoutScriptTimeout() {
+    public SeleniumRule<P, D> withoutScriptTimeout() {
         timeoutsConfigurationParticipant.withoutScriptTimeout();
-        return getThis();
+        return this;
     }
 
     public Optional<Duration> getImplicitWait() {
@@ -204,17 +204,17 @@ public class SeleniumRule<W extends SeleniumProvider<W, D> & TestRule, D extends
      * @param adjustment
      * @return
      */
-    public SeleniumRule<W, D> withAdjustmentsOfFirefoxConfiguration(Consumer<FirefoxConfiguration<D>> adjustment) {
+    public SeleniumRule<P, D> withAdjustmentsOfFirefoxConfiguration(Consumer<FirefoxConfiguration<D>> adjustment) {
         adjustment.accept(firefoxConfiguration);
-        return getThis();
+        return this;
     }
 
-    public SeleniumRule<W, D> withDefaultFirefoxSettings() {
+    public SeleniumRule<P, D> withDefaultFirefoxSettings() {
         DefaultFirefoxConfigurationParticipant<D> defaultFirefoxConfigurationParticipant =
                 new DefaultFirefoxConfigurationParticipant<>();
         defaultSeleniumProvider.addWebDriverConfigurationParticipant(defaultFirefoxConfigurationParticipant);
         firefoxConfiguration.addFirefoxConfigurationParticipant(defaultFirefoxConfigurationParticipant);
-        return getThis();
+        return this;
     }
 
     /**
@@ -222,9 +222,9 @@ public class SeleniumRule<W extends SeleniumProvider<W, D> & TestRule, D extends
      * @param testRule
      * @return
      */
-    public SeleniumRule<W, D> secondOuterRule(TestRule testRule) {
+    public SeleniumRule<P, D> secondOuterRule(TestRule testRule) {
         ruleChain = RuleChain.outerRule(testRule).around(ruleChain);
-        return getThis();
+        return this;
     }
 
     /**
@@ -232,18 +232,18 @@ public class SeleniumRule<W extends SeleniumProvider<W, D> & TestRule, D extends
      * @param testRule
      * @return
      */
-    public SeleniumRule<W, D> around(TestRule testRule) {
+    public SeleniumRule<P, D> around(TestRule testRule) {
         ruleChain = ruleChain.around(testRule);
-        return getThis();
+        return this;
     }
 
-    public SeleniumRule<W, D> withFirefoxConfigurationParticipant(FirefoxConfigurationParticipant firefoxConfigurationParticipant) {
+    public SeleniumRule<P, D> withFirefoxConfigurationParticipant(FirefoxConfigurationParticipant firefoxConfigurationParticipant) {
         firefoxConfiguration.addFirefoxConfigurationParticipant(firefoxConfigurationParticipant);
-        return getThis();
+        return this;
     }
 
-    public SeleniumRule<W, D> withFirefoxBinaryProvider(FirefoxBinaryProvider firefoxBinaryProvider) {
+    public SeleniumRule<P, D> withFirefoxBinaryProvider(FirefoxBinaryProvider firefoxBinaryProvider) {
         firefoxConfiguration.setFirefoxBinaryProvider(firefoxBinaryProvider);
-        return getThis();
+        return this;
     }
 }

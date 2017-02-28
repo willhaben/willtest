@@ -21,7 +21,7 @@ public class SeleniumProviderFactory {
 
     /**
      * Creates {@link SeleniumRule} implementation instance with class name defined in system property
-     * {@value #SELENIUM_PROVIDER_CLASS_NAME}. Falls the system property is not present,
+     * {@value #SELENIUM_PROVIDER_CLASS_NAME}. If the system property is not present,
      * {@link LocalFirefoxProvider} will be used.<br/>
      * It is expected, that {@link SeleniumProvider} implementations used together with this class do have public
      * default constructor.<br>

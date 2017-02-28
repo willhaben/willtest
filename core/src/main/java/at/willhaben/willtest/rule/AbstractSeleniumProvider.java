@@ -18,7 +18,7 @@ import java.util.Objects;
  * {@link WebDriverConfigurationParticipant} instances, which can influence the creation of the {@link WebDriver}.
  */
 public abstract class AbstractSeleniumProvider<P extends SeleniumProvider<P, D>, D extends WebDriver>
-        extends AbstractRule
+        extends TestFailureAwareRule
         implements SeleniumProvider<P, D> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSeleniumProvider.class);

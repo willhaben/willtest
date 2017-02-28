@@ -11,6 +11,10 @@ import java.net.URL;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * {@link at.willhaben.willtest.config.SeleniumProvider} implementation to run tests on BrowserStack. It is
+ * basically a normal selenium hub connection with some special properties
+ */
 //TODO: more options for selected OS and Browser, Multiple env run (see: https://github.com/browserstack/junit-browserstack)
 public class BrowserstackSeleniumProvider extends
         AbstractSeleniumProvider<BrowserstackSeleniumProvider, RemoteWebDriver> {

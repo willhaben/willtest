@@ -15,7 +15,7 @@ import org.openqa.selenium.WebDriver;
  * this information is to try to fetch a possible alert message. This helps then the investigation.
  * <p>
  */
-public class JavascriptAlert extends AbstractRule {
+public class JavascriptAlert extends TestFailureAwareRule {
     private final SeleniumProvider seleniumProvider;
 
     public JavascriptAlert(SeleniumProvider seleniumProvider) {
