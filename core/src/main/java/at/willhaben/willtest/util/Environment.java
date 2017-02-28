@@ -10,7 +10,8 @@ public final class Environment {
     /**
      * Checks if the specified key is available in the system properties {@link System#getProperty(String)},
      * environment variables {@link System#getenv(String)} or takes the default value. In this sequence.
-     * @param key Key or name of the property
+     *
+     * @param key          Key or name of the property
      * @param defaultValue Value taken if nothing is available
      * @return The value of the system property, variable or the default value
      */

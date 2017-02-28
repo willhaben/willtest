@@ -1,19 +1,22 @@
 package at.willhaben.willtest.rule;
 
-import at.willhaben.willtest.config.DefaultFirefoxBinaryProvider;
-import at.willhaben.willtest.config.FirefoxBinaryProvider;
+import at.willhaben.willtest.config.FirefoxConfiguration;
+import at.willhaben.willtest.config.WebDriverConfigurationParticipant;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-public class LocalFirefoxProvider extends AbstractFirefoxProvider<LocalFirefoxProvider,FirefoxDriver> {
-    private final FirefoxBinaryProvider firefoxBinaryProvider = new DefaultFirefoxBinaryProvider();
-
+/**
+ * Starts a local firefox instance. For configuration you can use {@link #setFirefoxConfiguration(FirefoxConfiguration)},
+ * {@link #addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant)} methods
+ */
+public class LocalFirefoxProvider extends AbstractFirefoxProvider<LocalFirefoxProvider, FirefoxDriver> {
     @Override
     protected FirefoxDriver constructWebDriver(DesiredCapabilities desiredCapabilities) {
-        FirefoxBinary firefoxBinary = firefoxBinaryProvider.getFirefoxBinary();
-        getFirefoxConfigurationParticipantList().forEach(participant-> participant.adjustFirefoxBinary(firefoxBinary));
-        return new FirefoxDriver(firefoxBinary, createFirefoxProfile());
+        FirefoxBinary firefoxBinary = getFirefoxConfiguration().getFirefoxBinary();
+        FirefoxProfile profile = getFirefoxConfiguration().getFirefoxProfile();
+        return new FirefoxDriver(firefoxBinary, profile);
     }
 
     @Override

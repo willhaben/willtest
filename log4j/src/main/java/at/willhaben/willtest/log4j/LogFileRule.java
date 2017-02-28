@@ -1,6 +1,5 @@
-package at.willhaben.willtest.misc.rule;
+package at.willhaben.willtest.log4j;
 
-import at.willhaben.willtest.misc.util.MDCFilter;
 import at.willhaben.willtest.rule.AbstractRule;
 import at.willhaben.willtest.rule.LogContext;
 import at.willhaben.willtest.util.TestReportFile;
@@ -14,12 +13,13 @@ import java.io.IOException;
 import static at.willhaben.willtest.rule.LogContext.*;
 
 /**
- * Saves thread (testcase) specific log file to help investigation.
+ * Saves thread (testcase) specific log entries into a file to help investigation.
  * Works only together with {@link LogContext}, since it is relying on its {@link MDC} values.
- * <p>
+ * <br/>
+ * See also {@link LogContext} and {@link at.willhaben.willtest.rule.WebDriverLog}
  */
-public class LogFile extends AbstractRule {
-    private static final Logger LOGGER = Logger.getLogger(LogFile.class);
+public class LogFileRule extends AbstractRule {
+    private static final Logger LOGGER = Logger.getLogger(LogFileRule.class);
     private static final String PATTERN = "[%5p] %d{HH:mm:ss} {%X{" + THREAD_ID +
             "}} %m [%X{" + TEST_CLASS + "}.%X{" +
             TEST_METHOD + "}%X{" +
@@ -30,10 +30,10 @@ public class LogFile extends AbstractRule {
     private boolean saveOnlyOnError = true;
     private Appender appender;
 
-    public LogFile() {
+    public LogFileRule() {
     }
 
-    public LogFile(Level threshold, boolean saveOnlyOnError) {
+    public LogFileRule(Level threshold, boolean saveOnlyOnError) {
         this.threshold = threshold;
         this.saveOnlyOnError = saveOnlyOnError;
     }

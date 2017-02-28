@@ -10,33 +10,32 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>misc</artifactId>
+    <artifactId>examples</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>Willtest Miscelanneous</name>
-    <description>Classes to use the Core and Browserstack module in JUnit tests</description>
+    <name>Willtest examples</name>
+    <description>Practical examples</description>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>misc</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>log4j</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>compile</scope>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>net.jsourcerer.webdriver</groupId>
-            <artifactId>JSErrorCollector</artifactId>
-            <version>0.6</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <scope>provided</scope>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

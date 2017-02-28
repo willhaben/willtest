@@ -1,9 +1,9 @@
 package at.willhaben.willtest.misc.rule;
 
 import at.willhaben.willtest.config.*;
+import at.willhaben.willtest.misc.rule.SeleniumProviderFactory.ParameterObject;
 import at.willhaben.willtest.rule.*;
-import org.apache.log4j.Level;
-import org.junit.Before;
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -14,12 +14,29 @@ import org.openqa.selenium.support.ui.Wait;
 
 import java.time.Duration;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
- * A sample default configuration we are using. Basically a composite made from the building blocks.
+ * A sample default configuration we are using. Basically a composite made from the building blocks.<br/>
+ * Some features, which are activated by default:
+ * <ul>
+ *     <li>15 seconds of implicit wait and script timeout. It can be disabled using {@link #withoutImplicitWait()} and
+ *     {@link #withoutScriptTimeout()} methods</li>
+ *     <li>In case of errors a screenshot and page source are saved automatically into surefire-reports
+ *     folder. See {@link Screenshot} and {@link PageSource} for details</li>
+ *     <li>Javascript errors are added as suppressed exception in case of test failures</li>
+ *     <li>Based on {@link SeleniumProviderFactory#SELENIUM_PROVIDER_CLASS_NAME} system property different
+ *     implementations {@link SeleniumProvider} can be loaded. Default is a local firefox.</li>
+ *     <li>In case of test failure javascript alert message is added as suppressed expression, if any alert is present</li>
+ *     <li>Supports file upload using {@link ResourceHelper}. Files can be in the file system, or in any jar inside
+ *     the classpath</li>
+ * </ul>
+ * The rule can be easily still customized using {@link #addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant)},
+ * {@link #withAdjustmentsOfFirefoxConfiguration(Consumer)}, {@link #secondOuterRule(TestRule)},
+ * {@link #around(TestRule)} and other methods.
  */
-public class SeleniumRule<W extends SeleniumProvider<W,D> & TestRule,D extends WebDriver> implements
-        FirefoxProvider<SeleniumRule<W,D>,D>, TestRule {
+public class SeleniumRule<W extends SeleniumProvider<W, D> & TestRule, D extends WebDriver> implements
+        SeleniumProvider<SeleniumRule<W, D>, D>, TestRule {
     private static final Duration DEFAULT_IMPLICIT_WAIT = Duration.ofSeconds(15);
     private static final Duration DEFAULT_SCRIPT_TIMEOUT_REQUIRED_BY_NG_DRIVER = Duration.ofSeconds(15);
 
@@ -28,36 +45,47 @@ public class SeleniumRule<W extends SeleniumProvider<W,D> & TestRule,D extends W
                     .withImplicitWait(DEFAULT_IMPLICIT_WAIT)
                     .withScriptTimeout(DEFAULT_SCRIPT_TIMEOUT_REQUIRED_BY_NG_DRIVER);
 
-    private final W defaultSeleniumProvider = SeleniumProviderFactory.create();
+    private final W defaultSeleniumProvider;
 
-    private final LogContext logContext = new LogContext();
-    private final LogFile logFile = new LogFile();
     private final ResourceHelper resourceHelper = new ResourceHelper();
-    private final PageSource pageSource = new PageSource(defaultSeleniumProvider);
-    private final Screenshot screenshot = new Screenshot(defaultSeleniumProvider);
-    private final WebDriverLog<W,D> webDriverLog = new WebDriverLog<>(defaultSeleniumProvider);
-    private final JavascriptAlert javascriptAlert = new JavascriptAlert(defaultSeleniumProvider);
+    private final FirefoxConfiguration<D> firefoxConfiguration = new FirefoxConfiguration<>();
+    private final LogContext logContext = new LogContext();
 
     private RuleChain ruleChain;
 
-    public SeleniumRule() {
+    /**
+     * @param parameterObjects objects wich can be injected into {@link SeleniumProvider} implementations.
+     *                         See {@link SeleniumProviderFactory}
+     */
+    public SeleniumRule(ParameterObject... parameterObjects) {
+        ParameterObject[] allParameterObjects =
+                ArrayUtils.addAll(parameterObjects, new ParameterObject(firefoxConfiguration.getClass(), firefoxConfiguration));
+
+        defaultSeleniumProvider = SeleniumProviderFactory.createSeleniumProviderRule(allParameterObjects);
+        defaultSeleniumProvider.addWebDriverConfigurationParticipant(new FileDetectorConfigurator<>());
+        defaultSeleniumProvider.addWebDriverConfigurationParticipant(timeoutsConfigurationParticipant);
+
+        DefaultFirefoxConfigurationParticipant<D> defaultFirefoxConfigurationParticipant =
+                new DefaultFirefoxConfigurationParticipant<>();
+        defaultSeleniumProvider.addWebDriverConfigurationParticipant(defaultFirefoxConfigurationParticipant);
+        firefoxConfiguration.addFirefoxConfigurationParticipant(defaultFirefoxConfigurationParticipant);
+
+        JavascriptError<W, D> javascriptErrorRule =
+                new JavascriptError<>(defaultSeleniumProvider, false);
+        firefoxConfiguration.addFirefoxConfigurationParticipant(javascriptErrorRule);
+        WebDriverLog<W, D> webDriverLog = new WebDriverLog<>(defaultSeleniumProvider);
+        PageSource pageSource = new PageSource(defaultSeleniumProvider);
+        Screenshot screenshot = new Screenshot(defaultSeleniumProvider);
+        JavascriptAlert javascriptAlert = new JavascriptAlert(defaultSeleniumProvider);
+
         ruleChain = RuleChain
-                .outerRule(logContext)
-                .around(logFile)
-                .around(defaultSeleniumProvider)
+                .outerRule(defaultSeleniumProvider)
                 .around(webDriverLog)
                 .around(pageSource)
                 .around(screenshot)
-                .around(javascriptAlert);
-
-        FileDetectorConfigurator.supportingFileUpload(defaultSeleniumProvider);
-        timeoutsConfigurationParticipant.addTo(defaultSeleniumProvider);
-        if ( defaultSeleniumProvider instanceof FirefoxProvider ) {
-            FirefoxProvider firefoxProvider = (FirefoxProvider) defaultSeleniumProvider;
-            FirefoxConfig.addTo(firefoxProvider);
-            ruleChain = ruleChain.around(new JavascriptError<>( firefoxProvider,false));
-        }
-        ruleChain = ruleChain.around(resourceHelper);
+                .around(javascriptAlert)
+                .around(javascriptErrorRule)
+                .around(resourceHelper);
     }
 
     @Override
@@ -66,28 +94,22 @@ public class SeleniumRule<W extends SeleniumProvider<W,D> & TestRule,D extends W
     }
 
     @Override
-    public SeleniumRule<W, D> getThis() {
-        return this;
-    }
-
-
-    @Override
-    public SeleniumRule<W, D> addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant webDriverConfigurationParticipant) {
+    public SeleniumRule<W, D> addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant<D> webDriverConfigurationParticipant) {
         defaultSeleniumProvider.addWebDriverConfigurationParticipant(webDriverConfigurationParticipant);
         return this;
     }
 
     @Override
-    public SeleniumRule<W, D> addFirefoxConfigurationParticipant(FirefoxConfigurationParticipant firefoxConfigurationParticipant) {
-        if ( defaultSeleniumProvider instanceof FirefoxProvider ) {
-            ((FirefoxProvider)defaultSeleniumProvider).addFirefoxConfigurationParticipant(firefoxConfigurationParticipant);
-        }
+    public SeleniumRule<W, D> getThis() {
         return this;
     }
 
     @Override
     public Statement apply(Statement base, Description description) {
-        return ruleChain.apply(base, description);
+        return RuleChain
+                .outerRule(logContext)
+                .around(ruleChain)
+                .apply(base,description);
     }
 
     /**
@@ -101,8 +123,13 @@ public class SeleniumRule<W extends SeleniumProvider<W,D> & TestRule,D extends W
         return timeoutsConfigurationParticipant.waitOverridingImplicitWait(defaultSeleniumProvider.getWebDriver(), seconds);
     }
 
+    /**
+     * Activates AdBlocker in firefox. See {@link AdBlockerConfigurator}
+     * @return
+     */
     public SeleniumRule withAdBlocker() {
-        return AdBlockerConfigurator.usingAdBlocker(this);
+        firefoxConfiguration.addFirefoxConfigurationParticipant(new AdBlockerConfigurator());
+        return getThis();
     }
 
     public ResourceHelper getResourceHelper() {
@@ -116,54 +143,107 @@ public class SeleniumRule<W extends SeleniumProvider<W,D> & TestRule,D extends W
      * @return
      */
     public SeleniumRule<W, D> setElementScrollBehaviour(ElementScrollBehavior elementScrollBehaviour) {
-        this.addWebDriverConfigurationParticipant(new ElementScrollBehaviourConfigurator(elementScrollBehaviour));
-        return this;
+        this.addWebDriverConfigurationParticipant(new ElementScrollBehaviourConfigurator<>(elementScrollBehaviour));
+        return getThis();
     }
 
-    public SeleniumRule<W, D> withLogFileThreshold(Level threshold) {
-        this.logFile.setThreshold(threshold);
-        return this;
-    }
-
+    /**
+     * See
+     * @param implicitWait
+     * @return
+     */
     public SeleniumRule<W, D> withImplicitWait(Duration implicitWait) {
         timeoutsConfigurationParticipant.withImplicitWait(implicitWait);
-        return this;
+        return getThis();
     }
 
     public SeleniumRule<W, D> withScriptTimeout(Duration scriptTimeout) {
         timeoutsConfigurationParticipant.withScriptTimeout(scriptTimeout);
-        return this;
+        return getThis();
     }
 
     public SeleniumRule<W, D> withPageLoadTimeout(Duration pageLoadTimeout) {
         timeoutsConfigurationParticipant.withPageLoadTimeout(pageLoadTimeout);
-        return this;
+        return getThis();
     }
 
     public SeleniumRule<W, D> withoutImplicitWait() {
         timeoutsConfigurationParticipant.withoutImplicitWait();
-        return this;
+        return getThis();
     }
 
     public SeleniumRule<W, D> withoutPageLoadTimeout() {
         timeoutsConfigurationParticipant.withoutPageLoadTimeout();
-        return this;
+        return getThis();
     }
 
     public SeleniumRule<W, D> withoutScriptTimeout() {
         timeoutsConfigurationParticipant.withoutScriptTimeout();
-        return this;
+        return getThis();
     }
 
-    public Optional<Duration> getImplicitWaitInMilliSeconds() {
+    public Optional<Duration> getImplicitWait() {
         return timeoutsConfigurationParticipant.getImplicitWait();
     }
 
-    public Optional<Duration> getScriptTimeoutInMilliSeconds() {
+    public Optional<Duration> getScriptTimeout() {
         return timeoutsConfigurationParticipant.getScriptTimeout();
     }
 
-    public Optional<Duration> getPageLoadTimeoutInMilliSeconds() {
+    public Optional<Duration> getPageLoadTimeout() {
         return timeoutsConfigurationParticipant.getPageLoadTimeout();
+    }
+
+    public FirefoxConfiguration<D> getFirefoxConfiguration() {
+        return firefoxConfiguration;
+    }
+
+    /**
+     * You can add {@link FirefoxConfigurationParticipant} instances using a {@link Consumer} implementation, which
+     * will get the {@link FirefoxConfiguration} as parameter
+     * @param adjustment
+     * @return
+     */
+    public SeleniumRule<W, D> withAdjustmentsOfFirefoxConfiguration(Consumer<FirefoxConfiguration<D>> adjustment) {
+        adjustment.accept(firefoxConfiguration);
+        return getThis();
+    }
+
+    public SeleniumRule<W, D> withDefaultFirefoxSettings() {
+        DefaultFirefoxConfigurationParticipant<D> defaultFirefoxConfigurationParticipant =
+                new DefaultFirefoxConfigurationParticipant<>();
+        defaultSeleniumProvider.addWebDriverConfigurationParticipant(defaultFirefoxConfigurationParticipant);
+        firefoxConfiguration.addFirefoxConfigurationParticipant(defaultFirefoxConfigurationParticipant);
+        return getThis();
+    }
+
+    /**
+     * Adds a new rule as the second outer rule to the current chain. LogContext is always the outest rule.
+     * @param testRule
+     * @return
+     */
+    public SeleniumRule<W, D> secondOuterRule(TestRule testRule) {
+        ruleChain = RuleChain.outerRule(testRule).around(ruleChain);
+        return getThis();
+    }
+
+    /**
+     * Adds a rule as inner rule into the current chain.
+     * @param testRule
+     * @return
+     */
+    public SeleniumRule<W, D> around(TestRule testRule) {
+        ruleChain = ruleChain.around(testRule);
+        return getThis();
+    }
+
+    public SeleniumRule<W, D> withFirefoxConfigurationParticipant(FirefoxConfigurationParticipant firefoxConfigurationParticipant) {
+        firefoxConfiguration.addFirefoxConfigurationParticipant(firefoxConfigurationParticipant);
+        return getThis();
+    }
+
+    public SeleniumRule<W, D> withFirefoxBinaryProvider(FirefoxBinaryProvider firefoxBinaryProvider) {
+        firefoxConfiguration.setFirefoxBinaryProvider(firefoxBinaryProvider);
+        return getThis();
     }
 }

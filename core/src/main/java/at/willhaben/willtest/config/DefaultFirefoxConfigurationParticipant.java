@@ -1,21 +1,23 @@
 package at.willhaben.willtest.config;
 
-import at.willhaben.willtest.rule.FirefoxProvider;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriver.Window;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 /**
- * Features:
+ * Default settings for Firefox. Features:
  * <ul>
- * <li>default settings of firefox profile</li>
+ * <li>Geo testing enabled</li>
+ * <li>Enables javascript</li>
  * <li>Enables using a different display, for instance a virtual frame buffer</li>
+ * <li>Moves the opened window to the left screen maximized with Full HD resolution.</li>
  * </ul>
  */
-public class FirefoxConfig<D extends WebDriver>
+public class DefaultFirefoxConfigurationParticipant<D extends WebDriver>
         implements FirefoxConfigurationParticipant, WebDriverConfigurationParticipant<D> {
     /**
      * Env entry, which can contain alternative display. For example ":99"
@@ -34,28 +36,27 @@ public class FirefoxConfig<D extends WebDriver>
         firefoxProfile.setEnableNativeEvents(true);
     }
 
+    @Override
+    public void addDesiredCapabilities(DesiredCapabilities desiredCapabilities) {
+        desiredCapabilities.setCapability("applicationCacheEnabled", false);
+        desiredCapabilities.setJavascriptEnabled(true);
+        desiredCapabilities.setBrowserName("firefox");
+    }
+
     /**
-     * Moves window to the first display, and maximizes there. This is practical in case of local testing.
+     * Moves window to the first display, and maximizes there.
+     * This is practical in case of local testing.
      *
      * @see WebDriverConfigurationParticipant#postConstruct(WebDriver)
      */
     @Override
     public void postConstruct(D webDriver) {
         Window window = webDriver.manage().window();
-        //Requirement for Jobs, Resolution greater than 1280 in width
         Dimension dimension = new Dimension(1920, 1080);
         Point thisPointIsAlwaysOnFirstDisplay = new Point(0, 0);
         window.setPosition(thisPointIsAlwaysOnFirstDisplay);
         window.setSize(dimension);
         window.maximize();
-
-    }
-
-    public static <T extends FirefoxProvider<T,D>,D extends WebDriver> T addTo(T firefoxProvider) {
-        FirefoxConfig<D> config = new FirefoxConfig<D>();
-        firefoxProvider.addFirefoxConfigurationParticipant(config);
-        firefoxProvider.addWebDriverConfigurationParticipant(config);
-        return firefoxProvider;
     }
 
     private void setDisplay(FirefoxBinary result) {

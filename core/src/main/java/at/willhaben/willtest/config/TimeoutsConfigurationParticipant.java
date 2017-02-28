@@ -29,13 +29,13 @@ public class TimeoutsConfigurationParticipant<D extends WebDriver> implements We
     public void postConstruct(D webDriver) {
         Timeouts timeouts = webDriver.manage().timeouts();
         if (implicitWait != null) {
-            timeouts.implicitlyWait(implicitWait.getNano(), TimeUnit.NANOSECONDS);
+            timeouts.implicitlyWait(implicitWait.getSeconds(), TimeUnit.SECONDS);
         }
         if (scriptTimeout != null) {
-            timeouts.setScriptTimeout(scriptTimeout.getNano(), TimeUnit.NANOSECONDS);
+            timeouts.setScriptTimeout(scriptTimeout.getSeconds(), TimeUnit.SECONDS);
         }
         if (pageLoadTimeout != null) {
-            timeouts.pageLoadTimeout(pageLoadTimeout.getNano(), TimeUnit.NANOSECONDS);
+            timeouts.pageLoadTimeout(pageLoadTimeout.getSeconds(), TimeUnit.SECONDS);
         }
     }
 
@@ -101,7 +101,7 @@ public class TimeoutsConfigurationParticipant<D extends WebDriver> implements We
      * @param <T>
      * @return <code>seleniumProvider</code> to enable method chaining
      */
-    public <T extends SeleniumProvider<T,D>> T addTo(T seleniumProvider) {
+    public <T extends SeleniumProvider<T, D>> T addTo(T seleniumProvider) {
         seleniumProvider.addWebDriverConfigurationParticipant(this);
         return seleniumProvider;
     }

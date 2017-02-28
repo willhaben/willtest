@@ -6,10 +6,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 /**
  * Creates a {@link WebDriver} instance with respecting all configuration participants given to it.
  * <p>
+ *
  * @param <P> concrete implementation class. Makes type safe method chaining in implementations possible
  * @param <D> concrete implementation of {@link WebDriver} provided
  */
-public interface SeleniumProvider<P extends SeleniumProvider,D extends WebDriver> {
+public interface SeleniumProvider<P extends SeleniumProvider, D extends WebDriver> {
     long FIND_ELEMENT_TIMEOUT = 30;
 
     /**
@@ -41,6 +42,7 @@ public interface SeleniumProvider<P extends SeleniumProvider,D extends WebDriver
 
     /**
      * Gives back the current instance as #P back to make method chaining possible in a type safe manner.
+     *
      * @return
      */
     P getThis();

@@ -13,7 +13,7 @@ public class DefaultFirefoxBinaryProvider implements FirefoxBinaryProvider {
     /**
      * Env entry to contain a path to the firefox binary to be used.
      */
-    private static final String FIREFOX_BINARY_LOCATION_SYSTEM_PROPERTY_KEY = "ffBinary";
+    public static final String FIREFOX_BINARY_LOCATION_SYSTEM_PROPERTY_KEY = "ffBinary";
 
     @Override
     public FirefoxBinary getFirefoxBinary() {

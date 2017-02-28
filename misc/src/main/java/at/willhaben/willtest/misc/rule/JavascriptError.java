@@ -4,7 +4,6 @@ import at.willhaben.willtest.config.FirefoxConfigurationParticipant;
 import at.willhaben.willtest.config.SeleniumProvider;
 import at.willhaben.willtest.misc.JavascriptErrorException;
 import at.willhaben.willtest.rule.AbstractRule;
-import at.willhaben.willtest.rule.FirefoxProvider;
 import net.jsourcerer.webdriver.jserrorcollector.JavaScriptError;
 import org.junit.runner.Description;
 import org.openqa.selenium.WebDriver;
@@ -13,16 +12,30 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import java.io.IOException;
 import java.util.List;
 
-public class JavascriptError<P extends FirefoxProvider<P,D>,D extends WebDriver>
+/**
+ * A junit test rule, which adds the javascript errors fetched from the browser into the test failure as suppressed
+ * exception. You can also use it to break your tests, if any javascript error happens. To do so, pass true into the
+ * boolean parameter of the constructor.<br/>
+ * Uses https://github.com/mguillem/JSErrorCollector and works only with local or remote firefox.
+ * <br/>
+ * See {@link at.willhaben.willtest.config.FirefoxConfiguration}
+ * @param <P> {@link SeleniumProvider} implementation
+ * @param <D> {@link WebDriver} implementation
+ */
+public class JavascriptError<P extends SeleniumProvider<P, D>, D extends WebDriver>
         extends AbstractRule
         implements FirefoxConfigurationParticipant {
-    private final P firefoxProvider;
+    private final P seleniumProvider;
     private boolean initialized;
     private final boolean throwExceptionForSuccessfulTests;
 
-    public JavascriptError(P firefoxProvider, boolean throwExceptionForSuccessfulTests) {
-        this.firefoxProvider = firefoxProvider;
-        firefoxProvider.addFirefoxConfigurationParticipant(this);
+    /**
+     * @param seleniumProvider the {@link SeleniumProvider} to be attached to
+     * @param throwExceptionForSuccessfulTests true if you want to break even successful tests if there is a javascript
+     *                                         error, false otherwise. False is default.
+     */
+    public JavascriptError(P seleniumProvider, boolean throwExceptionForSuccessfulTests) {
+        this.seleniumProvider = seleniumProvider;
         this.throwExceptionForSuccessfulTests = throwExceptionForSuccessfulTests;
     }
 
@@ -31,7 +44,7 @@ public class JavascriptError<P extends FirefoxProvider<P,D>,D extends WebDriver>
         super.after(description, testFailure);
         try {
             if (initialized) {
-                List<JavaScriptError> jsErrors = JavaScriptError.readErrors(firefoxProvider.getWebDriver());
+                List<JavaScriptError> jsErrors = JavaScriptError.readErrors(seleniumProvider.getWebDriver());
                 if (!jsErrors.isEmpty()) {
                     JavascriptErrorException javascriptErrorException = new JavascriptErrorException(
                             "Javascript errors are detected!",

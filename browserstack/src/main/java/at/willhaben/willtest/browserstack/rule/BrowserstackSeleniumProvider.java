@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 
 //TODO: more options for selected OS and Browser, Multiple env run (see: https://github.com/browserstack/junit-browserstack)
 public class BrowserstackSeleniumProvider extends
-        AbstractSeleniumProvider<BrowserstackSeleniumProvider,RemoteWebDriver> {
+        AbstractSeleniumProvider<BrowserstackSeleniumProvider, RemoteWebDriver> {
     private static final String BROWSERSTACK_HUB_SYSTEM_PROPERTY_KEY = "browserstack.hub";
     private static final String BROWSERSTACK_HUB_LOCAL_SYSTEM_PROPERTY_KEY = "browserstack.local";
 
@@ -27,7 +27,7 @@ public class BrowserstackSeleniumProvider extends
         desiredCapabilities.setCapability(BROWSERSTACK_HUB_LOCAL_SYSTEM_PROPERTY_KEY,
                 Boolean.parseBoolean(
                         Environment.getValue(BROWSERSTACK_HUB_LOCAL_SYSTEM_PROPERTY_KEY,
-                        Boolean.FALSE.toString())));
+                                Boolean.FALSE.toString())));
         return desiredCapabilities;
     }
 

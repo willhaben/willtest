@@ -20,10 +20,12 @@ import java.util.Map;
 import java.util.logging.Level;
 
 /**
- * In case of test error dumps the logs of selenium into the standard logger
+ * In case of test error dumps the logs of selenium into the standard logger.
+ *
+ * See also {@link LogContext} and {@link at.willhaben.willtest.log4j.LogFileRule}
  * <p>
  */
-public class WebDriverLog<P extends SeleniumProvider<P,D>,D extends WebDriver>
+public class WebDriverLog<P extends SeleniumProvider<P, D>, D extends WebDriver>
         extends AbstractRule
         implements WebDriverConfigurationParticipant<D> {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverLog.class);
@@ -42,9 +44,9 @@ public class WebDriverLog<P extends SeleniumProvider<P,D>,D extends WebDriver>
     private static final LoggingPreferences DEFAULT_LOGGING_PREFERENCES = createLoggingPreferences();
     private static final String MESSAGE_PATTERN = "[{}] {} {}";
 
-    private final SeleniumProvider<P,D> seleniumProvider;
+    private final SeleniumProvider<P, D> seleniumProvider;
 
-    public WebDriverLog(SeleniumProvider<P,D> seleniumProvider) {
+    public WebDriverLog(SeleniumProvider<P, D> seleniumProvider) {
         this.seleniumProvider = seleniumProvider;
         this.seleniumProvider.addWebDriverConfigurationParticipant(this);
     }

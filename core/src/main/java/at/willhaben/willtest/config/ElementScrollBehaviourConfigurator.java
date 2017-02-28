@@ -12,7 +12,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  * lets you decide if you want to get scrolled elements at the top or bottom of the viewport.
  * <p>
  */
-public class ElementScrollBehaviourConfigurator implements WebDriverConfigurationParticipant<WebDriver> {
+public class ElementScrollBehaviourConfigurator<D extends WebDriver> implements WebDriverConfigurationParticipant<D> {
     private final ElementScrollBehavior elementScrollBehavior;
 
     public ElementScrollBehaviourConfigurator(ElementScrollBehavior elementScrollBehavior) {

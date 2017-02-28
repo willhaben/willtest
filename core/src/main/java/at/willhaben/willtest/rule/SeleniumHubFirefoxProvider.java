@@ -1,5 +1,7 @@
 package at.willhaben.willtest.rule;
 
+import at.willhaben.willtest.config.FirefoxConfiguration;
+import at.willhaben.willtest.config.WebDriverConfigurationParticipant;
 import at.willhaben.willtest.util.Environment;
 import org.junit.runner.Description;
 import org.openqa.selenium.Platform;
@@ -9,13 +11,18 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class SeleniumHubFirefoxProvider extends AbstractFirefoxProvider<SeleniumHubFirefoxProvider,RemoteWebDriver> {
+/**
+ * Starts a remote firefox instance on a selenium hub. For configuration you can use
+ * {@link #setFirefoxConfiguration(FirefoxConfiguration)},
+ * {@link #addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant)} methods
+ */
+public class SeleniumHubFirefoxProvider extends AbstractFirefoxProvider<SeleniumHubFirefoxProvider, RemoteWebDriver> {
     private static final String DEFAULT_PLATFORM_LINUX = "Linux";
     private static final String SELENIUM_HUB_SYSTEM_PROPERTY_KEY = "seleniumHub";
 
     @Override
     protected RemoteWebDriver constructWebDriver(DesiredCapabilities desiredCapabilities) {
-        return  new RemoteWebDriver(getSeleniumHubURL(), desiredCapabilities);
+        return new RemoteWebDriver(getSeleniumHubURL(), desiredCapabilities);
     }
 
     private Platform getPlatform() {

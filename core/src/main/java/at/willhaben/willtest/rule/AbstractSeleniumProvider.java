@@ -13,12 +13,13 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Combines the Rule pattern with the {@link SeleniumProvider} so in this class a webDriver is created
- * for a test. This class implements the default cleanup after a test with a created webDriver.
+ * Combines the Rule pattern with the {@link SeleniumProvider}, so in this class a webDriver is created
+ * for a test. This class implements the default cleanup after a test with a created webDriver. Registers and calls
+ * {@link WebDriverConfigurationParticipant} instances, which can influence the creation of the {@link WebDriver}.
  */
-public abstract class AbstractSeleniumProvider<P extends SeleniumProvider<P,D>,D extends WebDriver>
+public abstract class AbstractSeleniumProvider<P extends SeleniumProvider<P, D>, D extends WebDriver>
         extends AbstractRule
-        implements SeleniumProvider<P,D> {
+        implements SeleniumProvider<P, D> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSeleniumProvider.class);
     private final List<WebDriverConfigurationParticipant<D>> webDriverConfigurationParticipantList = new ArrayList<>();
@@ -75,14 +76,15 @@ public abstract class AbstractSeleniumProvider<P extends SeleniumProvider<P,D>,D
     }
 
     private D callPostConstruct(D webDriverToBeChangedAfterConstruction) {
-        webDriverConfigurationParticipantList.forEach(participant->participant.postConstruct(webDriver));
+        webDriverConfigurationParticipantList
+                .forEach(participant -> participant.postConstruct(webDriverToBeChangedAfterConstruction));
         return webDriverToBeChangedAfterConstruction;
     }
 
     private DesiredCapabilities getDesiredCapabilities(Description description) {
         DesiredCapabilities desiredCapabilities = createDesiredCapabilities(description);
         webDriverConfigurationParticipantList
-                .forEach(participant->participant.addDesiredCapabilities(desiredCapabilities));
+                .forEach(participant -> participant.addDesiredCapabilities(desiredCapabilities));
         return desiredCapabilities;
     }
 }
