@@ -7,11 +7,13 @@ like:
 * Reporting capabilities like saving logs, screenshots and HTML source
 * Fetching information from javascript alerts and errors
 * Supporting uploading of any file from file system or classpath
+
 ## Requirements
 * Currently Selenium 2.53.1 is used, upgrade to Selenium 3.x is planned
 * Firefox local and on Selenium Hub is supported _**(2.53.1 version of Selenium works with Firefox versions<=46.x!)**_. 
 Adding new Browsers is easily possible with implementing the ```SeleniumProvider``` interface.
 * Java 8
+
 ## Getting Started
 The code is built up from several small building blocks. There is a default setting we are using, which can be used 
 is represented by the class ```SeleniumRule```. To utilize that, the following dependencies have to be added to the 
