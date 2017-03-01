@@ -139,13 +139,6 @@ public class DummyTest {
     private static Pattern THIS_WILL_BE_INJECTED_INTO_DUMMY_SELENIUM_PROVIDER = Pattern.compile("fooooo");
     private static String originalProvider;
 
-    @BeforeClass
-    public static void beforeClass() {
-        originalProvider = System.getProperty(SeleniumProviderFactory.SELENIUM_PROVIDER_CLASS_NAME);
-        //setting name here because I do not want to set properties somewhere else.
-        System.setProperty(SeleniumProviderFactory.SELENIUM_PROVIDER_CLASS_NAME, DummySeleniumProvider.class.getName());
-    }
-
     @AfterClass
     public static void afterClass() {
         if ( originalProvider != null ) {
