@@ -134,7 +134,7 @@ public class DummySeleniumProvider extends AbstractSeleniumProvider<DummySeleniu
 }
 ```
 
-```
+```java
 public class DummyTest {
     private static Pattern THIS_WILL_BE_INJECTED_INTO_DUMMY_SELENIUM_PROVIDER = Pattern.compile("fooooo");
     private static String originalProvider;
