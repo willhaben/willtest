@@ -7,14 +7,14 @@
     <parent>
         <groupId>at.willhaben.willtest</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>browserstack</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>Willtest Browserstack</name>
+    <name>${project.groupId}:${project.artifactId}</name>
     <description>Seleniumprovider with default settings to run JUnit tests on Browserstack.</description>
 
     <dependencies>

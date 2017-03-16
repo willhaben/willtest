@@ -10,8 +10,8 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  * Parent class for all implementations of {@link at.willhaben.willtest.config.SeleniumProvider} for Firefox.
  * Injects the output {@link org.openqa.selenium.firefox.FirefoxProfile} of {@link FirefoxConfiguration} as
  * {@link WebDriverConfigurationParticipant}.
- * @param <P>
- * @param <D>
+ * @param <P> type of the provider implementation
+ * @param <D> type of the webdriver, which will be provided
  */
 public abstract class AbstractFirefoxProvider<P extends AbstractFirefoxProvider<P, D>, D extends WebDriver>
         extends AbstractSeleniumProvider<P, D> {

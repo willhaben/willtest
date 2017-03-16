@@ -11,7 +11,7 @@ public interface FirefoxBinaryProvider {
     /**
      * Creates a firefox binary (executable of firefox)
      *
-     * @return
+     * @return firefox binary instance
      */
     FirefoxBinary getFirefoxBinary();
 }

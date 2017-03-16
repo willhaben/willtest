@@ -15,9 +15,10 @@ import java.util.List;
 /**
  * A junit test rule, which adds the javascript errors fetched from the browser into the test failure as suppressed
  * exception. You can also use it to break your tests, if any javascript error happens. To do so, pass true into the
- * boolean parameter of the constructor.<br/>
+ * boolean parameter of the constructor.
+ * <p>
  * Uses https://github.com/mguillem/JSErrorCollector and works only with local or remote firefox.
- * <br/>
+ * <p>
  * See {@link at.willhaben.willtest.config.FirefoxConfiguration}
  * @param <P> {@link SeleniumProvider} implementation
  * @param <D> {@link WebDriver} implementation

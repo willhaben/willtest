@@ -22,13 +22,18 @@ public class SeleniumProviderFactory {
     /**
      * Creates {@link SeleniumRule} implementation instance with class name defined in system property
      * {@value #SELENIUM_PROVIDER_CLASS_NAME}. If the system property is not present,
-     * {@link LocalFirefoxProvider} will be used.<br/>
+     * {@link LocalFirefoxProvider} will be used.
+     * <p>
      * It is expected, that {@link SeleniumProvider} implementations used together with this class do have public
-     * default constructor.<br>
+     * default constructor.
+     * <p>
      * An array of {@link ParameterObject} can be passed in as parameter. After creating the {@link SeleniumProvider}
      * instance, setters will be searched for each {@link ParameterObject#getClazz()} based on class name. If there is
      * such method, it will be called with the result of {@link ParameterObject#getObject}.
      * @return provider according to system property
+     * @param <P> {@link SeleniumProvider} implementation
+     * @param <D> {@link WebDriver} implementation
+     * @param parameterObjects these objects will be injected based on their class
      */
     public static <P extends SeleniumProvider<P, D> & TestRule, D extends WebDriver> P createSeleniumProviderRule(
             ParameterObject... parameterObjects) {

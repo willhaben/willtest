@@ -9,10 +9,8 @@ import java.net.URL;
 
 /**
  * Activates adblocker for the given firefox profile.
- * <p>
  * Expects, that a adblock.xpi exists in classpath root as resource file. This can be achieved by the following
  * POM snippet for example:
- * <p>
  * <pre>
  * {@code
 <plugin>

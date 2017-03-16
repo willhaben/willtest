@@ -17,7 +17,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
- * A sample default configuration we are using. Basically a composite made from the building blocks.<br/>
+ * A sample default configuration we are using. Basically a composite made from the building blocks.
+ * <p>
  * Some features, which are activated by default:
  * <ul>
  *     <li>15 seconds of implicit wait and script timeout. It can be disabled using {@link #withoutImplicitWait()} and
@@ -125,7 +126,7 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
 
     /**
      * Activates AdBlocker in firefox. See {@link AdBlockerConfigurator}
-     * @return
+     * @return this to enable method chaining
      */
     public SeleniumRule<P, D> withAdBlocker() {
         firefoxConfiguration.addFirefoxConfigurationParticipant(new AdBlockerConfigurator());
@@ -139,19 +140,14 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
     /**
      * See {@link ElementScrollBehaviourConfigurator} for details
      *
-     * @param elementScrollBehaviour
-     * @return
+     * @param elementScrollBehaviour scroll behavior
+     * @return this to enable method chaining
      */
     public SeleniumRule<P, D> setElementScrollBehaviour(ElementScrollBehavior elementScrollBehaviour) {
         this.addWebDriverConfigurationParticipant(new ElementScrollBehaviourConfigurator<>(elementScrollBehaviour));
         return this;
     }
 
-    /**
-     * See
-     * @param implicitWait
-     * @return
-     */
     public SeleniumRule<P, D> withImplicitWait(Duration implicitWait) {
         timeoutsConfigurationParticipant.withImplicitWait(implicitWait);
         return this;
@@ -201,8 +197,8 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
     /**
      * You can add {@link FirefoxConfigurationParticipant} instances using a {@link Consumer} implementation, which
      * will get the {@link FirefoxConfiguration} as parameter
-     * @param adjustment
-     * @return
+     * @param adjustment configuration adjustment closure
+     * @return this to enable method chaining
      */
     public SeleniumRule<P, D> withAdjustmentsOfFirefoxConfiguration(Consumer<FirefoxConfiguration<D>> adjustment) {
         adjustment.accept(firefoxConfiguration);
@@ -219,8 +215,8 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
 
     /**
      * Adds a new rule as the second outer rule to the current chain. LogContext is always the outest rule.
-     * @param testRule
-     * @return
+     * @param testRule the rule to be used as second in the chain
+     * @return this to enable method chaining
      */
     public SeleniumRule<P, D> secondOuterRule(TestRule testRule) {
         ruleChain = RuleChain.outerRule(testRule).around(ruleChain);
@@ -229,8 +225,8 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
 
     /**
      * Adds a rule as inner rule into the current chain.
-     * @param testRule
-     * @return
+     * @param testRule inner rule to be added to the chain
+     * @return this to enable method chaining
      */
     public SeleniumRule<P, D> around(TestRule testRule) {
         ruleChain = ruleChain.around(testRule);

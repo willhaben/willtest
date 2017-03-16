@@ -10,7 +10,7 @@ public interface FirefoxConfigurationParticipant {
     /**
      * It can adjust a {@link FirefoxProfile}. It can load for example browser plugins.
      *
-     * @param firefoxProfile
+     * @param firefoxProfile the profile to be adjusted
      */
     default void adjustFirefoxProfile(FirefoxProfile firefoxProfile) {
     }
@@ -18,7 +18,7 @@ public interface FirefoxConfigurationParticipant {
     /**
      * It can adjust a {@link FirefoxBinary}. For example it can set environment entries for the Firefox process
      *
-     * @param firefoxBinary
+     * @param firefoxBinary binary to be adjusted
      */
     default void adjustFirefoxBinary(FirefoxBinary firefoxBinary) {
     }

@@ -9,7 +9,8 @@ import java.time.format.DateTimeFormatter;
 /**
  * Decides where are the report files saved. By default report files are saved into {@value #DEFAULT_REPORT_FOLDER},
  * which can be overridden by {@value #REPORT_FOLDER_SYSTEM_PROPERTY} system property. File names will generated
- * using the following schema:<br/>
+ * using the following schema:
+ * <p>
  * "{@value COMMON_PREFIX_FOR_ALL_REPORT_FILES} + PREFIX_IF_ANY + CLASS_NAME + METHOD_NAME + TIMESTAMP + POSTFIX_IF_ANY
  */
 public class TestReportFile {
@@ -25,7 +26,7 @@ public class TestReportFile {
 
     /**
      * Gives back the {@link File} object, which can be used as target for report.
-     * @return
+     * @return the file which can be used as report file
      */
     public File getFile() {
         String reportFolderPath = Environment.getValue(REPORT_FOLDER_SYSTEM_PROPERTY, DEFAULT_REPORT_FOLDER);
@@ -52,7 +53,7 @@ public class TestReportFile {
 
         /**
          * @param prefix name prefix to be used. F.i. "PaymentModule"
-         * @return
+         * @return this builder
          */
         public Builder withPrefix(String prefix) {
             testReportFile.prefix = prefix;
@@ -61,7 +62,7 @@ public class TestReportFile {
 
         /**
          * @param postfix name postfix to be used. F.i. ".png"
-         * @return
+         * @return this builder
          */
         public Builder withPostix(String postfix) {
             testReportFile.postfix = postfix;
@@ -76,7 +77,7 @@ public class TestReportFile {
     /**
      * Starts building of a test report file
      * @param testDescription
-     * @return
+     * @return this builder
      */
     public static Builder forTest(Description testDescription) {
         return new Builder(testDescription);

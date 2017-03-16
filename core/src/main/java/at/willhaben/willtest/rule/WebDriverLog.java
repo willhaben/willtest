@@ -22,8 +22,7 @@ import java.util.logging.Level;
 /**
  * In case of test error dumps the logs of selenium into the standard logger.
  *
- * See also {@link LogContext} and {@link at.willhaben.willtest.log4j.LogFileRule}
- * <p>
+ * See also {@link LogContext} and at.willhaben.willtest.log4j.LogFileRule
  */
 public class WebDriverLog<P extends SeleniumProvider<P, D>, D extends WebDriver>
         extends TestFailureAwareRule

@@ -15,14 +15,14 @@ public class TestFailureAwareRule implements TestRule {
     /**
      * Just to make sure, that this class will not be instantiated, only its children
      */
-    TestFailureAwareRule() {
+    public TestFailureAwareRule() {
     }
 
     /**
      * Can do something before a test. By default it does nothing.
      *
-     * @param description
-     * @throws Throwable
+     * @param description junit test description object
+     * @throws Throwable any error from the test
      */
     protected void before(Description description) throws Throwable {
     }
@@ -30,7 +30,7 @@ public class TestFailureAwareRule implements TestRule {
     /**
      * Called after all tests always. By default it does nothing.
      *
-     * @param description
+     * @param description junit test description object
      * @param testFailure in case of failed test it contains an exception. Otherwise null
      * @throws Throwable if <code>testFailure</code> is null, it will fly, if <code>testFailure</code> is not null,
      *                   it will be added to that as suppressed exception. See {@link Throwable#addSuppressed(Throwable)}
@@ -41,8 +41,8 @@ public class TestFailureAwareRule implements TestRule {
     /**
      * Called if the test has thrown an error. By default it does nothing.
      *
-     * @param description
-     * @param testFailure
+     * @param description  junit test description object
+     * @param testFailure any error from the test
      * @throws Throwable this will be added to <code>testFailure</code> as suppressed exception.
      *                   See {@link Throwable#addSuppressed(Throwable)}
      */

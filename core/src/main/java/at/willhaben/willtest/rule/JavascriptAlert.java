@@ -13,7 +13,6 @@ import org.openqa.selenium.WebDriver;
  * which is caused actually by the alert which hangs the javascript processing. Alerts are unfortunately not visible
  * on screenshots, they do not result in javascript console or webdriver log entries. So the only possibility to get
  * this information is to try to fetch a possible alert message. This helps then the investigation.
- * <p>
  */
 public class JavascriptAlert extends TestFailureAwareRule {
     private final SeleniumProvider seleniumProvider;

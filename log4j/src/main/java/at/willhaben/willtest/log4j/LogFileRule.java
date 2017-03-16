@@ -15,7 +15,7 @@ import static at.willhaben.willtest.rule.LogContext.*;
 /**
  * Saves thread (testcase) specific log entries into a file to help investigation.
  * Works only together with {@link LogContext}, since it is relying on its {@link MDC} values.
- * <br/>
+ * <p>
  * See also {@link LogContext} and {@link at.willhaben.willtest.rule.WebDriverLog}
  */
 public class LogFileRule extends TestFailureAwareRule {
