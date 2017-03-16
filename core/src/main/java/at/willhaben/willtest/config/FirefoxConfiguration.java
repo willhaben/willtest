@@ -30,8 +30,8 @@ public class FirefoxConfiguration<D extends WebDriver> {
     /**
      * Adds a {@link FirefoxConfigurationParticipant} to the list. This participant will be called before creating
      * the actual firefox browser, and it can influence the {@link FirefoxProfile}
-     * @param firefoxConfigurationParticipant
-     * @return
+     * @param firefoxConfigurationParticipant the participant to be added
+     * @return this to enable method chaining
      */
     public FirefoxConfiguration<D> addFirefoxConfigurationParticipant(
             FirefoxConfigurationParticipant firefoxConfigurationParticipant) {

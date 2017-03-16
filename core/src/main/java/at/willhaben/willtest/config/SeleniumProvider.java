@@ -35,7 +35,7 @@ public interface SeleniumProvider<P extends SeleniumProvider, D extends WebDrive
      * After creating a new {@link WebDriver} instance, a {@link SeleniumProvider} implementation should pass that instance
      * to all {@link WebDriverConfigurationParticipant} to let them adjust it.
      *
-     * @param webDriverConfigurationParticipant
+     * @param webDriverConfigurationParticipant participant to be added to the list
      * @return the provider itself to make method chaining possible
      */
     P addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant<D> webDriverConfigurationParticipant);
@@ -43,7 +43,7 @@ public interface SeleniumProvider<P extends SeleniumProvider, D extends WebDrive
     /**
      * Gives back the current instance as #P back to make method chaining possible in a type safe manner.
      *
-     * @return
+     * @return the current instance. Enables type safe method chaining in implementations
      */
     P getThis();
 }

@@ -14,7 +14,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Adjusts timeouts available by using <code>webDriver.manage().timeouts()</code>.
  * Please note, that if some of the 3 timeouts are not defined, then it will use the defaults settings of the given
- * {@link WebDriver} implementation.<br/>
+ * {@link WebDriver} implementation.
+ * <p>
  * If all timeouts are set through this class, then there is a possibility to get the current timeout settings of the
  * {@link WebDriver}, which is not possible out of the box in Selenium.
  */
@@ -43,7 +44,7 @@ public class TimeoutsConfigurationParticipant<D extends WebDriver> implements We
      * Returns the current implicit wait in milliseconds. If some code changes the timeout directly, this value can be
      * incorrect. Always set timeouts using this class.
      *
-     * @return
+     * @return implicit wait if any defined
      */
     public Optional<Duration> getImplicitWait() {
         return Optional.ofNullable(implicitWait);
@@ -53,7 +54,7 @@ public class TimeoutsConfigurationParticipant<D extends WebDriver> implements We
      * Returns the current script timeout in milliseconds. If some code changes the timeout directly, this value can be
      * incorrect. Always set timeouts using this class.
      *
-     * @return
+     * @return script timeout if any defined
      */
     public Optional<Duration> getScriptTimeout() {
         return Optional.ofNullable(scriptTimeout);
@@ -63,7 +64,7 @@ public class TimeoutsConfigurationParticipant<D extends WebDriver> implements We
      * Returns the current page load timeout in milliseconds. If some code changes the timeout directly, this value can be
      * incorrect. Always set timeouts using this class.
      *
-     * @return
+     * @return page load timeout if any defined
      */
     public Optional<Duration> getPageLoadTimeout() {
         return Optional.ofNullable(pageLoadTimeout);
@@ -73,8 +74,8 @@ public class TimeoutsConfigurationParticipant<D extends WebDriver> implements We
      * If there is an implicit wait set, then you might need to wait for a shorter period. This
      * method makes it possible with setting the implicit wait temporarily to 0.
      *
-     * @param webDriver
-     * @param seconds
+     * @param webDriver webdriver to be used
+     * @param seconds timeout in seconds
      * @return a {@link Wait} instance, which set the implicit wait temporarily to 0.
      */
     public Wait<WebDriver> waitOverridingImplicitWait(WebDriver webDriver, int seconds) {
@@ -97,8 +98,8 @@ public class TimeoutsConfigurationParticipant<D extends WebDriver> implements We
     /**
      * Adds this configurator to the given {@link SeleniumProvider}
      *
-     * @param seleniumProvider
-     * @param <T>
+     * @param seleniumProvider "this" will be added as configuration participant to the given provider
+     * @param <T> type of the selenium provider
      * @return <code>seleniumProvider</code> to enable method chaining
      */
     public <T extends SeleniumProvider<T, D>> T addTo(T seleniumProvider) {
@@ -109,8 +110,8 @@ public class TimeoutsConfigurationParticipant<D extends WebDriver> implements We
     /**
      * See {@link Timeouts#implicitlyWait(long, TimeUnit)}
      *
-     * @param implicitWait
-     * @return
+     * @param implicitWait duration
+     * @return this to enable method chaining
      */
     public TimeoutsConfigurationParticipant<D> withImplicitWait(Duration implicitWait) {
         Objects.requireNonNull(implicitWait);
@@ -121,8 +122,8 @@ public class TimeoutsConfigurationParticipant<D extends WebDriver> implements We
     /**
      * See {@link Timeouts#setScriptTimeout(long, TimeUnit)}
      *
-     * @param scriptTimeout
-     * @return
+     * @param scriptTimeout duration
+     * @return this to enable method chaining
      */
     public TimeoutsConfigurationParticipant<D> withScriptTimeout(Duration scriptTimeout) {
         Objects.requireNonNull(scriptTimeout);
@@ -133,8 +134,8 @@ public class TimeoutsConfigurationParticipant<D extends WebDriver> implements We
     /**
      * See {@link Timeouts#pageLoadTimeout(long, TimeUnit)}
      *
-     * @param pageLoadTimeout
-     * @return
+     * @param pageLoadTimeout duration
+     * @return this to enable method chaining
      */
     public TimeoutsConfigurationParticipant<D> withPageLoadTimeout(Duration pageLoadTimeout) {
         Objects.requireNonNull(pageLoadTimeout);
@@ -145,7 +146,7 @@ public class TimeoutsConfigurationParticipant<D extends WebDriver> implements We
     /**
      * This will reset implicit wait to the {@link WebDriver} implementation default
      *
-     * @return
+     * @return this to enable method chaining
      */
     public TimeoutsConfigurationParticipant<D> withoutImplicitWait() {
         this.implicitWait = null;
@@ -155,7 +156,7 @@ public class TimeoutsConfigurationParticipant<D extends WebDriver> implements We
     /**
      * This will reset page load timeout to the {@link WebDriver} implementation default
      *
-     * @return
+     * @return this to enable method chaining
      */
     public TimeoutsConfigurationParticipant<D> withoutPageLoadTimeout() {
         this.pageLoadTimeout = null;
@@ -165,7 +166,7 @@ public class TimeoutsConfigurationParticipant<D extends WebDriver> implements We
     /**
      * This will reset script timeout to the {@link WebDriver} implementation default
      *
-     * @return
+     * @return this to enable method chaining
      */
     public TimeoutsConfigurationParticipant<D> withoutScriptTimeout() {
         this.scriptTimeout = null;

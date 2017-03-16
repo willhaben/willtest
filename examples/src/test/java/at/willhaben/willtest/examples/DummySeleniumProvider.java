@@ -13,7 +13,7 @@ public class DummySeleniumProvider extends AbstractSeleniumProvider<DummySeleniu
 
     /**
      * This will be injected by {@link at.willhaben.willtest.misc.rule.SeleniumProviderFactory} based on the setter name
-     * @param patternField
+     * @param patternField just a demo dependency
      */
     public void setPattern(Pattern patternField) {
         this.patternField = patternField;
