@@ -1,5 +1,5 @@
 # willtest
-![Build Status](https://travis-ci.org/willhaben/willtest.svg?branch=master)](https://travis-ci.org/willhaben/willtest)
+![Build Status](https://travis-ci.org/willhaben/willtest.svg?branch=master)(https://travis-ci.org/willhaben/willtest)
 ## Overview
 Willtest makes integrating JUnit and Selenium easier with providing a set of 
 [JUnit rules](https://github.com/junit-team/junit4/wiki/Rules) and other utility classes which let you complete tasks 
