@@ -270,6 +270,37 @@ After customizing the POM file activating adblocker is that easy:
 new SeleniumRule().withAdBlocker();
 ```
 
+### Retry Tests
+It happens sometimes, that a Selenium HUB has some weird problems like "Connection refused", 
+"Unable to bind to locking port" or "this.getChromeWindowFromDocumentWindow(...) is undefined". Using the Retry
+ rule it is possible to retry tests if the exception matches a given matcher.
+ 
+```java
+public class RetryExample {
+    private static int counter;
+    
+    @Rule
+    public SeleniumRule seleniumRule = new SeleniumRule()
+            //Important to bind the retry rule early in the rule chain so that other rules like SeleniumProvider will be
+            // re-run in case of test failure
+            .secondOuterRule(
+                    new Retry(
+                            new ExceptionMatcher<WebDriverException>(
+                                    WebDriverException.class,
+                                    containsString("Unable to bind to locking port")),
+                            5));
+
+    @Test
+    public void testRetry() {
+        counter++;
+        if ( counter < 4 ) {
+            throw new WebDriverException("Unable to bind to locking port 63333");
+        }
+        //this line will be reached, since the retry rule works
+    }
+}
+```
+
 ## Project Roadmap
 Planned changes:
 * Upgrade to Selenium 3.x
