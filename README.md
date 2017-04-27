@@ -310,8 +310,5 @@ Planned changes:
 ## Contribution
 Willhaben accepts pull requests or other type of feedback. We do our best to reply in a short period of time.
 
-## Stability
-Willhaben uses these classes intern to run selenium tests. However please consider the current state as BETA.
-
 ## License
 MIT, Copyright (c) 2017 willhaben internet service GmbH & Co KG
