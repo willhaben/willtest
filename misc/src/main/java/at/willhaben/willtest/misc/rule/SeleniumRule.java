@@ -55,6 +55,13 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
     private RuleChain ruleChain;
 
     /**
+     * Constructs the rule without parameterObjects
+     */
+    public SeleniumRule() {
+        this(null);
+    }
+
+    /**
      * @param parameterObjects objects wich can be injected into {@link SeleniumProvider} implementations.
      *                         See {@link SeleniumProviderFactory}
      */

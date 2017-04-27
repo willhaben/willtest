@@ -26,6 +26,8 @@ public class PageSource extends TestFailureAwareRule {
     protected void onError(Description description, Throwable testFailure) throws Throwable {
         super.onError(description, testFailure);
         String pageSource = seleniumProvider.getWebDriver().getPageSource();
+        PageContentException pageContentException = new PageContentException(pageSource);
+        testFailure.addSuppressed(pageContentException);
         File destFile = TestReportFile.forTest(description).withPostix(".html").build().getFile();
         Files.write(pageSource, destFile, StandardCharsets.UTF_8);
         LOGGER.info("Saved page source as " + destFile.getAbsolutePath());

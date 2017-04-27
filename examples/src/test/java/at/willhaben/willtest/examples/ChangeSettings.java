@@ -1,6 +1,5 @@
 package at.willhaben.willtest.examples;
 
-import at.willhaben.willtest.config.DefaultFirefoxBinaryProvider;
 import at.willhaben.willtest.config.FirefoxConfigurationParticipant;
 import at.willhaben.willtest.config.WebDriverConfigurationParticipant;
 import at.willhaben.willtest.misc.rule.SeleniumRule;
@@ -23,12 +22,7 @@ public class ChangeSettings {
 
     @BeforeClass
     public static void beforeClass() {
-        assumeThat(
-                "Please define the path to your firefox executable using " +
-                        DefaultFirefoxBinaryProvider.FIREFOX_BINARY_LOCATION_SYSTEM_PROPERTY_KEY + " system property! " +
-                        "This is just an assumption to keep our build green.",
-                System.getProperty(DefaultFirefoxBinaryProvider.FIREFOX_BINARY_LOCATION_SYSTEM_PROPERTY_KEY),
-                is(notNullValue()));
+        Utils.assumeHavingFirefoxConfigured();
     }
 
     @Rule
