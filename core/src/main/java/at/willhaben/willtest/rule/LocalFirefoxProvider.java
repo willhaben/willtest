@@ -4,6 +4,7 @@ import at.willhaben.willtest.config.FirefoxConfiguration;
 import at.willhaben.willtest.config.WebDriverConfigurationParticipant;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -16,7 +17,10 @@ public class LocalFirefoxProvider extends AbstractFirefoxProvider<LocalFirefoxPr
     protected FirefoxDriver constructWebDriver(DesiredCapabilities desiredCapabilities) {
         FirefoxBinary firefoxBinary = getFirefoxConfiguration().getFirefoxBinary();
         FirefoxProfile profile = getFirefoxConfiguration().getFirefoxProfile();
-        return new FirefoxDriver(firefoxBinary, profile);
+        FirefoxOptions firefoxOptions = new FirefoxOptions();
+        firefoxOptions.setBinary(firefoxBinary);
+        firefoxOptions.setProfile(profile);
+        return new FirefoxDriver(firefoxOptions);
     }
 
     @Override

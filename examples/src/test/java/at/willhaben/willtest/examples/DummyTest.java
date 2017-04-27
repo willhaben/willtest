@@ -1,6 +1,7 @@
 package at.willhaben.willtest.examples;
 
 import at.willhaben.willtest.misc.rule.SeleniumProviderFactory;
+import at.willhaben.willtest.misc.rule.SeleniumProviderFactory.ParameterObject;
 import at.willhaben.willtest.misc.rule.SeleniumRule;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -13,7 +14,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class DummyTest {
-    private static Pattern THIS_WILL_BE_INJECTED_INTO_DUMMY_SELENIUM_PROVIDER = Pattern.compile("fooooo");
+    private static final Pattern THIS_WILL_BE_INJECTED_INTO_DUMMY_SELENIUM_PROVIDER = Pattern.compile("fooooo");
     private static String originalProvider;
 
     @BeforeClass
@@ -31,8 +32,8 @@ public class DummyTest {
     }
 
     @Rule
-    public SeleniumRule seleniumRule = new SeleniumRule(
-            new SeleniumProviderFactory.ParameterObject(Pattern.class,THIS_WILL_BE_INJECTED_INTO_DUMMY_SELENIUM_PROVIDER))
+    public final SeleniumRule seleniumRule = new SeleniumRule(
+            new ParameterObject(Pattern.class,THIS_WILL_BE_INJECTED_INTO_DUMMY_SELENIUM_PROVIDER))
             .withoutImplicitWait()
             .withoutScriptTimeout();
 

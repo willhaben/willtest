@@ -58,7 +58,7 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
      * Constructs the rule without parameterObjects
      */
     public SeleniumRule() {
-        this(null);
+        this((ParameterObject[])null);
     }
 
     /**

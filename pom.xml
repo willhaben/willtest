@@ -103,7 +103,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.selenium>2.53.1</version.selenium>
+        <version.selenium>3.4.0</version.selenium>
         <version.log4j>1.2.16</version.log4j>
     </properties>
 
