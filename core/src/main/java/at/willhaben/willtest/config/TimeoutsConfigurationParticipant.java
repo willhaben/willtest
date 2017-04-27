@@ -1,6 +1,5 @@
 package at.willhaben.willtest.config;
 
-import com.google.common.base.Function;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriver.Timeouts;
 import org.openqa.selenium.support.ui.Wait;
@@ -10,6 +9,7 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 /**
  * Adjusts timeouts available by using <code>webDriver.manage().timeouts()</code>.

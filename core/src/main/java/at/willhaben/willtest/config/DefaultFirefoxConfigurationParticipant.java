@@ -33,7 +33,6 @@ public class DefaultFirefoxConfigurationParticipant<D extends WebDriver>
     public void adjustFirefoxProfile(FirefoxProfile firefoxProfile) {
         firefoxProfile.setPreference("geo.prompt.testing", true);
         firefoxProfile.setPreference("geo.prompt.testing.allow", true);
-        firefoxProfile.setEnableNativeEvents(true);
     }
 
     @Override

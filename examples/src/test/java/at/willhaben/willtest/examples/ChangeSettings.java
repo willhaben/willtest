@@ -12,9 +12,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assume.assumeThat;
 
 public class ChangeSettings {
     private static final String GEO_LOCATION_IN_THE_MIDDLE_OF_SANKT_POELTEN =
@@ -26,7 +24,7 @@ public class ChangeSettings {
     }
 
     @Rule
-    public SeleniumRule seleniumRule = new SeleniumRule()
+    public final SeleniumRule seleniumRule = new SeleniumRule()
             //with withDefaultFirefoxSettings settings is getting your location is granted.
             //See at.willhaben.willtest.config.DefaultFirefoxConfigurationParticipant
             .withDefaultFirefoxSettings()

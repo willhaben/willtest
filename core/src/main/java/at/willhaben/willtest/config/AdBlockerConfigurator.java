@@ -3,7 +3,6 @@ package at.willhaben.willtest.config;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -61,7 +60,7 @@ public class AdBlockerConfigurator implements FirefoxConfigurationParticipant {
                         "If it does not help, your maven module is not correctly configured. " +
                         "For configuration details please read the JavaDOC of " + this.getClass().getName() + "!");
             }
-        } catch (IOException | URISyntaxException e) {
+        } catch (URISyntaxException e) {
             throw new RuntimeException("Cannot install adblocker extension!", e);
         }
     }

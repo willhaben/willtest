@@ -22,7 +22,7 @@ public class RetryExample {
             // re-run in case of test failure
             .secondOuterRule(
                     new Retry(
-                            new ExceptionMatcher<WebDriverException>(
+                            new ExceptionMatcher<>(
                                     WebDriverException.class,
                                     containsString("Unable to bind to locking port")),
                             5));

@@ -9,9 +9,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assume.assumeThat;
 
 public class FirstExample {
     private static final String REPO_HEADER_LOCATOR = "div.repohead-details-container h1";
@@ -23,7 +21,7 @@ public class FirstExample {
     }
 
     @Rule
-    public SeleniumRule seleniumRule = new SeleniumRule();
+    public final SeleniumRule seleniumRule = new SeleniumRule();
 
     @Test
     public void openPage() {
