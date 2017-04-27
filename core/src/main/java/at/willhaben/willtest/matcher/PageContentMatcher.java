@@ -39,10 +39,8 @@ public class PageContentMatcher extends TypeSafeMatcher<Throwable> {
 
     @Override
     public void describeTo(Description description) {
-        description.appendText(
-                "Matches any error having a " +
-                PageContentException.class.getName() +
-                " suppressed exception having a pageContent matching the following matcher:" );
+        description.appendText( String.format( "Matches any error having an %s suppressed exception having a " +
+                "pageContent matching the following matcher:", PageContentException.class.getName() ) );
         pageContentMatcher.describeTo(description);
     }
 
