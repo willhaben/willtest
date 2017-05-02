@@ -11,6 +11,9 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
+import java.time.Duration;
+import java.time.temporal.TemporalUnit;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -28,6 +31,7 @@ public class ChangeSettings {
             //with withDefaultFirefoxSettings settings is getting your location is granted.
             //See at.willhaben.willtest.config.DefaultFirefoxConfigurationParticipant
             .withDefaultFirefoxSettings()
+            .withImplicitWait(Duration.ofSeconds(30))
             .withFirefoxConfigurationParticipant(
                 new FirefoxConfigurationParticipant() {
                     @Override
@@ -46,7 +50,11 @@ public class ChangeSettings {
     public void testMyLocation() {
         WebDriver webDriver = seleniumRule.getWebDriver();
         webDriver.get("https://mycurrentlocation.net/");
-        assertThat(webDriver.findElement(By.cssSelector("td#latitude")).getText(),is("48.20102"));
+        By latitudeLocator = By.cssSelector("td#latitude");
+        seleniumRule
+                .getDefaultWebDriverWait()
+                .until(wd -> !wd.findElement(latitudeLocator).getText().isEmpty());
+        assertThat(webDriver.findElement(latitudeLocator).getText(),is("48.20102"));
         assertThat(webDriver.findElement(By.cssSelector("td#longitude")).getText(),is("15.62025"));
     }
 }

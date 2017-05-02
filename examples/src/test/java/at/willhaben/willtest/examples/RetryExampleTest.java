@@ -12,7 +12,7 @@ import org.openqa.selenium.WebDriverException;
 
 import static org.hamcrest.CoreMatchers.containsString;
 
-public class RetryExample {
+public class RetryExampleTest {
     private static int counter;
     private static String originalProvider;
 

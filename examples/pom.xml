@@ -38,4 +38,114 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <properties>
+        <geckodriver.version>v0.16.1</geckodriver.version>
+        <geckodriver.type>This will be overwritten by a profile for the specific platform</geckodriver.type>
+        <geckodriver.archive>geckodriver-${geckodriver.version}-${geckodriver.type}</geckodriver.archive>
+        <geckodriver.url>https://github.com/mozilla/geckodriver/releases/download/${geckodriver.version}/${geckodriver.archive}</geckodriver.url>
+        <geckodriver.extension></geckodriver.extension>
+        <geckodriver.folder>${project.build.directory}</geckodriver.folder>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-Dwebdriver.gecko.driver=${geckodriver.folder}${file.separator}geckodriver${geckodriver.extension}</argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>groovy-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>download-geckodriver</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <source><![CDATA[
+                                String url = project.properties['geckodriver.url'];
+                                String archiveName = project.properties['geckodriver.archive'];
+                                AntBuilder ant = new AntBuilder();
+                                String geckodriverFolder = project.properties['geckodriver.folder'];
+                                String archivePath = geckodriverFolder + File.separator + archiveName;
+                                File archiveFile = new File(archivePath);
+                                if (!archiveFile.exists()) {
+                                    println("Downloading geckodriver from " + url + "...");
+                                    ant.mkdir(dir: geckodriverFolder);
+                                    ant.get(
+                                            src: url,
+                                            dest: archivePath,
+                                            skipexisting: false);
+                                    if (archiveName.endsWith("tar.gz")) {
+                                        ant.untar(src: archivePath, dest: geckodriverFolder, compression: 'gzip');
+                                        ant.chmod(file:geckodriverFolder + File.separator + 'geckodriver',perm:'+x');
+                                    } else {
+                                        ant.unzip(src: archivePath, dest: geckodriverFolder);
+                                    }
+                                }
+                                ]]></source>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>mac</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <geckodriver.type>macos.tar.gz</geckodriver.type>
+            </properties>
+        </profile>
+        <profile>
+            <id>linux</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <arch>amd64</arch>
+                </os>
+            </activation>
+            <properties>
+                <geckodriver.type>linux64.tar.gz</geckodriver.type>
+            </properties>
+        </profile>
+        <profile>
+            <id>win32</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                    <arch>x86</arch>
+                </os>
+            </activation>
+            <properties>
+                <geckodriver.type>win32.zip</geckodriver.type>
+                <geckodriver.extension>.exe</geckodriver.extension>
+            </properties>
+        </profile>
+        <profile>
+            <id>win64</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                    <arch>x64</arch>
+                </os>
+            </activation>
+            <properties>
+                <geckodriver.type>win64.zip</geckodriver.type>
+                <geckodriver.extension>.exe</geckodriver.extension>
+            </properties>
+        </profile>
+    </profiles>
 </project>
