@@ -276,7 +276,7 @@ It happens sometimes, that a Selenium HUB has some weird problems like "Connecti
  rule it is possible to retry tests if the exception matches a given matcher.
  
 ```java
-public class RetryExample {
+public class RetryExampleTest {
     private static int counter;
     
     @Rule
