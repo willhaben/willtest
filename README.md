@@ -10,9 +10,8 @@ like:
 * Supporting uploading of any file from file system or classpath
 
 ## Requirements
-* Currently Selenium 2.53.1 is used, upgrade to Selenium 3.x is planned
-* Firefox local and on Selenium Hub is supported _**(2.53.1 version of Selenium works with Firefox versions<=46.x!)**_. 
-Adding new Browsers is easily possible with implementing the ```SeleniumProvider``` interface.
+* Currently Selenium 3.4.0 is used
+* Firefox local and on Selenium Hub is supported. Adding new Browsers is easily possible with implementing the ```SeleniumProvider``` interface.
 * Java 8
 
 ## Getting Started
@@ -41,14 +40,15 @@ maven project:
 </dependency>
 ```
 
-Since Selenium 2.53.1 works only with Firefox versions <=46.x, the portable edition of Firefox 46 has to be downloaded 
-from 
-[sourceforge](https://sourceforge.net/projects/portableapps/files/Mozilla%20Firefox%2C%20Portable%20Ed./Mozilla%20Firefox%2C%20Portable%20Edition%2046.0/)
-
-A system property to the test launch configuration or surefire settings has to be appended:
+Firefox executable must be on the path, or the path to the executable can be defined by using the followint system property:
 ```
 ffBinary=YOUR_PATH_TO_FIREFOX_EXECUTABLE
 ```
+
+[Geckodriver](https://github.com/mozilla/geckodriver/releases) is also needed to run a test with Firefox + Selenium.
+ The path of geckodriver executable is expected in [webdriver.gecko.driver](http://learn-automation.com/use-firefox-selenium-using-geckodriver-selenium-3/) 
+ system property. In the [POM of the examples module](https://github.com/willhaben/willtest/blob/master/examples/pom.xml)
+ there is an automated way shown, which downloads and applies the geckodriver in surefire settigns.
 
 Now the environment is ready to be used like this:
 
@@ -303,7 +303,6 @@ public class RetryExampleTest {
 
 ## Project Roadmap
 Planned changes:
-* Upgrade to Selenium 3.x
 * Appium integration
 * Creating a rule, which supports asserting the browser request using a proxy
 
