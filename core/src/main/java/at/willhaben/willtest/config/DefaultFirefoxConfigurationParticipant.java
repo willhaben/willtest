@@ -33,6 +33,9 @@ public class DefaultFirefoxConfigurationParticipant<D extends WebDriver>
     public void adjustFirefoxProfile(FirefoxProfile firefoxProfile) {
         firefoxProfile.setPreference("geo.prompt.testing", true);
         firefoxProfile.setPreference("geo.prompt.testing.allow", true);
+        //disable multi-process tabs -> avoids crashing of tabs with the message "Gah. Your tab just crashed!!!".
+        firefoxProfile.setPreference("browser.tabs.remote.autostart.2", false);
+        firefoxProfile.setPreference("browser.tabs.remote.autostart", false);
     }
 
     @Override
