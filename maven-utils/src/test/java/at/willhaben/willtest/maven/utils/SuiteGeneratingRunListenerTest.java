@@ -1,4 +1,4 @@
-package at.willhaben.willtest.maven;
+package at.willhaben.willtest.maven.utils;
 
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
@@ -18,7 +18,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static at.willhaben.willtest.maven.SuiteGeneratingRunListener.SUITE_TARGET_CLASS_NAME_PREFIX;
 import static com.jcabi.matchers.RegexMatchers.containsPattern;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
@@ -59,7 +58,7 @@ public class SuiteGeneratingRunListenerTest {
         suiteGeneratingRunListener.testStarted(
                 descriptionStubOf(FileInputStream.class.getName(), "methodX", "methodX[alma]"));
         suiteGeneratingRunListener.testRunFinished(mock(Result.class));
-        String name = SUITE_TARGET_CLASS_NAME_PREFIX.replace('.', File.separatorChar) + "_" + FIX_DATE + ".java";
+        String name = SuiteGeneratingRunListener.SUITE_TARGET_CLASS_NAME_PREFIX.replace('.', File.separatorChar) + "_" + FIX_DATE + ".java";
         File expectedTargetFile = new File(
                 temporaryFolder.getRoot().getAbsolutePath() + File.separator +
                         "target" + File.separator + name);

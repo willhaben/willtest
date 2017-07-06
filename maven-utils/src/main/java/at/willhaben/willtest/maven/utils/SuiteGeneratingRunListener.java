@@ -1,4 +1,4 @@
-package at.willhaben.willtest.maven;
+package at.willhaben.willtest.maven.utils;
 
 import com.sun.codemodel.internal.*;
 import org.junit.runner.Description;
