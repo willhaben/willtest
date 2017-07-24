@@ -20,6 +20,7 @@ public class BrowserstackSeleniumProvider extends
         AbstractSeleniumProvider<BrowserstackSeleniumProvider, RemoteWebDriver> {
     private static final String BROWSERSTACK_HUB_SYSTEM_PROPERTY_KEY = "browserstack.hub";
     private static final String BROWSERSTACK_HUB_LOCAL_SYSTEM_PROPERTY_KEY = "browserstack.local";
+    private static final String BROWSERSTACK = "platforms";
 
     private final DateTimeFormatter BUILD_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 

@@ -28,6 +28,15 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>browserstack</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.browserstack</groupId>
+            <artifactId>browserstack-local-java</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -46,6 +55,11 @@
         <geckodriver.url>https://github.com/mozilla/geckodriver/releases/download/${geckodriver.version}/${geckodriver.archive}</geckodriver.url>
         <geckodriver.extension></geckodriver.extension>
         <geckodriver.folder>${project.build.directory}</geckodriver.folder>
+
+        <browserstack.type>This will be overwritten by a profile for the specific platform</browserstack.type>
+        <browserstack.url>https://www.browserstack.com/browserstack-local/BrowserStackLocal-${browserstack.type}.zip</browserstack.url>
+        <browserstack.archive>BrowserStackLocal-${browserstack.type}.zip</browserstack.archive>
+        <browserstack.folder>${project.build.directory}</browserstack.folder>
     </properties>
 
     <build>
@@ -53,8 +67,24 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.20</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit47</artifactId>
+                        <version>2.20</version>
+                    </dependency>
+                </dependencies>
                 <configuration>
                     <argLine>-Dwebdriver.gecko.driver=${geckodriver.folder}${file.separator}geckodriver${geckodriver.extension}</argLine>
+                    <properties>
+                        <property>
+                            <name>listener</name>
+                            <value>at.willhaben.willtest.browserstack.rule.BrowserstackListener</value>
+                        </property>
+                    </properties>
+                    <skip>false</skip>
+                    <groups>at.willhaben.willtest.examples.BrTest</groups>
                 </configuration>
             </plugin>
             <plugin>
@@ -92,6 +122,37 @@
                                 ]]></source>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>download-browserstack-local</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <source><![CDATA[
+                                String url = project.properties['browserstack.url'];
+                                String archiveName = project.properties['browserstack.archive'];
+                                AntBuilder ant = new AntBuilder();
+                                String browserstackFolder = project.properties['browserstack.folder'];
+                                String archivePath = browserstackFolder + File.separator + archiveName;
+                                File archiveFile = new File(archivePath);
+                                if (!archiveFile.exists()) {
+                                    println("Downloading browserstack-local from " + url + "...");
+                                    ant.mkdir(dir: browserstackFolder);
+                                    ant.get(
+                                            src: url,
+                                            dest: archivePath,
+                                            skipexisting: false);
+                                    if (archiveName.endsWith("tar.gz")) {
+                                        ant.untar(src: archivePath, dest: browserstackFolder, compression: 'gzip');
+                                        ant.chmod(file:browserstackFolder + File.separator + 'BrowserStackLocal',perm:'+x');
+                                    } else {
+                                        ant.unzip(src: archivePath, dest: browserstackFolder);
+                                    }
+                                }
+                                ]]></source>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
@@ -107,6 +168,7 @@
             </activation>
             <properties>
                 <geckodriver.type>macos.tar.gz</geckodriver.type>
+                <browserstack.type>darwin-x64</browserstack.type>
             </properties>
         </profile>
         <profile>
@@ -119,6 +181,7 @@
             </activation>
             <properties>
                 <geckodriver.type>linux64.tar.gz</geckodriver.type>
+                <browserstack.type>linux-x64</browserstack.type>
             </properties>
         </profile>
         <profile>
@@ -132,6 +195,7 @@
             <properties>
                 <geckodriver.type>win32.zip</geckodriver.type>
                 <geckodriver.extension>.exe</geckodriver.extension>
+                <browserstack.type>win32</browserstack.type>
             </properties>
         </profile>
         <profile>
@@ -145,6 +209,7 @@
             <properties>
                 <geckodriver.type>win64.zip</geckodriver.type>
                 <geckodriver.extension>.exe</geckodriver.extension>
+                <browserstack.type>win32</browserstack.type>
             </properties>
         </profile>
     </profiles>
