@@ -6,6 +6,7 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.events.WebDriverEventListener;
 
 import static org.mockito.Mockito.mock;
 
@@ -18,6 +19,11 @@ public class MockedSeleniumProvider implements SeleniumProvider<MockedSeleniumPr
     @Override
     public MockedSeleniumProvider addWebDriverConfigurationParticipant(
             WebDriverConfigurationParticipant<WebDriver> webDriverConfigurationParticipant) {
+        return this;
+    }
+
+    @Override
+    public MockedSeleniumProvider addWebDriverEventListener(WebDriverEventListener listener) {
         return this;
     }
 

@@ -1,6 +1,7 @@
 package at.willhaben.willtest.misc.rule;
 
 import at.willhaben.willtest.config.*;
+import at.willhaben.willtest.log4j.SeleniumEventListener;
 import at.willhaben.willtest.misc.rule.SeleniumProviderFactory.ParameterObject;
 import at.willhaben.willtest.rule.*;
 import org.apache.commons.lang3.ArrayUtils;
@@ -10,6 +11,7 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.ElementScrollBehavior;
+import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.openqa.selenium.support.ui.Wait;
 
 import java.time.Duration;
@@ -72,6 +74,8 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
         defaultSeleniumProvider = SeleniumProviderFactory.createSeleniumProviderRule(allParameterObjects);
         defaultSeleniumProvider.addWebDriverConfigurationParticipant(new FileDetectorConfigurator<>());
         defaultSeleniumProvider.addWebDriverConfigurationParticipant(timeoutsConfigurationParticipant);
+        SeleniumEventListener seleniumEventListener = new SeleniumEventListener();
+        defaultSeleniumProvider.addWebDriverEventListener(seleniumEventListener);
 
         DefaultFirefoxConfigurationParticipant<D> defaultFirefoxConfigurationParticipant =
                 new DefaultFirefoxConfigurationParticipant<>();
@@ -88,6 +92,7 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
 
         ruleChain = RuleChain
                 .outerRule(defaultSeleniumProvider)
+                .around(seleniumEventListener)
                 .around(webDriverLog)
                 .around(pageSource)
                 .around(screenshot)
@@ -97,13 +102,20 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
     }
 
     @Override
-    public D getWebDriver() {
+    public WebDriver getWebDriver() {
         return defaultSeleniumProvider.getWebDriver();
     }
+
 
     @Override
     public SeleniumRule<P, D> addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant<D> webDriverConfigurationParticipant) {
         defaultSeleniumProvider.addWebDriverConfigurationParticipant(webDriverConfigurationParticipant);
+        return this;
+    }
+
+    @Override
+    public SeleniumRule<P, D> addWebDriverEventListener(WebDriverEventListener listener) {
+        defaultSeleniumProvider.addWebDriverEventListener(listener);
         return this;
     }
 
