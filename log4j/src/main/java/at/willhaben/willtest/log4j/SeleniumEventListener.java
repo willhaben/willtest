@@ -130,7 +130,7 @@ public class SeleniumEventListener extends TestFailureAwareRule implements WebDr
 
     @Override
     public void onException(Throwable throwable, WebDriver webDriver) {
-        LOGGER.error("\n\nFollowing exception was thrown\n" + throwable.toString());
+
     }
 
     @Override
@@ -146,6 +146,7 @@ public class SeleniumEventListener extends TestFailureAwareRule implements WebDr
         super.after(description, testFailure);
         try {
             if (Objects.nonNull(testFailure)) {
+                LOGGER.error("\n\n\nTest failed with error: ", testFailure);
                 TestReportFile testReportFile = TestReportFile.forTest(description).withPostix("_action.log").build();
                 FileUtils.copyFile(tempFile, testReportFile.getFile());
             }
