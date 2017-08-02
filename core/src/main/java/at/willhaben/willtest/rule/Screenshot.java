@@ -2,14 +2,17 @@ package at.willhaben.willtest.rule;
 
 import at.willhaben.willtest.config.SeleniumProvider;
 import at.willhaben.willtest.util.TestReportFile;
-import com.google.common.io.Files;
 import org.junit.runner.Description;
-import org.openqa.selenium.OutputType;
+import org.openqa.selenium.By;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.yandex.qatools.ashot.AShot;
+import ru.yandex.qatools.ashot.screentaker.ViewportPastingStrategy;
 
+import javax.imageio.ImageIO;
 import java.io.File;
 
 /**
@@ -30,9 +33,15 @@ public class Screenshot extends TestFailureAwareRule {
         super.onError(description, testFailure);
         WebDriver webDriver = seleniumProvider.getWebDriver();
         if (webDriver instanceof TakesScreenshot) {
-            byte[] screenshot = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES);
+            WebElement body = webDriver.findElement(By.cssSelector(".page-wrap"));
+            ru.yandex.qatools.ashot.Screenshot screenshot = new AShot()
+                    .shootingStrategy(new ViewportPastingStrategy(1000, 79)).takeScreenshot(webDriver, body);
+
+            //byte[] screenshot = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES);
             File destFile = TestReportFile.forTest(description).withPostix(".png").build().getFile();
-            Files.write(screenshot, destFile);
+            ImageIO.write(screenshot.getImage(), "PNG", destFile);
+
+            //Files.write(screenshot, destFile);
             LOGGER.info("Saved screenshot as " + destFile.getAbsolutePath());
         } else {
             testFailure.addSuppressed(
