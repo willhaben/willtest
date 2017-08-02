@@ -1,5 +1,6 @@
 package at.willhaben.willtest.config;
 
+import org.junit.rules.TestRule;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -41,7 +42,7 @@ public interface SeleniumProvider<P extends SeleniumProvider, D extends WebDrive
      */
     P addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant<D> webDriverConfigurationParticipant);
 
-    P addWebDriverEventListener(WebDriverEventListener listener);
+    <T extends WebDriverEventListener & TestRule> P addWebDriverEventListener(T listener);
 
     /**
      * Gives back the current instance as #P back to make method chaining possible in a type safe manner.

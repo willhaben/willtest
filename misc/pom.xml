@@ -44,9 +44,5 @@
             <artifactId>log4j</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>log4j</artifactId>
-        </dependency>
     </dependencies>
 </project>

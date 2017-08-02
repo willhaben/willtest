@@ -17,14 +17,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
-/**
- * Created by michael on 24.07.17.
- */
 public class SeleniumEventListener extends TestFailureAwareRule implements WebDriverEventListener{
 
+    private static final String LOGGER_NAME = "selenium_event_logger";
     private static final String APPENDER_NAME = "selenium_event_appender";
-    private static final Logger LOGGER = Logger.getLogger(APPENDER_NAME);
-    private static final String PATTERN = "[%5p] %d{HH:mm:ss} %m";
+    private static final Logger LOGGER = Logger.getLogger(LOGGER_NAME);
+    private static final String PATTERN = "[%5p] %d{HH:mm:ss} %m%n";
 
     private File tempFile;
 
@@ -95,17 +93,17 @@ public class SeleniumEventListener extends TestFailureAwareRule implements WebDr
 
     @Override
     public void afterFindBy(By by, WebElement webElement, WebDriver webDriver) {
-        LOGGER.info("Find following element: " + by + "\n");
+        LOGGER.info("Find following element: " + by);
     }
 
     @Override
     public void beforeClickOn(WebElement webElement, WebDriver webDriver) {
-        LOGGER.info("Current url: " + webDriver.getCurrentUrl() + "\n");
+        LOGGER.info("Current url: " + webDriver.getCurrentUrl());
     }
 
     @Override
     public void afterClickOn(WebElement webElement, WebDriver webDriver) {
-        LOGGER.info("Clicked on: " + webElement + "\n");
+        LOGGER.info("Clicked on: " + getElementSelector(webElement));
     }
 
     @Override
@@ -115,7 +113,11 @@ public class SeleniumEventListener extends TestFailureAwareRule implements WebDr
 
     @Override
     public void afterChangeValueOf(WebElement webElement, WebDriver webDriver, CharSequence[] charSequences) {
-        LOGGER.info("Input in: " + webElement + "\n");
+        StringBuilder stringBuilder = new StringBuilder();
+        for (CharSequence charSequence : charSequences) {
+            stringBuilder.append("['").append(charSequence).append("']");
+        }
+        LOGGER.info("Input in: " + getElementSelector(webElement) + " --- Input text: " + stringBuilder.toString());
     }
 
     @Override
@@ -133,12 +135,20 @@ public class SeleniumEventListener extends TestFailureAwareRule implements WebDr
 
     }
 
+    private String getElementSelector(WebElement webElement) {
+        String elementIdentifier = webElement.toString();
+        String selector = elementIdentifier.substring(elementIdentifier.indexOf("->"));
+        return selector;
+    }
+
     @Override
     protected void before(Description description) throws Throwable {
         super.before(description);
         tempFile = File.createTempFile("selenium_actions", ".log");
         Appender appender = createAppender(tempFile);
-        Logger.getRootLogger().addAppender(appender);
+        Logger logger = Logger.getLogger(LOGGER_NAME);
+        logger.addAppender(appender);
+        logger.setAdditivity(false);
     }
 
     @Override
@@ -155,13 +165,13 @@ public class SeleniumEventListener extends TestFailureAwareRule implements WebDr
                 LOGGER.error("Could not delete temp file at " + tempFile.getAbsolutePath());
             }
             tempFile = null;
-            Logger.getRootLogger().removeAppender(APPENDER_NAME);
+            Logger.getLogger(LOGGER_NAME).removeAppender(APPENDER_NAME);
         }
     }
 
     private Appender createAppender(File file) throws IOException {
         PatternLayout patternLayout = new PatternLayout(PATTERN);
-        FileAppender fileAppender = new FileAppender(patternLayout, tempFile.getAbsolutePath(), true);
+        FileAppender fileAppender = new FileAppender(patternLayout, file.getAbsolutePath(), true);
         fileAppender.setName(APPENDER_NAME);
         return fileAppender;
     }

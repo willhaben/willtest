@@ -1,7 +1,6 @@
 package at.willhaben.willtest.misc.rule;
 
 import at.willhaben.willtest.config.*;
-import at.willhaben.willtest.log4j.SeleniumEventListener;
 import at.willhaben.willtest.misc.rule.SeleniumProviderFactory.ParameterObject;
 import at.willhaben.willtest.rule.*;
 import org.apache.commons.lang3.ArrayUtils;
@@ -74,8 +73,6 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
         defaultSeleniumProvider = SeleniumProviderFactory.createSeleniumProviderRule(allParameterObjects);
         defaultSeleniumProvider.addWebDriverConfigurationParticipant(new FileDetectorConfigurator<>());
         defaultSeleniumProvider.addWebDriverConfigurationParticipant(timeoutsConfigurationParticipant);
-        SeleniumEventListener seleniumEventListener = new SeleniumEventListener();
-        defaultSeleniumProvider.addWebDriverEventListener(seleniumEventListener);
 
         DefaultFirefoxConfigurationParticipant<D> defaultFirefoxConfigurationParticipant =
                 new DefaultFirefoxConfigurationParticipant<>();
@@ -92,7 +89,6 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
 
         ruleChain = RuleChain
                 .outerRule(defaultSeleniumProvider)
-                .around(seleniumEventListener)
                 .around(webDriverLog)
                 .around(pageSource)
                 .around(screenshot)
@@ -114,9 +110,9 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
     }
 
     @Override
-    public SeleniumRule<P, D> addWebDriverEventListener(WebDriverEventListener listener) {
+    public <T extends WebDriverEventListener & TestRule> SeleniumRule<P, D> addWebDriverEventListener(T listener) {
         defaultSeleniumProvider.addWebDriverEventListener(listener);
-        return this;
+        return secondOuterRule(listener);
     }
 
     @Override
