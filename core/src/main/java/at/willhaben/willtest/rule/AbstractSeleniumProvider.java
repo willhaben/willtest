@@ -2,6 +2,7 @@ package at.willhaben.willtest.rule;
 
 import at.willhaben.willtest.config.SeleniumProvider;
 import at.willhaben.willtest.config.WebDriverConfigurationParticipant;
+import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -45,7 +46,7 @@ public abstract class AbstractSeleniumProvider<P extends SeleniumProvider<P, D>,
     }
 
     @Override
-    public P addWebDriverEventListener(WebDriverEventListener listener) {
+    public <T extends WebDriverEventListener & TestRule> P addWebDriverEventListener(T listener) {
         eventListeners.add(listener);
         return getThis();
     }
