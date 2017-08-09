@@ -11,7 +11,9 @@ import ru.yandex.qatools.ashot.AShot;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-
+/**
+ * Created by michael on 09.08.17.
+ */
 public class ScreenshotProviderExampleTest {
 
     @Rule
@@ -23,9 +25,9 @@ public class ScreenshotProviderExampleTest {
                     .getImage());
 
     @Test
-    public void testCustomScreenshotProvider() {
+    public void testCustomScreenshotProviderOnError() {
         WebDriver webDriver = rule.getWebDriver();
-        webDriver.get("https://www.w3schools.com/bootstrap/bootstrap_navbar.asp");
+        webDriver.get("https://www.w3schools.com/howto/howto_css_alert_buttons.asp");
         assertThat(true, is(false));
     }
 }

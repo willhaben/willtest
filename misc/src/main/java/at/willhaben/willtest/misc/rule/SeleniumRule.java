@@ -84,7 +84,8 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
         firefoxConfiguration.addFirefoxConfigurationParticipant(javascriptErrorRule);
         WebDriverLog<P, D> webDriverLog = new WebDriverLog<>(defaultSeleniumProvider);
         PageSource pageSource = new PageSource(defaultSeleniumProvider);
-        screenshotRule = new ScreenshotRule(defaultSeleniumProvider);
+        screenshotRule = new ScreenshotRule(defaultSeleniumProvider)
+                .setScreenshotProvider(new DefaultScreenshotProvider());
         JavascriptAlert javascriptAlert = new JavascriptAlert(defaultSeleniumProvider);
 
         ruleChain = RuleChain
