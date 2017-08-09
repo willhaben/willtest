@@ -11,7 +11,6 @@ import org.junit.runners.model.Statement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.ElementScrollBehavior;
 import org.openqa.selenium.support.ui.Wait;
-import ru.yandex.qatools.ashot.screentaker.ShootingStrategy;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -252,8 +251,13 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
         return this;
     }
 
-    public SeleniumRule<P, D> useScreenshotShootingStrategy(ShootingStrategy shootingStrategy) {
-        screenshotRule.withShootingStrategy(shootingStrategy);
+    /**
+     * Sets the screenshotProvider to use a custom implementation to take a screenshot with {@link WebDriver}.
+     * @param screenshotProvider custom implementation of the {@link ScreenshotProvider} interface
+     * @return this to enable method chaining
+     */
+    public SeleniumRule<P, D> setScreenshotProvider(ScreenshotProvider screenshotProvider) {
+        screenshotRule.setScreenshotProvider(screenshotProvider);
         return this;
     }
 }

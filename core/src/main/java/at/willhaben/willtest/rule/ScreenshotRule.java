@@ -1,5 +1,7 @@
 package at.willhaben.willtest.rule;
 
+import at.willhaben.willtest.config.DefaultScreenshotProvider;
+import at.willhaben.willtest.config.ScreenshotProvider;
 import at.willhaben.willtest.config.SeleniumProvider;
 import at.willhaben.willtest.util.TestReportFile;
 import org.junit.runner.Description;
@@ -7,13 +9,10 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.yandex.qatools.ashot.AShot;
-import ru.yandex.qatools.ashot.Screenshot;
-import ru.yandex.qatools.ashot.screentaker.ShootingStrategy;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.Objects;
 
 /**
  * Creates a PNG screenshot if there is a test failure. Please note, that creating the screenshot is not instant
@@ -22,7 +21,7 @@ import java.util.Objects;
 public class ScreenshotRule extends TestFailureAwareRule {
     private static final Logger LOGGER = LoggerFactory.getLogger(ScreenshotRule.class);
     private final SeleniumProvider seleniumProvider;
-    private ShootingStrategy shootingStrategy;
+    private ScreenshotProvider screenshotProvider = new DefaultScreenshotProvider();
 
     public ScreenshotRule(SeleniumProvider seleniumProvider) {
         this.seleniumProvider = seleniumProvider;
@@ -33,14 +32,10 @@ public class ScreenshotRule extends TestFailureAwareRule {
         super.onError(description, testFailure);
         WebDriver webDriver = seleniumProvider.getWebDriver();
         if (webDriver instanceof TakesScreenshot) {
-            AShot aShot = new AShot();
-            if(Objects.nonNull(shootingStrategy)) {
-                aShot.shootingStrategy(shootingStrategy);
-            }
-            Screenshot screenshot = aShot.takeScreenshot(webDriver);
+            BufferedImage screenshot = screenshotProvider.takeScreenshot(webDriver);
 
             File destFile = TestReportFile.forTest(description).withPostix(".png").build().getFile();
-            ImageIO.write(screenshot.getImage(), "PNG", destFile);
+            ImageIO.write(screenshot, "PNG", destFile);
 
             LOGGER.info("Saved screenshot as " + destFile.getAbsolutePath());
         } else {
@@ -52,8 +47,7 @@ public class ScreenshotRule extends TestFailureAwareRule {
         }
     }
 
-    public ScreenshotRule withShootingStrategy(ShootingStrategy shootingStrategy) {
-        this.shootingStrategy = shootingStrategy;
-        return this;
+    public void setScreenshotProvider(ScreenshotProvider screenshotProvider) {
+        this.screenshotProvider = screenshotProvider;
     }
 }
