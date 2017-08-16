@@ -124,11 +124,15 @@ public class SeleniumEventListener extends TestFailureAwareRule implements WebDr
 
     @Override
     public void afterChangeValueOf(WebElement webElement, WebDriver webDriver, CharSequence[] charSequences) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (CharSequence charSequence : charSequences) {
-            stringBuilder.append("['").append(charSequence).append("']");
+        if(Objects.nonNull(charSequences)) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (CharSequence charSequence : charSequences) {
+                stringBuilder.append("['").append(charSequence).append("']");
+            }
+            LOGGER.info("Input in: " + getElementSelector(webElement) + " --- Input text: " + stringBuilder.toString());
+        } else {
+            LOGGER.info("Input in: " + getElementSelector(webElement) + " --- Cleared field");
         }
-        LOGGER.info("Input in: " + getElementSelector(webElement) + " --- Input text: " + stringBuilder.toString());
     }
 
     @Override
