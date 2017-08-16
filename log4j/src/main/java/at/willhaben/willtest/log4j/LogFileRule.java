@@ -5,6 +5,7 @@ import at.willhaben.willtest.rule.LogContext;
 import at.willhaben.willtest.util.TestReportFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.*;
+import org.junit.AssumptionViolatedException;
 import org.junit.runner.Description;
 
 import java.io.File;
@@ -28,6 +29,7 @@ public class LogFileRule extends TestFailureAwareRule {
     private File tempFile;
     private Level threshold = Level.INFO;
     private boolean saveOnlyOnError = true;
+    private boolean saveOnAssumptionViolation = false;
     private Appender appender;
 
     public LogFileRule() {
@@ -40,6 +42,11 @@ public class LogFileRule extends TestFailureAwareRule {
 
     public void setThreshold(Level threshold) {
         this.threshold = threshold;
+    }
+
+    public LogFileRule saveOnAssumptionViolation(boolean value) {
+        this.saveOnAssumptionViolation = value;
+        return this;
     }
 
     @Override
@@ -62,15 +69,23 @@ public class LogFileRule extends TestFailureAwareRule {
     public void after(Description description, Throwable testFailure) throws Throwable {
         super.after(description, testFailure);
         try {
+            boolean isAssumptionViolation = false;
             if (testFailure != null) {
-                LOGGER.error("Test failed with error: ", testFailure);
+                if (AssumptionViolatedException.class.isAssignableFrom(testFailure.getClass())) {
+                    isAssumptionViolation = true;
+                    LOGGER.error("Test assumption was violated: ", testFailure);
+                    testFailure = null;
+                } else {
+                    LOGGER.error("Test failed with error: ", testFailure);
+                }
             }
             Logger.getRootLogger().removeAppender(appender);
             appender.close();
             appender = null;
-            if (!saveOnlyOnError || testFailure != null) {
-                TestReportFile testReportFile = TestReportFile.forTest(description).withPostix(".log").build();
-                FileUtils.copyFile(tempFile, testReportFile.getFile());
+            if (isAssumptionViolation && saveOnAssumptionViolation) {
+                saveToFileWithPostfix(description, "_AV.log");
+            } else if (!saveOnlyOnError || testFailure != null) {
+                saveToFileWithPostfix(description, ".log");
             }
         } finally {
             if (!tempFile.delete()) {
@@ -78,5 +93,10 @@ public class LogFileRule extends TestFailureAwareRule {
             }
             tempFile = null;
         }
+    }
+
+    private void saveToFileWithPostfix(Description description, String postfix) throws IOException {
+        TestReportFile testReportFile = TestReportFile.forTest(description).withPostix(postfix).build();
+        FileUtils.copyFile(tempFile, testReportFile.getFile());
     }
 }
