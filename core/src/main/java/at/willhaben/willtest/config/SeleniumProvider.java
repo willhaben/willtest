@@ -42,6 +42,13 @@ public interface SeleniumProvider<P extends SeleniumProvider, D extends WebDrive
      */
     P addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant<D> webDriverConfigurationParticipant);
 
+    /**
+     * Registers a new instance of {@link WebDriverEventListener} & {@link TestRule} to the created
+     * {@link SeleniumProvider}.
+     *
+     * @param listener Implementation of {@link WebDriverEventListener} & {@link TestRule} added to the list of listeners
+     * @return the provider itself to make method chaining possible
+     */
     <T extends WebDriverEventListener & TestRule> P addWebDriverEventListener(T listener);
 
     /**

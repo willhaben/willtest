@@ -17,6 +17,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * This implementation of {@link WebDriverEventListener} creates a separate log file and save some actions
+ * of the test to it. Should help to determine the failure of a test. (Only created if the test fails)
+ * <ul>
+ *     <li>beforeClickOn: saves the current url</li>
+ *     <li>afterClickOn: saves the identifier of the clicked element</li>
+ *     <li>beforeFindBy: saves the identifier of the element</li>
+ *     <li>afterChangeValueOf: saves the identifier of the input element and the entered value</li>
+ *     <li>onError: saves the thrown exception</li>
+ * </ul>
+ */
 public class SeleniumEventListener extends TestFailureAwareRule implements WebDriverEventListener{
 
     private static final String LOGGER_NAME = "selenium_event_logger";
@@ -88,12 +99,12 @@ public class SeleniumEventListener extends TestFailureAwareRule implements WebDr
 
     @Override
     public void beforeFindBy(By by, WebElement webElement, WebDriver webDriver) {
-
+        LOGGER.info("Try to find following element: " + by);
     }
 
     @Override
     public void afterFindBy(By by, WebElement webElement, WebDriver webDriver) {
-        LOGGER.info("Find following element: " + by);
+
     }
 
     @Override
