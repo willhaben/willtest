@@ -62,21 +62,23 @@ public class FixedTopBarShootingStrategy extends ShootingStrategy {
         int allW = getFullWidth(wd);
         int winH = getWindowHeight(wd);
 
+        winH = winH - headerToCut;
         int scrollTimes = allH / winH;
-        int tail = allH - winH * scrollTimes + headerToCut * scrollTimes;
+        int tail = allH - winH * scrollTimes;
 
         BufferedImage finalImage = new BufferedImage(allW, allH, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics2D graphics = finalImage.createGraphics();
 
         js.executeScript("scrollTo(0, arguments[0])", 0);
+        waitForScrolling();
         BufferedImage firstPart = simple().getScreenshot(wd);
         graphics.drawImage(firstPart, 0, 0, null);
 
         for (int n = 1; n < scrollTimes; n++) {
-            js.executeScript("scrollTo(0, arguments[0])", winH * n - headerToCut * n);
+            js.executeScript("scrollTo(0, arguments[0])", winH * n);
             waitForScrolling();
             BufferedImage part = getHeaderCutImage(wd);
-            graphics.drawImage(part, 0, n * winH - headerToCut * (n-1) , null);
+            graphics.drawImage(part, 0, n * winH + headerToCut, null);
         }
 
         if (tail > 0) {
@@ -84,7 +86,7 @@ public class FixedTopBarShootingStrategy extends ShootingStrategy {
             waitForScrolling();
             BufferedImage last = getHeaderCutImage(wd);
             BufferedImage tailImage = last.getSubimage(0, last.getHeight() - tail, last.getWidth(), tail);
-            graphics.drawImage(tailImage, 0, scrollTimes * winH - headerToCut * (scrollTimes), null);
+            graphics.drawImage(tailImage, 0, scrollTimes * winH, null);
         }
         graphics.dispose();
 
@@ -93,20 +95,16 @@ public class FixedTopBarShootingStrategy extends ShootingStrategy {
 
     private void calculateHeaderSizeToCut(WebDriver webDriver) {
         if (headerToCut == 0) {
-            WebDriverWait webDriverWait = new WebDriverWait(webDriver, 1, 100);
-            webDriverWait.until(driver -> {
-                try {
-                    WebElement headerElement = driver.findElement(topElementToRemove);
-                    int height = headerElement.getSize().getHeight();
-                    if (height > headerToCut) {
-                        headerToCut = height;
-                    }
-                    return true;
-                } catch (NoSuchElementException | TimeoutException e) {
-                    LOGGER.warn("Can't find element [" + topElementToRemove + "] to calculate the height of the top navigation. Remove height is set to zero.");
-                    return false;
+            try {
+                WebElement headerElement = webDriver.findElement(topElementToRemove);
+                int height = headerElement.getSize().getHeight();
+                if (height > headerToCut) {
+                    headerToCut = height;
                 }
-            });
+            } catch (NoSuchElementException | TimeoutException e) {
+                LOGGER.warn("Can't find element [" + topElementToRemove + "] to calculate the height of the top " +
+                        "navigation. Remove height is set to zero.");
+            }
         }
     }
 
