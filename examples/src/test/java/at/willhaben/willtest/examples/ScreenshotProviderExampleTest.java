@@ -11,9 +11,6 @@ import ru.yandex.qatools.ashot.AShot;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-/**
- * Created by michael on 09.08.17.
- */
 public class ScreenshotProviderExampleTest {
 
     @Rule
