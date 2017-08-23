@@ -26,31 +26,19 @@ public class FixedTopBarShootingStrategy extends ShootingStrategy {
     /**
      * Creates shootingstragety which takes screenshot of the whole page and the
      * ability to remove a fixed header navbar
-     * @param scrollTimeout wait ms after scrolling
      * @param topElementToRemove unique identifier of the top navbar
      */
-    public FixedTopBarShootingStrategy(int scrollTimeout, By topElementToRemove) {
-        this(scrollTimeout);
+    public FixedTopBarShootingStrategy(By topElementToRemove) {
         this.topElementToRemove = topElementToRemove;
     }
 
     /**
      * Creates shootingstragety which takes screenshot of the whole page and the
      * ability to remove a fixed header navbar
-     * @param scrollTimeout wait ms after scrolling
      * @param headerToCut size of the header to remove in px
      */
-    public FixedTopBarShootingStrategy(int scrollTimeout, int headerToCut) {
-        this(scrollTimeout);
+    public FixedTopBarShootingStrategy(int headerToCut) {
         this.headerToCut = headerToCut;
-    }
-
-    /**
-     * Creates shootingstragety which takes screenshot of the whole page
-     * @param scrollTimeout wait ms after scrolling
-     */
-    public FixedTopBarShootingStrategy(int scrollTimeout) {
-        this.scrollTimeout = scrollTimeout;
     }
 
     @Override
@@ -70,20 +58,17 @@ public class FixedTopBarShootingStrategy extends ShootingStrategy {
         Graphics2D graphics = finalImage.createGraphics();
 
         js.executeScript("scrollTo(0, arguments[0])", 0);
-        waitForScrolling();
         BufferedImage firstPart = simple().getScreenshot(wd);
         graphics.drawImage(firstPart, 0, 0, null);
 
         for (int n = 1; n < scrollTimes; n++) {
             js.executeScript("scrollTo(0, arguments[0])", winH * n);
-            waitForScrolling();
             BufferedImage part = getHeaderCutImage(wd);
             graphics.drawImage(part, 0, n * winH + headerToCut, null);
         }
 
         if (tail > 0) {
             js.executeScript("scrollTo(0, document.body.scrollHeight)");
-            waitForScrolling();
             BufferedImage last = getHeaderCutImage(wd);
             BufferedImage tailImage = last.getSubimage(0, last.getHeight() - tail, last.getWidth(), tail);
             graphics.drawImage(tailImage, 0, scrollTimes * winH, null);
@@ -105,13 +90,6 @@ public class FixedTopBarShootingStrategy extends ShootingStrategy {
                 LOGGER.warn("Can't find element [" + topElementToRemove + "] to calculate the height of the top " +
                         "navigation. Remove height is set to zero.");
             }
-        }
-    }
-
-    private void waitForScrolling() {
-        try {
-            Thread.sleep(scrollTimeout);
-        } catch (InterruptedException ignored) {
         }
     }
 

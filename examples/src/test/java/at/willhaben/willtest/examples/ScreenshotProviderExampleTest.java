@@ -17,7 +17,7 @@ public class ScreenshotProviderExampleTest {
     public SeleniumRule rule = new SeleniumRule()
             .setScreenshotProvider(webDriver -> new AShot()
                     .shootingStrategy(
-                            new FixedTopBarShootingStrategy(200, By.cssSelector("div#topnav")))
+                            new FixedTopBarShootingStrategy(By.cssSelector("div#topnav")))
                     .takeScreenshot(webDriver)
                     .getImage());
 
