@@ -307,8 +307,8 @@ For a better documentation of failed tests it's possible to add an implementatio
 interface to the SeleniumRule. 
 [WebDriverEventlistener](https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/support/events/WebDriverEventListener.html)
 
-There is a simple default implementation ```SeleniumEventListener``` in the log4j module. It simple creates a separate
-logfile (prefix '_action.log') with description of the test steps.
+There is a simple default implementation ```SeleniumEventListener``` in the log4j module. It simply creates a separate
+logfile (prefix '_action.log') with a description of the test steps.
 
 The following test example will produce 
 
@@ -327,7 +327,7 @@ public class EventListenerExample {
     @Rule
     public final SeleniumRule rule = createRuleWithDefaultEventListener();
 
-    public static SeleniumRule createRuleWithDefaultEventListener() {
+    private static SeleniumRule createRuleWithDefaultEventListener() {
         return new SeleniumRule()
                 .addWebDriverEventListener(new SeleniumEventListener());
     }
@@ -339,7 +339,8 @@ public class EventListenerExample {
         WebElement searchInput = webDriver.findElement(By.cssSelector(".header-search-input"));
         searchInput.sendKeys("will", "test");
         searchInput.sendKeys(Keys.ENTER);
-        webDriver.findElement(By.cssSelector(".foooooooo"));
+        String searchKeyword = webDriver.findElement(By.cssSelector(".header-search-input")).getAttribute("value");
+        assertThat(searchKeyword, is("foooooo"));
     }
 }
 ```

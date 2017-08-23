@@ -9,12 +9,15 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 public class EventListenerExample {
 
     @Rule
     public final SeleniumRule rule = createRuleWithDefaultEventListener();
 
-    public static SeleniumRule createRuleWithDefaultEventListener() {
+    private static SeleniumRule createRuleWithDefaultEventListener() {
         return new SeleniumRule()
                 .addWebDriverEventListener(new SeleniumEventListener());
     }
@@ -26,6 +29,7 @@ public class EventListenerExample {
         WebElement searchInput = webDriver.findElement(By.cssSelector(".header-search-input"));
         searchInput.sendKeys("will", "test");
         searchInput.sendKeys(Keys.ENTER);
-        webDriver.findElement(By.cssSelector(".foooooooo"));
+        String searchKeyword = webDriver.findElement(By.cssSelector(".header-search-input")).getAttribute("value");
+        assertThat(searchKeyword, is("foooooo"));
     }
 }
