@@ -10,6 +10,7 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.ElementScrollBehavior;
+import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.openqa.selenium.support.ui.Wait;
 
 import java.time.Duration;
@@ -99,14 +100,21 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
     }
 
     @Override
-    public D getWebDriver() {
+    public WebDriver getWebDriver() {
         return defaultSeleniumProvider.getWebDriver();
     }
+
 
     @Override
     public SeleniumRule<P, D> addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant<D> webDriverConfigurationParticipant) {
         defaultSeleniumProvider.addWebDriverConfigurationParticipant(webDriverConfigurationParticipant);
         return this;
+    }
+
+    @Override
+    public <T extends WebDriverEventListener & TestRule> SeleniumRule<P, D> addWebDriverEventListener(T listener) {
+        defaultSeleniumProvider.addWebDriverEventListener(listener);
+        return secondOuterRule(listener);
     }
 
     @Override
