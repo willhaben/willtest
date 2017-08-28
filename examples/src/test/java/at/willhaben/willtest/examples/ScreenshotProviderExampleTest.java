@@ -8,8 +8,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import ru.yandex.qatools.ashot.AShot;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class ScreenshotProviderExampleTest {
 
@@ -25,6 +24,7 @@ public class ScreenshotProviderExampleTest {
     public void testCustomScreenshotProviderOnError() {
         WebDriver webDriver = rule.getWebDriver();
         webDriver.get("https://www.w3schools.com/howto/howto_css_alert_buttons.asp");
-        assertThat(true, is(false));
+
+        fail();
     }
 }
