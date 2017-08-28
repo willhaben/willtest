@@ -10,7 +10,7 @@ import ru.yandex.qatools.ashot.AShot;
 
 import static org.junit.Assert.fail;
 
-public class ScreenshotProviderExampleTest {
+public class ScreenshotProviderExample {
 
     @Rule
     public SeleniumRule rule = new SeleniumRule()
