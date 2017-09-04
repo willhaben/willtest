@@ -59,7 +59,7 @@ public class SeleniumEventListener extends TestFailureAwareRule implements WebDr
 
     @Override
     public void beforeNavigateTo(String s, WebDriver webDriver) {
-
+        LOGGER.info("Navigated to: " + s);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class SeleniumEventListener extends TestFailureAwareRule implements WebDr
 
     @Override
     public void beforeNavigateRefresh(WebDriver webDriver) {
-
+        LOGGER.info("Refresh page with url: " + webDriver.getCurrentUrl());
     }
 
     @Override
@@ -99,7 +99,7 @@ public class SeleniumEventListener extends TestFailureAwareRule implements WebDr
 
     @Override
     public void beforeFindBy(By by, WebElement webElement, WebDriver webDriver) {
-        LOGGER.info("Try to find following element: " + by);
+
     }
 
     @Override
@@ -159,7 +159,9 @@ public class SeleniumEventListener extends TestFailureAwareRule implements WebDr
     @Override
     protected void before(Description description) throws Throwable {
         super.before(description);
-        tempFile = File.createTempFile("selenium_actions", ".log");
+        String className = description.getTestClass().getSimpleName();
+        String methodName = description.getMethodName().replace('.', '_');
+        tempFile = File.createTempFile("selenium_actions_" + className + "_" + methodName, ".log");
         Appender appender = createAppender(tempFile);
         Logger logger = Logger.getLogger(LOGGER_NAME);
         logger.addAppender(appender);
