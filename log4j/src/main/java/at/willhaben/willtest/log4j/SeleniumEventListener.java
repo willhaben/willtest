@@ -3,10 +3,7 @@ package at.willhaben.willtest.log4j;
 import at.willhaben.willtest.rule.TestFailureAwareRule;
 import at.willhaben.willtest.util.TestReportFile;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Appender;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
+import org.apache.log4j.*;
 import org.junit.runner.Description;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -16,6 +13,8 @@ import org.openqa.selenium.support.events.WebDriverEventListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
+
+import static at.willhaben.willtest.rule.LogContext.THREAD_ID;
 
 /**
  * This implementation of {@link WebDriverEventListener} creates a separate log file and save some actions
@@ -190,6 +189,7 @@ public class SeleniumEventListener extends TestFailureAwareRule implements WebDr
         PatternLayout patternLayout = new PatternLayout(PATTERN);
         FileAppender fileAppender = new FileAppender(patternLayout, file.getAbsolutePath(), true);
         fileAppender.setName(APPENDER_NAME);
+        fileAppender.addFilter(new MDCFilter(THREAD_ID, MDC.get(THREAD_ID).toString()));
         return fileAppender;
     }
 }
