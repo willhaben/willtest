@@ -301,6 +301,50 @@ public class RetryExampleTest {
 }
 ```
 
+### Add Eventlistener
+
+For a better documentation of failed tests it's possible to add an implementation of the ```WebDriverEventListener``` 
+interface to the SeleniumRule. 
+[WebDriverEventlistener](https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/support/events/WebDriverEventListener.html)
+
+There is a simple default implementation ```SeleniumEventListener``` in the log4j module. It simply creates a separate
+logfile (prefix '_action.log') with a description of the test steps.
+
+The following test example will produce 
+
+* [ INFO] 13:30:28 Try to find following element: By.cssSelector: .header-search-input
+* [ INFO] 13:30:28 Input in: -> css selector: .header-search-input --- Input text: ['will']['test']
+* [ INFO] 13:30:28 Input in: -> css selector: .header-search-input --- Input text: ['']
+* [ INFO] 13:30:28 Try to find following element: By.cssSelector: .foooooooo
+* [ERROR] 13:30:44 
+
+
+Test failed with error: ...
+
+```java
+public class EventListenerExample {
+
+    @Rule
+    public final SeleniumRule rule = createRuleWithDefaultEventListener();
+
+    private static SeleniumRule createRuleWithDefaultEventListener() {
+        return new SeleniumRule()
+                .addWebDriverEventListener(new SeleniumEventListener());
+    }
+
+    @Test
+    public void testEventListenerWithError() {
+        WebDriver webDriver = rule.getWebDriver();
+        webDriver.get("https://github.com");
+        WebElement searchInput = webDriver.findElement(By.cssSelector(".header-search-input"));
+        searchInput.sendKeys("will", "test");
+        searchInput.sendKeys(Keys.ENTER);
+        String searchKeyword = webDriver.findElement(By.cssSelector(".header-search-input")).getAttribute("value");
+        assertThat(searchKeyword, is("foooooo"));
+    }
+}
+```
+
 ## Project Roadmap
 Planned changes:
 * Appium integration

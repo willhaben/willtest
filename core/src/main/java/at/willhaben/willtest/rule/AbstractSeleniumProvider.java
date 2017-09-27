@@ -2,9 +2,12 @@ package at.willhaben.willtest.rule;
 
 import at.willhaben.willtest.config.SeleniumProvider;
 import at.willhaben.willtest.config.WebDriverConfigurationParticipant;
+import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,11 +26,11 @@ public abstract class AbstractSeleniumProvider<P extends SeleniumProvider<P, D>,
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSeleniumProvider.class);
     private final List<WebDriverConfigurationParticipant<D>> webDriverConfigurationParticipantList = new ArrayList<>();
-    private D webDriver;
-
+    private final List<WebDriverEventListener> eventListeners = new ArrayList<>();
+    private WebDriver webDriver;
 
     @Override
-    public D getWebDriver() {
+    public WebDriver getWebDriver() {
         if (webDriver == null) {
             throw new RuntimeException("WebDriver has not been created. Did you use this class as a junit rule? " +
                     "Can it be, that the before method has not been called?");
@@ -39,6 +42,12 @@ public abstract class AbstractSeleniumProvider<P extends SeleniumProvider<P, D>,
     public P addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant<D> webDriverConfigurationParticipant) {
         Objects.requireNonNull(webDriverConfigurationParticipant);
         this.webDriverConfigurationParticipantList.add(webDriverConfigurationParticipant);
+        return getThis();
+    }
+
+    @Override
+    public <T extends WebDriverEventListener & TestRule> P addWebDriverEventListener(T listener) {
+        eventListeners.add(listener);
         return getThis();
     }
 
@@ -75,10 +84,12 @@ public abstract class AbstractSeleniumProvider<P extends SeleniumProvider<P, D>,
         return new DesiredCapabilities();
     }
 
-    private D callPostConstruct(D webDriverToBeChangedAfterConstruction) {
+    private WebDriver callPostConstruct(D webDriverToBeChangedAfterConstruction) {
         webDriverConfigurationParticipantList
                 .forEach(participant -> participant.postConstruct(webDriverToBeChangedAfterConstruction));
-        return webDriverToBeChangedAfterConstruction;
+        EventFiringWebDriver eventFiringWebDriver = new EventFiringWebDriver(webDriverToBeChangedAfterConstruction);
+        eventListeners.forEach(eventListener -> eventFiringWebDriver.register(eventListener));
+        return eventFiringWebDriver;
     }
 
     private DesiredCapabilities getDesiredCapabilities(Description description) {

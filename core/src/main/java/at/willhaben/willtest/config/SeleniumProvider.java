@@ -1,6 +1,8 @@
 package at.willhaben.willtest.config;
 
+import org.junit.rules.TestRule;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
@@ -16,7 +18,7 @@ public interface SeleniumProvider<P extends SeleniumProvider, D extends WebDrive
     /**
      * @return a new {@link WebDriver} instance
      */
-    D getWebDriver();
+    WebDriver getWebDriver();
 
     /**
      * Since {@link org.openqa.selenium.support.ui.Wait} is something, what is fast always used in selenium tests,
@@ -39,6 +41,15 @@ public interface SeleniumProvider<P extends SeleniumProvider, D extends WebDrive
      * @return the provider itself to make method chaining possible
      */
     P addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant<D> webDriverConfigurationParticipant);
+
+    /**
+     * Registers a new instance of {@link WebDriverEventListener} {@literal &} {@link TestRule} to the created
+     * {@link SeleniumProvider}.
+     *
+     * @param listener Implementation of {@link WebDriverEventListener} {@literal &} {@link TestRule} added to the list of listeners
+     * @return the provider itself to make method chaining possible
+     */
+    <T extends WebDriverEventListener & TestRule> P addWebDriverEventListener(T listener);
 
     /**
      * Gives back the current instance as #P back to make method chaining possible in a type safe manner.

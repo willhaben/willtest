@@ -1,5 +1,6 @@
 package at.willhaben.willtest.rule;
 
+import org.junit.AssumptionViolatedException;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -76,10 +77,12 @@ public class TestFailureAwareRule implements TestRule {
                 base.evaluate();
             } catch (Throwable th) {
                 testFailure = th;
-                try {
-                    onError(description, th);
-                } catch (Throwable errorHappenedInOnError) {
-                    th.addSuppressed(errorHappenedInOnError);
+                if(isNoAssumptionViolation(th)) {
+                    try {
+                        onError(description, th);
+                    } catch (Throwable errorHappenedInOnError) {
+                        th.addSuppressed(errorHappenedInOnError);
+                    }
                 }
                 throw th;
             } finally {
@@ -93,6 +96,10 @@ public class TestFailureAwareRule implements TestRule {
                     }
                 }
             }
+        }
+
+        private boolean isNoAssumptionViolation(Throwable th) {
+            return !AssumptionViolatedException.class.isAssignableFrom(th.getClass());
         }
     }
 }

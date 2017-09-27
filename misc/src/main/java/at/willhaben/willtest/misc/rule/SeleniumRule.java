@@ -10,6 +10,7 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.ElementScrollBehavior;
+import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.openqa.selenium.support.ui.Wait;
 
 import java.time.Duration;
@@ -24,7 +25,7 @@ import java.util.function.Consumer;
  *     <li>15 seconds of implicit wait and script timeout. It can be disabled using {@link #withoutImplicitWait()} and
  *     {@link #withoutScriptTimeout()} methods</li>
  *     <li>In case of errors a screenshot and page source are saved automatically into surefire-reports
- *     folder. See {@link Screenshot} and {@link PageSource} for details</li>
+ *     folder. See {@link ScreenshotRule} and {@link PageSource} for details</li>
  *     <li>Javascript errors are added as suppressed exception in case of test failures</li>
  *     <li>Based on {@link SeleniumProviderFactory#SELENIUM_PROVIDER_CLASS_NAME} system property different
  *     implementations {@link SeleniumProvider} can be loaded. Default is a local firefox.</li>
@@ -51,6 +52,7 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
     private final ResourceHelper resourceHelper = new ResourceHelper();
     private final FirefoxConfiguration<D> firefoxConfiguration = new FirefoxConfiguration<>();
     private final LogContext logContext = new LogContext();
+    private final ScreenshotRule screenshotRule;
 
     private RuleChain ruleChain;
 
@@ -83,28 +85,36 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
         firefoxConfiguration.addFirefoxConfigurationParticipant(javascriptErrorRule);
         WebDriverLog<P, D> webDriverLog = new WebDriverLog<>(defaultSeleniumProvider);
         PageSource pageSource = new PageSource(defaultSeleniumProvider);
-        Screenshot screenshot = new Screenshot(defaultSeleniumProvider);
+        screenshotRule = new ScreenshotRule(defaultSeleniumProvider)
+                .setScreenshotProvider(new DefaultScreenshotProvider());
         JavascriptAlert javascriptAlert = new JavascriptAlert(defaultSeleniumProvider);
 
         ruleChain = RuleChain
                 .outerRule(defaultSeleniumProvider)
                 .around(webDriverLog)
                 .around(pageSource)
-                .around(screenshot)
+                .around(screenshotRule)
                 .around(javascriptAlert)
                 .around(javascriptErrorRule)
                 .around(resourceHelper);
     }
 
     @Override
-    public D getWebDriver() {
+    public WebDriver getWebDriver() {
         return defaultSeleniumProvider.getWebDriver();
     }
+
 
     @Override
     public SeleniumRule<P, D> addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant<D> webDriverConfigurationParticipant) {
         defaultSeleniumProvider.addWebDriverConfigurationParticipant(webDriverConfigurationParticipant);
         return this;
+    }
+
+    @Override
+    public <T extends WebDriverEventListener & TestRule> SeleniumRule<P, D> addWebDriverEventListener(T listener) {
+        defaultSeleniumProvider.addWebDriverEventListener(listener);
+        return secondOuterRule(listener);
     }
 
     @Override
@@ -247,6 +257,16 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
 
     public SeleniumRule<P, D> withFirefoxBinaryProvider(FirefoxBinaryProvider firefoxBinaryProvider) {
         firefoxConfiguration.setFirefoxBinaryProvider(firefoxBinaryProvider);
+        return this;
+    }
+
+    /**
+     * Sets the screenshotProvider to use a custom implementation to take a screenshot with {@link WebDriver}.
+     * @param screenshotProvider custom implementation of the {@link ScreenshotProvider} interface
+     * @return this to enable method chaining
+     */
+    public SeleniumRule<P, D> setScreenshotProvider(ScreenshotProvider screenshotProvider) {
+        screenshotRule.setScreenshotProvider(screenshotProvider);
         return this;
     }
 }
