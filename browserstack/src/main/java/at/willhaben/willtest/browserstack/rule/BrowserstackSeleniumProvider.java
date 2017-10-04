@@ -25,7 +25,7 @@ public class BrowserstackSeleniumProvider extends
     private static final String BROWSERSTACK_PLATFORM = "platforms";
     private static final String BROWSERSTACK_PLATFORM_VERSION = "platform.versions";
     private static final String BROWSERSTACK_BROWSER = "browsers";
-    private static final String BROWSERSTACK_BROWSER_VERSION = "browser.verions";
+    private static final String BROWSERSTACK_BROWSER_VERSION = "browser.versions";
     private static final String BROWSERSTACK_DISPLAY_RESOLUTION = "display.resolution";
 
     private final DateTimeFormatter BUILD_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd");
