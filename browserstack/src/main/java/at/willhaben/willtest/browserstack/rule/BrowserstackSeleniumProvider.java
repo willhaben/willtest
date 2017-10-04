@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * {@link at.willhaben.willtest.config.SeleniumProvider} implementation to run tests on BrowserStack. It is
@@ -18,11 +19,17 @@ import java.time.format.DateTimeFormatter;
 //TODO: more options for selected OS and Browser, Multiple env run (see: https://github.com/browserstack/junit-browserstack)
 public class BrowserstackSeleniumProvider extends
         AbstractSeleniumProvider<BrowserstackSeleniumProvider, RemoteWebDriver> {
+
     private static final String BROWSERSTACK_HUB_SYSTEM_PROPERTY_KEY = "browserstack.hub";
     private static final String BROWSERSTACK_HUB_LOCAL_SYSTEM_PROPERTY_KEY = "browserstack.local";
-    private static final String BROWSERSTACK = "platforms";
+    private static final String BROWSERSTACK_PLATFORM = "platforms";
+    private static final String BROWSERSTACK_PLATFORM_VERSION = "platforms.versions";
+    private static final String BROWSERSTACK_BROWSER = "browsers";
+    private static final String BROWSERSTACK_BROWSER_VERSION = "browsers.verions";
 
     private final DateTimeFormatter BUILD_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+
+    private List<BrowserstackEnvironment> environments;
 
     @Override
     protected DesiredCapabilities createDesiredCapabilities(Description description) {
@@ -33,12 +40,26 @@ public class BrowserstackSeleniumProvider extends
                 Boolean.parseBoolean(
                         Environment.getValue(BROWSERSTACK_HUB_LOCAL_SYSTEM_PROPERTY_KEY,
                                 Boolean.FALSE.toString())));
-        return desiredCapabilities;
+        BrowserstackEnvironment bsEnvironment = environments.get(0);
+        return bsEnvironment.addToCapabilities(desiredCapabilities);
     }
 
     @Override
     protected RemoteWebDriver constructWebDriver(DesiredCapabilities desiredCapabilities) {
         return new RemoteWebDriver(getBrowserstackHubURL(), desiredCapabilities);
+    }
+
+    @Override
+    protected void before(Description description) throws Throwable {
+        String platformsString = Environment.getValue(BROWSERSTACK_PLATFORM, "WINDOWS");
+        String platformsVersionsString = Environment.getValue(BROWSERSTACK_PLATFORM_VERSION, "10");
+        String browsersString = Environment.getValue(BROWSERSTACK_BROWSER, "chrome");
+        String browserVersionsString = Environment.getValue(BROWSERSTACK_BROWSER_VERSION, "61.0");
+        environments = BrowserstackEnvironment.parseEnvironmentsFromStrings(platformsString,
+                platformsVersionsString,
+                browsersString,
+                browserVersionsString);
+        super.before(description);
     }
 
     @Override
