@@ -26,6 +26,7 @@ public class BrowserstackSeleniumProvider extends
     private static final String BROWSERSTACK_PLATFORM_VERSION = "platforms.versions";
     private static final String BROWSERSTACK_BROWSER = "browsers";
     private static final String BROWSERSTACK_BROWSER_VERSION = "browsers.verions";
+    private static final String BROWSERSTACK_DISPLAY_RESOLUTION = "display.resolution";
 
     private final DateTimeFormatter BUILD_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
@@ -55,10 +56,12 @@ public class BrowserstackSeleniumProvider extends
         String platformsVersionsString = Environment.getValue(BROWSERSTACK_PLATFORM_VERSION, "10");
         String browsersString = Environment.getValue(BROWSERSTACK_BROWSER, "chrome");
         String browserVersionsString = Environment.getValue(BROWSERSTACK_BROWSER_VERSION, "61.0");
+        String displayResolutionString = Environment.getValue(BROWSERSTACK_DISPLAY_RESOLUTION, "1920x1080");
         environments = BrowserstackEnvironment.parseEnvironmentsFromStrings(platformsString,
                 platformsVersionsString,
                 browsersString,
-                browserVersionsString);
+                browserVersionsString,
+                displayResolutionString);
         super.before(description);
     }
 
