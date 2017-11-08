@@ -10,7 +10,7 @@ like:
 * Supporting uploading of any file from file system or classpath
 
 ## Requirements
-* Currently Selenium 3.4.0 is used
+* Currently Selenium 3.7.1 is used
 * Firefox local and on Selenium Hub is supported. Adding new Browsers is easily possible with implementing the ```SeleniumProvider``` interface.
 * Java 8
 
