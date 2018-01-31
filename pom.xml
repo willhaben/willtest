@@ -84,11 +84,9 @@
             </roles>
         </developer>
         <developer>
-            <email>gabor.liptak@willhaben.at</email>
+            <email>gabor.liptak@gmail.com</email>
             <name>Gabor Liptak</name>
             <url>https://github.com/liptga</url>
-            <organization>willhaben internet service GmbH &amp; Co KG</organization>
-            <organizationUrl>https://willhaben.at</organizationUrl>
             <id>gabor.liptak</id>
             <roles>
                 <role>developer</role>
