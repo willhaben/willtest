@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>at.willhaben.willtest</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.10</version>
+    <version>1.1.11</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -84,11 +84,9 @@
             </roles>
         </developer>
         <developer>
-            <email>gabor.liptak@willhaben.at</email>
+            <email>gabor.liptak@gmail.com</email>
             <name>Gabor Liptak</name>
             <url>https://github.com/liptga</url>
-            <organization>willhaben internet service GmbH &amp; Co KG</organization>
-            <organizationUrl>https://willhaben.at</organizationUrl>
             <id>gabor.liptak</id>
             <roles>
                 <role>developer</role>
