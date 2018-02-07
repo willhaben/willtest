@@ -9,7 +9,7 @@ import static org.hamcrest.Matchers.*;
 
 public class ReportFileNameTest {
 
-    private static final String PREFIX = "prefix_";
+    private static final String PREFIX = "prefix123_";
     private static final String POSTFIX = "_postfix";
     private static final String METHOD_NAME = "Testmethod";
     private static final String INVALID_CHARS = ":<>*/?";
@@ -19,7 +19,7 @@ public class ReportFileNameTest {
         Description testDescription = Description.createTestDescription(ReportFileNameTest.class, METHOD_NAME);
 
         TestReportFile reportFile = TestReportFile.forTest(testDescription)
-                .withPrefix(PREFIX)
+                .withPrefix(PREFIX + INVALID_CHARS)
                 .withPostix(POSTFIX)
                 .build();
 
