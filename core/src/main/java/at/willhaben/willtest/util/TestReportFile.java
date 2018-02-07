@@ -37,11 +37,32 @@ public class TestReportFile {
         return new File(reportFolder, generateFileName());
     }
 
+    public String getGeneratedName() {
+        return generateFileName();
+    }
+
     private String generateFileName() {
         String className = testDescription.getTestClass().getSimpleName();
         String methodName = testDescription.getMethodName().replace('.', '_');
         String timeStamp = DATE_FORMAT.format(ZonedDateTime.now());
-        return COMMON_PREFIX_FOR_ALL_REPORT_FILES + prefix + className + "_" + methodName + "-" + timeStamp + postfix;
+        return escapeFileName(COMMON_PREFIX_FOR_ALL_REPORT_FILES + prefix + className +
+                "_" + methodName + "-" + timeStamp + postfix);
+    }
+
+    private String escapeFileName(String originalName) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < originalName.length(); i++) {
+            char c = originalName.charAt(i);
+            if((c >= '0' && c <= '9') ||
+                    (c >= 'A' && c <= 'Z') ||
+                    (c >= 'a' && c <= 'z') ||
+                    (c == '.') ||
+                    (c == '_') ||
+                    (c == '-')) {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
     public static class Builder {
