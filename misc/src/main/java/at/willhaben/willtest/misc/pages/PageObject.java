@@ -1,6 +1,8 @@
 package at.willhaben.willtest.misc.pages;
 
+import at.willhaben.willtest.config.SeleniumProvider;
 import org.openqa.selenium.By;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
@@ -10,9 +12,11 @@ import org.openqa.selenium.support.ui.FluentWait;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -26,11 +30,20 @@ public abstract class PageObject {
     protected PageObject(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(getWebDriver(), this);
+        initPage();
+    }
+
+    protected PageObject(SeleniumProvider provider) {
+        this.driver = provider.getWebDriver();
+        PageFactory.initElements(getWebDriver(), this);
+        initPage();
     }
 
     public WebDriver getWebDriver() {
         return driver;
     }
+
+    public void initPage() {}
 
     public void goBack() {
         getWebDriver().navigate().back();
@@ -41,12 +54,20 @@ public abstract class PageObject {
     }
 
     public <T> T getRandomElement(List<T> elements) {
-        int randomIndex = ThreadLocalRandom.current().nextInt(elements.size());
+        return getRandomElement(0, elements);
+    }
+
+    public <T> T getRandomElement(int lowerBound, List<T> elements) {
+        int randomIndex = ThreadLocalRandom.current().nextInt(elements.size() - lowerBound) + lowerBound;
         return elements.get(randomIndex);
     }
 
     public void clickRandomWebElement(List<WebElement> elements) {
         getRandomElement(elements).click();
+    }
+
+    public void clickRandomWebElement(int lowerBound, List<WebElement> elements) {
+        getRandomElement(lowerBound, elements).click();
     }
 
     protected void requireClickable(WebElement... elements) {
@@ -113,5 +134,21 @@ public abstract class PageObject {
         return new FluentWait<>(getWebDriver())
                 .withTimeout(timeout, TimeUnit.SECONDS)
                 .pollingEvery(250L, TimeUnit.MILLISECONDS);
+    }
+
+    protected Optional<WebElement> findWithFilter(By selector, Predicate<WebElement> predicate) {
+        return findWithFilter(getWebDriver(), selector, predicate);
+    }
+
+    protected <T> Optional<T> findWithFilter(List<T> elements, Predicate<T> predicate) {
+        return elements.stream()
+                .filter(predicate)
+                .findFirst();
+    }
+
+    protected Optional<WebElement> findWithFilter(SearchContext searchContext, By selector, Predicate<WebElement> predicate) {
+        return searchContext.findElements(selector).stream()
+                .filter(predicate)
+                .findFirst();
     }
 }
