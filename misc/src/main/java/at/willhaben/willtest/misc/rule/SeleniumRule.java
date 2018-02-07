@@ -68,6 +68,7 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
      *                         See {@link SeleniumProviderFactory}
      */
     public SeleniumRule(ParameterObject... parameterObjects) {
+        System.setProperty("java.awt.headless", "true");
         ParameterObject[] allParameterObjects =
                 ArrayUtils.addAll(parameterObjects, new ParameterObject(firefoxConfiguration.getClass(), firefoxConfiguration));
 
