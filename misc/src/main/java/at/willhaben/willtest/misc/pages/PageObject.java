@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -29,6 +30,23 @@ public abstract class PageObject {
 
     public WebDriver getWebDriver() {
         return driver;
+    }
+
+    public void goBack() {
+        getWebDriver().navigate().back();
+    }
+
+    public void refresh() {
+        getWebDriver().navigate().refresh();
+    }
+
+    public <T> T getRandomElement(List<T> elements) {
+        int randomIndex = ThreadLocalRandom.current().nextInt(elements.size());
+        return elements.get(randomIndex);
+    }
+
+    public void clickRandomWebElement(List<WebElement> elements) {
+        getRandomElement(elements).click();
     }
 
     protected void requireClickable(WebElement... elements) {
