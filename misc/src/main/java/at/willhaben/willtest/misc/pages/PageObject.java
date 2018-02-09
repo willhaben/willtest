@@ -29,13 +29,13 @@ public abstract class PageObject {
 
     protected PageObject(WebDriver driver) {
         this.driver = driver;
-        PageFactory.initElements(getWebDriver(), this);
+        PageFactory.initElements(this.driver, this);
         initPage();
     }
 
     protected PageObject(SeleniumProvider provider) {
         this.driver = provider.getWebDriver();
-        PageFactory.initElements(getWebDriver(), this);
+        PageFactory.initElements(this.driver, this);
         initPage();
     }
 
@@ -46,11 +46,11 @@ public abstract class PageObject {
     public void initPage() {}
 
     public void goBack() {
-        getWebDriver().navigate().back();
+        driver.navigate().back();
     }
 
     public void refresh() {
-        getWebDriver().navigate().refresh();
+        driver.navigate().refresh();
     }
 
     public <T> T getRandomElement(List<T> elements) {
@@ -131,13 +131,13 @@ public abstract class PageObject {
     }
 
     protected FluentWait<WebDriver> getWait(long timeout) {
-        return new FluentWait<>(getWebDriver())
+        return new FluentWait<>(driver)
                 .withTimeout(timeout, TimeUnit.SECONDS)
                 .pollingEvery(250L, TimeUnit.MILLISECONDS);
     }
 
     protected Optional<WebElement> findWithFilter(By selector, Predicate<WebElement> predicate) {
-        return findWithFilter(getWebDriver(), selector, predicate);
+        return findWithFilter(driver, selector, predicate);
     }
 
     protected <T> Optional<T> findWithFilter(List<T> elements, Predicate<T> predicate) {
