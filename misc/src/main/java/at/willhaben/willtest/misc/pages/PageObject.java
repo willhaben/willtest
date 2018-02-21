@@ -1,10 +1,7 @@
 package at.willhaben.willtest.misc.pages;
 
 import at.willhaben.willtest.config.SeleniumProvider;
-import org.openqa.selenium.By;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -131,9 +128,43 @@ public abstract class PageObject {
     }
 
     protected FluentWait<WebDriver> getWait(long timeout) {
+        // michael.weisgrab@willhaben.at
+        // Styria23IT
         return new FluentWait<>(driver)
                 .withTimeout(timeout, TimeUnit.SECONDS)
                 .pollingEvery(250L, TimeUnit.MILLISECONDS);
+    }
+
+    public Optional<WebElement> isClickable(By locator) {
+        return isClickable(locator, DEFAULT_WAIT_TIMEOUT);
+    }
+
+    public Optional<WebElement> isClickable(By locator, long timeout) {
+        return waitFor(ExpectedConditions.elementToBeClickable(locator), timeout);
+    }
+
+    public Optional<List<WebElement>> isAllVisible(By locator) {
+        return isAllVisible(locator, DEFAULT_WAIT_TIMEOUT);
+    }
+
+    public Optional<List<WebElement>> isAllVisible(By locator, long timeout) {
+        return waitFor(ExpectedConditions.visibilityOfAllElementsLocatedBy(locator), timeout);
+    }
+
+    public Optional<WebElement> isVisible(By locator) {
+        return isVisible(locator, DEFAULT_WAIT_TIMEOUT);
+    }
+
+    public Optional<WebElement> isVisible(By locator, long timeout) {
+        return waitFor(ExpectedConditions.visibilityOfElementLocated(locator), timeout);
+    }
+
+    public  <T> Optional<T> waitFor(Function<? super WebDriver, T> findFunction, long timeout) {
+        try {
+            return Optional.of(getWait(timeout).until(findFunction));
+        } catch (TimeoutException e) {
+            return Optional.empty();
+        }
     }
 
     protected Optional<WebElement> findWithFilter(By selector, Predicate<WebElement> predicate) {
