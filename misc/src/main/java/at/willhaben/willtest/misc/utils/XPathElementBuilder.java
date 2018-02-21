@@ -15,21 +15,33 @@ public class XPathElementBuilder {
     }
 
     public XPathElementBuilder andTag(String tagName) {
+        if(Objects.nonNull(this.tag)) {
+            throw new IllegalStateException("Tag is already set to '" + this.tag + "' for this xpath element.");
+        }
         this.tag = tagName;
         return this;
     }
 
     public XPathElementBuilder andId(String id) {
+        if(Objects.nonNull(this.id)) {
+            throw new IllegalStateException("Id is already set to '" + this.id + "' for this xpath element.");
+        }
         this.id = id;
         return this;
     }
 
     public XPathElementBuilder andClass(String className) {
+        if(Objects.nonNull(this.className)) {
+            throw new IllegalStateException("Class is already set to '" + this.className + "' for this xpath element.");
+        }
         this.className = className;
         return this;
     }
 
     public XPathElementBuilder andText(String text) {
+        if(Objects.nonNull(this.text)) {
+            throw new IllegalStateException("Text is already set to '" + this.text + "' for this xpath element.");
+        }
         this.text = text;
         return this;
     }
