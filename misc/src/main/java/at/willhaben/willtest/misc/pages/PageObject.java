@@ -128,8 +128,6 @@ public abstract class PageObject {
     }
 
     protected FluentWait<WebDriver> getWait(long timeout) {
-        // michael.weisgrab@willhaben.at
-        // Styria23IT
         return new FluentWait<>(driver)
                 .withTimeout(timeout, TimeUnit.SECONDS)
                 .pollingEvery(250L, TimeUnit.MILLISECONDS);
