@@ -59,7 +59,7 @@
     </dependencies>
 
     <properties>
-        <geckodriver.version>v0.16.1</geckodriver.version>
+        <geckodriver.version>v0.19.1</geckodriver.version>
         <geckodriver.type>This will be overwritten by a profile for the specific platform</geckodriver.type>
         <geckodriver.archive>geckodriver-${geckodriver.version}-${geckodriver.type}</geckodriver.archive>
         <geckodriver.url>https://github.com/mozilla/geckodriver/releases/download/${geckodriver.version}/${geckodriver.archive}</geckodriver.url>
@@ -72,17 +72,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.20</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.surefire</groupId>
-                        <artifactId>surefire-junit47</artifactId>
-                        <version>2.20</version>
-                    </dependency>
-                </dependencies>
                 <configuration>
                     <argLine>-Dwebdriver.gecko.driver=${geckodriver.folder}${file.separator}geckodriver${geckodriver.extension}</argLine>
-                    <skip>false</skip>
                 </configuration>
             </plugin>
             <plugin>

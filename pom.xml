@@ -84,11 +84,9 @@
             </roles>
         </developer>
         <developer>
-            <email>gabor.liptak@willhaben.at</email>
+            <email>gabor.liptak@gmail.com</email>
             <name>Gabor Liptak</name>
             <url>https://github.com/liptga</url>
-            <organization>willhaben internet service GmbH &amp; Co KG</organization>
-            <organizationUrl>https://willhaben.at</organizationUrl>
             <id>gabor.liptak</id>
             <roles>
                 <role>developer</role>
@@ -103,7 +101,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.selenium>3.4.0</version.selenium>
+        <version.selenium>3.7.1</version.selenium>
         <version.log4j>1.2.16</version.log4j>
     </properties>
 

@@ -8,8 +8,11 @@ import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.ElementScrollBehavior;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.openqa.selenium.support.ui.Wait;
 
@@ -68,6 +71,7 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
      *                         See {@link SeleniumProviderFactory}
      */
     public SeleniumRule(ParameterObject... parameterObjects) {
+        System.setProperty("java.awt.headless", "true");
         ParameterObject[] allParameterObjects =
                 ArrayUtils.addAll(parameterObjects, new ParameterObject(firefoxConfiguration.getClass(), firefoxConfiguration));
 
@@ -267,6 +271,16 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
      */
     public SeleniumRule<P, D> setScreenshotProvider(ScreenshotProvider screenshotProvider) {
         screenshotRule.setScreenshotProvider(screenshotProvider);
+        return this;
+    }
+
+    public SeleniumRule<P, D> setPageLoadStrategy(PageLoadStrategy strategy) {
+        defaultSeleniumProvider.addWebDriverConfigurationParticipant(new WebDriverConfigurationParticipant<D>() {
+            @Override
+            public void addDesiredCapabilities(DesiredCapabilities desiredCapabilities) {
+                desiredCapabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, strategy);
+            }
+        });
         return this;
     }
 }
