@@ -130,6 +130,8 @@ public abstract class PageObject {
     protected FluentWait<WebDriver> getWait(long timeout) {
         return new FluentWait<>(driver)
                 .withTimeout(timeout, TimeUnit.SECONDS)
+                .ignoring(NoSuchElementException.class)
+                .ignoring(StaleElementReferenceException.class)
                 .pollingEvery(250L, TimeUnit.MILLISECONDS);
     }
 
