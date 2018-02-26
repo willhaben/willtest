@@ -2,6 +2,7 @@ package at.willhaben.willtest.misc.pages;
 
 import at.willhaben.willtest.config.SeleniumProvider;
 import at.willhaben.willtest.misc.utils.XPathBuilder;
+import at.willhaben.willtest.misc.utils.XPathOrCssUtil;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -27,18 +28,22 @@ public abstract class PageObject {
 
     protected PageObject(WebDriver driver) {
         this.driver = driver;
-        PageFactory.initElements(this.driver, this);
+        initElements();
         initPage();
     }
 
     protected PageObject(SeleniumProvider provider) {
         this.driver = provider.getWebDriver();
-        PageFactory.initElements(this.driver, this);
+        initElements();
         initPage();
     }
 
     public WebDriver getWebDriver() {
         return driver;
+    }
+
+    protected final void initElements() {
+        PageFactory.initElements(this.driver, this);
     }
 
     public void initPage() {}
@@ -68,44 +73,79 @@ public abstract class PageObject {
         getRandomElement(lowerBound, elements).click();
     }
 
-    public RequireBuilder require() {
-        return new RequireBuilder(this);
+    public WaitForBuilder waitFor(WebElement elements) {
+        return new WaitForBuilder(this, elements);
     }
 
+    public WaitForBuilder waitFor(String xPathOrCss) {
+        return new WaitForBuilder(this, XPathOrCssUtil.mapToBy(xPathOrCss));
+    }
+
+    public WaitForBuilder waitFor(By by) {
+        return new WaitForBuilder(this, by);
+    }
+
+    public RequireBuilder require(WebElement... elements) {
+        return new RequireBuilder(this, RequireType.require(elements));
+    }
+
+    public RequireBuilder require(String... xPathOrCss) {
+        return new RequireBuilder(this, RequireType.require(Arrays.stream(xPathOrCss)
+                .map(XPathOrCssUtil::mapToBy)
+                .toArray(By[]::new)));
+    }
+
+    public RequireBuilder require(By... bys) {
+        return new RequireBuilder(this, RequireType.require(bys));
+    }
+
+    /**
+     * Used to check if an element is available or visible.
+     * @param webElement element to check
+     * @return Builder for checking appearance of element.
+     */
+    public IsAvailableBuilder is(WebElement webElement) {
+        return new IsAvailableBuilder(this, webElement);
+    }
+
+    /**
+     * Used to check if an element is available or visible.
+     * @param xPathOrCss XPath or CSS locator of element
+     * @return Builder for checking appearance of element.
+     */
+    public IsAvailableBuilder is(String xPathOrCss) {
+        return new IsAvailableBuilder(this, XPathOrCssUtil.mapToBy(xPathOrCss));
+    }
+
+    /**
+     * Used to check if an element is available or visible.
+     * @param by locator of the element to check
+     * @return Builder for checking appearance of element.
+     */
+    public IsAvailableBuilder is(By by) {
+        return new IsAvailableBuilder(this, by);
+    }
+
+    /**
+     * Same as {@link #getWait(long)} with a default wait of {@value DEFAULT_WAIT_TIMEOUT} seconds.
+     * @return
+     */
     protected FluentWait<WebDriver> getWait() {
         return getWait(DEFAULT_WAIT_TIMEOUT);
     }
 
+    /**
+     * Generates a default {@link FluentWait} which ignores {@link NoSuchElementException} and
+     * {@link StaleElementReferenceException}. Polls every 250 milliseconds.
+     * @param timeout Timeout in seconds
+     * @return Waiter
+     */
     protected FluentWait<WebDriver> getWait(long timeout) {
         return new FluentWait<>(driver)
                 .withTimeout(timeout, TimeUnit.SECONDS)
                 .ignoring(NoSuchElementException.class)
                 .ignoring(StaleElementReferenceException.class)
                 .pollingEvery(250L, TimeUnit.MILLISECONDS);
-    }
-
-    public Optional<WebElement> isClickable(By locator) {
-        return isClickable(locator, DEFAULT_WAIT_TIMEOUT);
-    }
-
-    public Optional<WebElement> isClickable(By locator, long timeout) {
-        return waitFor(ExpectedConditions.elementToBeClickable(locator), timeout);
-    }
-
-    public Optional<List<WebElement>> isAllVisible(By locator) {
-        return isAllVisible(locator, DEFAULT_WAIT_TIMEOUT);
-    }
-
-    public Optional<List<WebElement>> isAllVisible(By locator, long timeout) {
-        return waitFor(ExpectedConditions.visibilityOfAllElementsLocatedBy(locator), timeout);
-    }
-
-    public Optional<WebElement> isVisible(By locator) {
-        return isVisible(locator, DEFAULT_WAIT_TIMEOUT);
-    }
-
-    public Optional<WebElement> isVisible(By locator, long timeout) {
-        return waitFor(ExpectedConditions.visibilityOfElementLocated(locator), timeout);
     }
 
     public  <T> Optional<T> waitFor(Function<? super WebDriver, T> findFunction, long timeout) {
