@@ -32,16 +32,16 @@ public final class RequireType {
             case VISIBLE:
                 return buildVisibleCondition();
             default:
-                throw new IllegalArgumentException(condition.toString());
+                throw new IllegalArgumentException("Illegal waiting condition [" + condition.toString() + "].");
         }
     }
 
     private ExpectedCondition buildClickableCondition() {
-        Stream<ExpectedCondition<WebElement>> conditionStream = null;
+        Stream<ExpectedCondition<WebElement>> conditionStream;
         if(Objects.nonNull(webElementList)) {
             conditionStream = webElementList.stream()
                     .map(ExpectedConditions::elementToBeClickable);
-        } else if(Objects.nonNull(byList)) {
+        } else {
             conditionStream = byList.stream()
                     .map(ExpectedConditions::elementToBeClickable);
         }
@@ -51,11 +51,10 @@ public final class RequireType {
     private ExpectedCondition buildVisibleCondition() {
         if(Objects.nonNull(webElementList)) {
             return ExpectedConditions.visibilityOfAllElements(webElementList);
-        } else if(Objects.nonNull(byList)) {
+        } else {
             return ExpectedConditions.and(byList.stream()
                     .map(ExpectedConditions::visibilityOfAllElementsLocatedBy)
                     .toArray(ExpectedCondition[]::new));
         }
-        throw new IllegalStateException();
     }
 }

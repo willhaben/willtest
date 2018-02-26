@@ -40,32 +40,30 @@ public abstract class AbstractWaitingBuilder<T> {
         return visible(PageObject.DEFAULT_WAIT_TIMEOUT);
     }
 
-    protected ExpectedCondition<WebElement> generateCondition(ConditionType conditionType) {
-        switch (conditionType) {
+    protected ExpectedCondition<WebElement> generateCondition(ConditionType condition) {
+        switch (condition) {
             case CLICKABLE:
                 return generateClickableCondition();
             case VISIBLE:
                 return generateVisibleCondition();
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Illegal waiting condition [" + condition.toString() + "].");
         }
     }
 
     private ExpectedCondition<WebElement> generateClickableCondition() {
         if(Objects.nonNull(webElement)) {
             return ExpectedConditions.elementToBeClickable(webElement);
-        } else if(Objects.nonNull(by)) {
+        } else {
             return ExpectedConditions.elementToBeClickable(by);
         }
-        throw new IllegalStateException();
     }
 
     private ExpectedCondition<WebElement> generateVisibleCondition() {
         if(Objects.nonNull(webElement)) {
             return ExpectedConditions.visibilityOf(webElement);
-        } else if(Objects.nonNull(by)) {
+        } else {
             return ExpectedConditions.visibilityOfElementLocated(by);
         }
-        throw new IllegalStateException();
     }
 }
