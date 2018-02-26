@@ -7,11 +7,11 @@
     <parent>
         <groupId>at.willhaben.willtest</groupId>
         <artifactId>parent</artifactId>
-        <version>1.2.1</version>
+        <version>1.2.2</version>
     </parent>
 
     <artifactId>misc</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Classes to use the Core and Browserstack module in JUnit tests</description>
