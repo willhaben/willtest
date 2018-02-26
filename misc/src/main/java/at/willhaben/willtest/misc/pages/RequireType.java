@@ -17,24 +17,12 @@ public final class RequireType {
     private List<WebElement> webElementList;
     private List<By> byList;
 
-    public static RequireType require(WebElement... elements) {
-        return new RequireType()
-                .withElements(elements);
+    public RequireType(WebElement... elements) {
+        this.webElementList = asList(elements);
     }
 
-    public static RequireType require(By... bys) {
-        return new RequireType()
-                .withBys(bys);
-    }
-
-    private RequireType withElements(WebElement... elements) {
-        webElementList = asList(elements);
-        return this;
-    }
-
-    private RequireType withBys(By... bys) {
-        byList = asList(bys);
-        return this;
+    public RequireType(By... bys) {
+        this.byList = asList(bys);
     }
 
     public ExpectedCondition buildCondition(ConditionType condition) {

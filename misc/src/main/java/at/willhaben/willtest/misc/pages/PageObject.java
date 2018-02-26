@@ -86,17 +86,17 @@ public abstract class PageObject {
     }
 
     public RequireBuilder require(WebElement... elements) {
-        return new RequireBuilder(this, RequireType.require(elements));
+        return new RequireBuilder(this, new RequireType(elements));
     }
 
     public RequireBuilder require(String... xPathOrCss) {
-        return new RequireBuilder(this, RequireType.require(Arrays.stream(xPathOrCss)
+        return new RequireBuilder(this, new RequireType(Arrays.stream(xPathOrCss)
                 .map(XPathOrCssUtil::mapToBy)
                 .toArray(By[]::new)));
     }
 
     public RequireBuilder require(By... bys) {
-        return new RequireBuilder(this, RequireType.require(bys));
+        return new RequireBuilder(this, new RequireType(bys));
     }
 
     /**

@@ -1,9 +1,8 @@
 package at.willhaben.willtest.misc.pages;
 
 import at.willhaben.willtest.misc.utils.ConditionType;
-import org.openqa.selenium.WebElement;
 
-public class RequireBuilder<T extends WebElement> {
+public class RequireBuilder {
 
     private final PageObject pageObject;
     private final RequireType requireType;
