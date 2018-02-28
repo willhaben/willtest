@@ -8,6 +8,7 @@ like:
 * Reporting capabilities like saving logs, screenshots and HTML source
 * Fetching information from javascript alerts and errors
 * Supporting uploading of any file from file system or classpath
+* Abstract PageObject with some common functions
 
 ## Requirements
 * Currently Selenium 3.7.1 is used
@@ -97,6 +98,11 @@ seleniumHub=YOUR_SELENIUM_HUB_URL
 
 In the background the ```SeleniumProvider``` is instantiated using Reflection by the 
 ```SeleniumProviderFactory``` class.
+
+### PageObject
+The write tests with the page-object-pattern you can use the provided ```PageObject``` as base
+class. It provides some commonly needed functions to improve the readability of your page objects.
+Every method is documented in JavaDoc.
 
 ### Creating new SeleniumProvider implementations
 By design Willtest was not intended to depend on any dependency injection framework, so a really simple workaround
