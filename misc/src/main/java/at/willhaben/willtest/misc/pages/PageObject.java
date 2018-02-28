@@ -1,12 +1,9 @@
 package at.willhaben.willtest.misc.pages;
 
 import at.willhaben.willtest.config.SeleniumProvider;
-import at.willhaben.willtest.misc.utils.XPathBuilder;
 import at.willhaben.willtest.misc.utils.XPathOrCssUtil;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 
 import java.util.Arrays;
@@ -16,13 +13,13 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
-
+/**
+ * Base class for Pageobjects with some common functions.
+ */
 public abstract class PageObject {
 
-    static final long DEFAULT_WAIT_TIMEOUT = 30L;
+    public final long DEFAULT_WAIT_TIMEOUT = 30L;
 
     private final WebDriver driver;
 
@@ -38,37 +35,76 @@ public abstract class PageObject {
         initPage();
     }
 
+    /**
+     * @return current {@link WebDriver}
+     */
     public WebDriver getWebDriver() {
         return driver;
     }
 
+    /**
+     * This method calls the {@link PageFactory#initElements(WebDriver, Object)} method to init every annotated
+     * {@link WebElement} in the pageobject. It is automatically called on pageobject creation.
+     */
     protected final void initElements() {
         PageFactory.initElements(this.driver, this);
     }
 
+    /**
+     * Called in the constructor {@link #PageObject(WebDriver)} or {@link #PageObject(SeleniumProvider)}. Can be
+     * overridden to wait for some conditions to become true to ensure the page is fully loaded.
+     */
     public void initPage() {}
 
+    /**
+     * Moves one page back.
+     */
     public void goBack() {
         driver.navigate().back();
     }
 
+    /**
+     * Refreshes the current page.
+     */
     public void refresh() {
         driver.navigate().refresh();
     }
 
+    /**
+     * Returns a random element of a given list.
+     * @param elements list of elements
+     * @param <T> type of elements
+     * @return a random element of the list
+     */
     public <T> T getRandomElement(List<T> elements) {
         return getRandomElement(0, elements);
     }
 
+    /**
+     * Returns a random element of a given list.
+     * @param lowerBound minimal index for the calculation of the random element
+     * @param elements list of elements
+     * @param <T> type of elements
+     * @return a random element of the list
+     */
     public <T> T getRandomElement(int lowerBound, List<T> elements) {
         int randomIndex = ThreadLocalRandom.current().nextInt(elements.size() - lowerBound) + lowerBound;
         return elements.get(randomIndex);
     }
 
+    /**
+     * Clicks on a random {@link WebElement} in given list.
+     * @param elements list of {@link WebElement}
+     */
     public void clickRandomWebElement(List<WebElement> elements) {
         getRandomElement(elements).click();
     }
 
+    /**
+     * Clicks on a random {@link WebElement} in given list.
+     * @param lowerBound minimal index for the calculation of the random element
+     * @param elements list of {@link WebElement}
+     */
     public void clickRandomWebElement(int lowerBound, List<WebElement> elements) {
         getRandomElement(lowerBound, elements).click();
     }
