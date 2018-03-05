@@ -20,13 +20,13 @@ import java.util.List;
 public class BrowserstackSeleniumProvider extends
         AbstractSeleniumProvider<BrowserstackSeleniumProvider, RemoteWebDriver> {
 
-    private static final String BROWSERSTACK_HUB_SYSTEM_PROPERTY_KEY = "browserstack_hub";
-    private static final String BROWSERSTACK_HUB_LOCAL_SYSTEM_PROPERTY_KEY = "browserstack_local";
+    private static final String BROWSERSTACK_HUB_SYSTEM_PROPERTY_KEY = "browserstack.hub";
+    private static final String BROWSERSTACK_HUB_LOCAL_SYSTEM_PROPERTY_KEY = "browserstack.local";
     private static final String BROWSERSTACK_PLATFORM = "platforms";
-    private static final String BROWSERSTACK_PLATFORM_VERSION = "platform_versions";
+    private static final String BROWSERSTACK_PLATFORM_VERSION = "platform.versions";
     private static final String BROWSERSTACK_BROWSER = "browsers";
-    private static final String BROWSERSTACK_BROWSER_VERSION = "browser_versions";
-    private static final String BROWSERSTACK_DISPLAY_RESOLUTION = "display_resolution";
+    private static final String BROWSERSTACK_BROWSER_VERSION = "browser.versions";
+    private static final String BROWSERSTACK_DISPLAY_RESOLUTION = "display.resolution";
 
     private final DateTimeFormatter BUILD_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 

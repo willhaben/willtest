@@ -19,7 +19,7 @@ import java.util.function.Predicate;
  */
 public abstract class PageObject {
 
-    public final long DEFAULT_WAIT_TIMEOUT = 30L;
+    public static final long DEFAULT_WAIT_TIMEOUT = 30L;
 
     private final WebDriver driver;
 
@@ -109,28 +109,58 @@ public abstract class PageObject {
         getRandomElement(lowerBound, elements).click();
     }
 
-    public WaitForBuilder waitFor(WebElement elements) {
-        return new WaitForBuilder(this, elements);
+    /**
+     * Waiting on a specific {@link WebElement}.
+     * @param element to wait for
+     * @return Builder for waiting for a specific element.
+     */
+    public WaitForBuilder waitFor(WebElement element) {
+        return new WaitForBuilder(this, element);
     }
 
+    /**
+     * Waiting on a specific {@link WebElement} identified by an XPath expression or a CSS selector.
+     * @param xPathOrCss to wait for
+     * @return Builder for waiting for a specific element.
+     */
     public WaitForBuilder waitFor(String xPathOrCss) {
         return new WaitForBuilder(this, XPathOrCssUtil.mapToBy(xPathOrCss));
     }
 
+    /**
+     * Waiting on a specific {@link WebElement} identified by a {@link By}.
+     * @param by to wait for
+     * @return Builder for waiting for a specific element.
+     */
     public WaitForBuilder waitFor(By by) {
         return new WaitForBuilder(this, by);
     }
 
+    /**
+     * Waiting on a set of elements.
+     * @param elements to wait for
+     * @return Builder to create different waiting conditions.
+     */
     public RequireBuilder require(WebElement... elements) {
         return new RequireBuilder(this, new RequireType(elements));
     }
 
+    /**
+     * Waiting on a set of elements.
+     * @param xPathOrCss XPath or CSS locators to wait for
+     * @return Builder to create different waiting conditions.
+     */
     public RequireBuilder require(String... xPathOrCss) {
         return new RequireBuilder(this, new RequireType(Arrays.stream(xPathOrCss)
                 .map(XPathOrCssUtil::mapToBy)
                 .toArray(By[]::new)));
     }
 
+    /**
+     * Waiting on a set of elements.
+     * @param bys locators to wait for
+     * @return Builder to create different waiting conditions.
+     */
     public RequireBuilder require(By... bys) {
         return new RequireBuilder(this, new RequireType(bys));
     }
