@@ -168,14 +168,12 @@ public class SeleniumEventListener extends TestFailureAwareRule implements WebDr
     }
 
     @Override
-    protected void after(Description description, Throwable testFailure) throws Throwable {
-        super.after(description, testFailure);
+    protected void onError(Description description, Throwable testFailure) throws Throwable {
+        super.onError(description, testFailure);
         try {
-            if (Objects.nonNull(testFailure)) {
-                LOGGER.error("\n\n\nTest failed with error: ", testFailure);
-                TestReportFile testReportFile = TestReportFile.forTest(description).withPostix("_action.log").build();
-                FileUtils.copyFile(tempFile, testReportFile.getFile());
-            }
+            LOGGER.error("\n\n\nTest failed with error: ", testFailure);
+            TestReportFile testReportFile = TestReportFile.forTest(description).withPostix("_action.log").build();
+            FileUtils.copyFile(tempFile, testReportFile.getFile());
         } finally {
             if (!tempFile.delete()) {
                 LOGGER.error("Could not delete temp file at " + tempFile.getAbsolutePath());
