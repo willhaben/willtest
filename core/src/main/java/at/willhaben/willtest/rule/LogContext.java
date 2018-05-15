@@ -15,7 +15,7 @@ public class LogContext extends TestFailureAwareRule {
     @Override
     public void before(Description description) throws Throwable {
         super.before(description);
-        MDC.put(TEST_CLASS, description.getClassName());
+        MDC.put(TEST_CLASS, description.getTestClass().getSimpleName());
         MDC.put(TEST_DISPLAY_NAME, description.getDisplayName());
         MDC.put(TEST_METHOD, description.getMethodName());
         MDC.put(THREAD_ID, Long.toString(Thread.currentThread().getId(), 32));
