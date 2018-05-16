@@ -145,6 +145,16 @@ public class SeleniumEventListener extends TestFailureAwareRule implements WebDr
     }
 
     @Override
+    public void beforeSwitchToWindow(String windowName, WebDriver driver) {
+
+    }
+
+    @Override
+    public void afterSwitchToWindow(String windowName, WebDriver driver) {
+
+    }
+
+    @Override
     public void onException(Throwable throwable, WebDriver webDriver) {
 
     }
