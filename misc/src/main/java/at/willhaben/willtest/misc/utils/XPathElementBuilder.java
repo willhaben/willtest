@@ -5,6 +5,7 @@ import java.util.Objects;
 public class XPathElementBuilder {
     private String tag;
     private String className;
+    private boolean containsClass;
     private String id;
     private String text;
     private int innerElementNumber = 0;
@@ -31,6 +32,11 @@ public class XPathElementBuilder {
     }
 
     public XPathElementBuilder andClass(String className) {
+        return andClass(className, false);
+    }
+
+    public XPathElementBuilder andClass(String className, boolean onlyContain) {
+        this.containsClass = onlyContain;
         if(Objects.nonNull(this.className)) {
             throw new IllegalStateException("Class is already set to '" + this.className + "' for this xpath element.");
         }
@@ -79,13 +85,17 @@ public class XPathElementBuilder {
             sb.append("*");
         }
         if(Objects.nonNull(className)) {
-            appendInner(sb, "@class", className);
+            if(containsClass) {//contains(@class,'description')]
+                appendFunction(sb, "contains(@class,", className, ")");
+            } else {
+                appendKeyValue(sb, "@class", className);
+            }
         }
         if(Objects.nonNull(id)) {
-            appendInner(sb, "@id", id);
+            appendKeyValue(sb, "@id", id);
         }
         if(Objects.nonNull(text)) {
-            appendInner(sb, "normalize-space(text())", text);
+            appendKeyValue(sb, "normalize-space(text())", text);
         }
         if(innerElementNumber != 0) {
             sb.append("]");
@@ -93,11 +103,20 @@ public class XPathElementBuilder {
         return sb.toString();
     }
 
-    private void appendInner(StringBuilder sb, String key, String value) {
+    private void appendFunction(StringBuilder sb, String first, String value, String end) {
         if(innerElementNumber == 0) {
-            sb.append("[").append(key).append("='").append(value).append("'");
+            sb.append("[").append(first).append("'").append(value).append("'").append(end);
         } else {
-            sb.append(" and ").append(key).append("='").append(value).append("'");
+            sb.append(" and ").append(first).append("'").append(value).append("'").append(end);
+        }
+        innerElementNumber++;
+    }
+
+    private void appendKeyValue(StringBuilder sb, String first, String value) {
+        if(innerElementNumber == 0) {
+            sb.append("[").append(first).append("='").append(value).append("'");
+        } else {
+            sb.append(" and ").append(first).append("='").append(value).append("'");
         }
         innerElementNumber++;
     }

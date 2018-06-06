@@ -19,7 +19,15 @@ public class XPathBuilder {
     }
 
     public XPathBuilder byClassOnly(String className) {
-        sb.append("//*[@class='").append(className).append("']");
+        return byClassOnly(className, false);
+    }
+
+    public XPathBuilder byClassOnly(String className, boolean onlyContain) {
+        if(onlyContain) {
+            sb.append("//*[contains(@class,'").append(className).append("')]");
+        } else {
+            sb.append("//*[@class='").append(className).append("']");
+        }
         return this;
     }
 
@@ -49,7 +57,11 @@ public class XPathBuilder {
     }
 
     public XPathElementBuilder byClass(String className) {
-        return new XPathElementBuilder(this).andClass(className);
+        return byClass(className, false);
+    }
+
+    public XPathElementBuilder byClass(String className, boolean onlyContain) {
+        return new XPathElementBuilder(this).andClass(className, onlyContain);
     }
 
     public XPathElementBuilder byId(String id) {

@@ -24,4 +24,13 @@ public class XPathBuilderTest {
     public void testDuplicatedSelector() {
         xpath().byClass("firstClass").andClass("secondClass");
     }
+
+    @Test
+    public void testClassOnlyContains() {
+        String xpath = xpath().byClassOnly("myClass", true).buildExpression();
+        assertThat(xpath, is("//*[contains(@class,'myClass')]"));
+
+        xpath = xpath().byClass("myClass", true).withId("myId").buildExpression();
+        assertThat(xpath, is("//*[contains(@class,'myClass') and @id='myId']"));
+    }
 }
