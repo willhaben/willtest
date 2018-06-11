@@ -1,11 +1,13 @@
 package at.willhaben.willtest.misc.pages;
 
 import at.willhaben.willtest.config.SeleniumProvider;
+import at.willhaben.willtest.misc.utils.WhFluentWait;
 import at.willhaben.willtest.misc.utils.XPathOrCssUtil;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.FluentWait;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -196,7 +198,7 @@ public abstract class PageObject {
      * Same as {@link #getWait(long)} with a default wait of {@value DEFAULT_WAIT_TIMEOUT} seconds.
      * @return
      */
-    protected FluentWait<WebDriver> getWait() {
+    protected WhFluentWait<WebDriver> getWait() {
         return getWait(DEFAULT_WAIT_TIMEOUT);
     }
 
@@ -206,12 +208,16 @@ public abstract class PageObject {
      * @param timeout Timeout in seconds
      * @return Waiter
      */
-    protected FluentWait<WebDriver> getWait(long timeout) {
-        return new FluentWait<>(driver)
-                .withTimeout(timeout, TimeUnit.SECONDS)
+    protected WhFluentWait<WebDriver> getWait(long timeout) {
+        return getWait(Duration.ofSeconds(timeout), Duration.ofMillis(250L));
+    }
+
+    protected WhFluentWait<WebDriver> getWait(Duration waitFor, Duration polling) {
+        return (WhFluentWait<WebDriver>) new WhFluentWait<>(driver)
+                .withTimeout(waitFor)
                 .ignoring(NoSuchElementException.class)
                 .ignoring(StaleElementReferenceException.class)
-                .pollingEvery(250L, TimeUnit.MILLISECONDS);
+                .pollingEvery(polling);
     }
 
     public  <T> Optional<T> waitFor(Function<? super WebDriver, T> findFunction, long timeout) {
