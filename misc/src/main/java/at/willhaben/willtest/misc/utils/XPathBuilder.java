@@ -6,8 +6,6 @@ public class XPathBuilder {
 
     private StringBuilder sb = new StringBuilder();
 
-    XPathBuilder() {}
-
     public XPathBuilder byTextOnly(String text) {
         sb.append("//*[normalize-space(text())='").append(text).append("']");
         return this;
@@ -19,7 +17,7 @@ public class XPathBuilder {
     }
 
     public XPathBuilder byClassOnly(String className) {
-        return byClassOnly(className, false);
+        return byClassOnly(className, true);
     }
 
     public XPathBuilder byClassOnly(String className, boolean onlyContain) {
@@ -41,7 +39,7 @@ public class XPathBuilder {
         return this;
     }
 
-    public XPathBuilder parentAndTag(String elementTag) {
+    public XPathBuilder parent(String elementTag) {
         sb.append("/parent::").append(elementTag);
         return this;
     }
@@ -51,13 +49,18 @@ public class XPathBuilder {
         return this;
     }
 
-    public XPathBuilder followingSiblingAndTag(String elementTag) {
+    public XPathBuilder followingSibling(String elementTag) {
         sb.append("/following-sibling::").append(elementTag);
         return this;
     }
 
+    public XPathBuilder nth(int nthElement) {
+        sb.append("[").append(nthElement).append("]");
+        return this;
+    }
+
     public XPathElementBuilder byClass(String className) {
-        return byClass(className, false);
+        return byClass(className, true);
     }
 
     public XPathElementBuilder byClass(String className, boolean onlyContain) {

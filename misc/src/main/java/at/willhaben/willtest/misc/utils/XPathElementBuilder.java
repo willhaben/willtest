@@ -32,7 +32,7 @@ public class XPathElementBuilder {
     }
 
     public XPathElementBuilder andClass(String className) {
-        return andClass(className, false);
+        return andClass(className, true);
     }
 
     public XPathElementBuilder andClass(String className, boolean onlyContain) {

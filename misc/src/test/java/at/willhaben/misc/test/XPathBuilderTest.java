@@ -9,16 +9,50 @@ import static org.hamcrest.Matchers.is;
 public class XPathBuilderTest {
 
     @Test
-    public void testXpathBuilder() {
+    public void testLocatorCombination() {
         String xpath = xpath().byClass("myClass").andId("myId").withText("myText").buildExpression();
-        assertThat(xpath, is("//*[@class='myClass' and @id='myId' and normalize-space(text())='myText']"));
+        assertThat(xpath, is("//*[contains(@class,'myClass') and @id='myId' and normalize-space(text())='myText']"));
 
         xpath = xpath().byClassOnly("myClass").parent().buildExpression();
-        assertThat(xpath, is("//*[@class='myClass']/parent::*"));
+        assertThat(xpath, is("//*[contains(@class,'myClass')]/parent::*"));
 
-        xpath = xpath().byClassOnly("myClass").followingSiblingAndTag("div").buildExpression();
-        assertThat(xpath, is("//*[@class='myClass']/following-sibling::div"));
+        xpath = xpath().byClassOnly("myClass").followingSibling("div").buildExpression();
+        assertThat(xpath, is("//*[contains(@class,'myClass')]/following-sibling::div"));
+
+        xpath = xpath().byClass("myClass", false).withTag("myTag").nth(1).buildExpression();
+        assertThat(xpath, is("//myTag[@class='myClass'][1]"));
+
+        xpath = xpath().byClass("myClass", false).andText("myText").withTag("myTag").nth(1).buildExpression();
+        assertThat(xpath, is("//myTag[@class='myClass' and normalize-space(text())='myText'][1]"));
     }
+
+    @Test
+    public void testClassLocator() {
+        String xpath = xpath().byClassOnly("myClass").buildExpression();
+        assertThat(xpath, is("//*[contains(@class,'myClass')]"));
+
+        xpath = xpath().byClassOnly("myClass", false).buildExpression();
+        assertThat(xpath, is("//*[@class='myClass']"));
+    }
+
+    @Test
+    public void testIdLocator() {
+        String xpath = xpath().byIdOnly("myId").buildExpression();
+        assertThat(xpath, is("//*[@id='myId']"));
+    }
+
+    @Test
+    public void testTagLocator() {
+        String xpath = xpath().byTagOnly("myTag").buildExpression();
+        assertThat(xpath, is("//myTag"));
+    }
+
+    @Test
+    public void testTextLocator() {
+        String xpath = xpath().byTextOnly("myText").buildExpression();
+        assertThat(xpath, is("//*[normalize-space(text())='myText']"));
+    }
+
 
     @Test(expected = IllegalStateException.class)
     public void testDuplicatedSelector() {
@@ -27,10 +61,25 @@ public class XPathBuilderTest {
 
     @Test
     public void testClassOnlyContains() {
-        String xpath = xpath().byClassOnly("myClass", true).buildExpression();
+        String xpath = xpath().byClassOnly("myClass").buildExpression();
         assertThat(xpath, is("//*[contains(@class,'myClass')]"));
 
-        xpath = xpath().byClass("myClass", true).withId("myId").buildExpression();
+        xpath = xpath().byClass("myClass").withId("myId").buildExpression();
         assertThat(xpath, is("//*[contains(@class,'myClass') and @id='myId']"));
+    }
+
+    @Test
+    public void testFollowingSibling() {
+        String xpath = xpath().followingSibling().buildExpression();
+        assertThat(xpath, is("/following-sibling::*"));
+
+        xpath = xpath().followingSibling("mytag").buildExpression();
+        assertThat(xpath, is("/following-sibling::mytag"));
+    }
+
+    @Test
+    public void testnthElement() {
+        String xpath = xpath().byTagOnly("mytag").nth(2).buildExpression();
+        assertThat(xpath, is("//mytag[2]"));
     }
 }
