@@ -13,8 +13,6 @@ import java.util.Objects;
 public class CustomElementLocator implements ElementLocator {
 
     private SearchContext searchContext;
-    private Field field;
-    private By by;
     private Annotations annotations;
     private WebElement cachedElement;
     private List<WebElement> cachedElementList;
@@ -30,6 +28,7 @@ public class CustomElementLocator implements ElementLocator {
 
     @Override
     public WebElement findElement() {
+        System.out.println("Find element");
         if(Objects.nonNull(cachedElement) && annotations.isLookupCached()) {
             return cachedElement;
         }
@@ -42,6 +41,6 @@ public class CustomElementLocator implements ElementLocator {
 
     @Override
     public List<WebElement> findElements() {
-        return searchContext.findElements(by);
+        return searchContext.findElements(annotations.buildBy());
     }
 }

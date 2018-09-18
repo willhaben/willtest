@@ -20,11 +20,14 @@ public class CustomAnnotation extends Annotations {
 
     @Override
     public By buildBy() {
+        System.out.println("Build by.");
         FindWh annotation = field.getAnnotation(FindWh.class);
         if(Objects.isNull(annotation)) {
+            System.out.println("Annotation is null");
             return super.buildByFromDefault();
         }
         String dataTestId = annotation.dataTestId();
+        System.out.println("This is the data test id: " + dataTestId);
         return By.cssSelector("[data-testid='" + dataTestId + "']");
     }
 }

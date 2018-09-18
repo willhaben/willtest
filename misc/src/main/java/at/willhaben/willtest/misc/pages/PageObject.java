@@ -52,7 +52,7 @@ public abstract class PageObject {
      */
     protected final void initElements() {
 //        PageFactory.initElements(this.driver, this);
-        PageFactory.initElements(new WhElementLocatorFactory(this.driver), this);
+        PageFactory.initElements(new CustomFieldDecorator(new WhElementLocatorFactory(this.driver)), this);
     }
 
     /**

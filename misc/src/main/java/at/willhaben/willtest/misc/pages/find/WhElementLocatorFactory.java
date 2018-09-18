@@ -18,11 +18,13 @@ public class WhElementLocatorFactory implements ElementLocatorFactory {
 
     @Override
     public ElementLocator createLocator(Field field) {
+        System.out.println("Field name: " + field.getName());
         FindWh annotation = field.getAnnotation(FindWh.class);
         if (Objects.isNull(annotation)) {
             System.out.println("FindWh annotation is null.");
             new DefaultElementLocator(searchContext, field);
         } else {
+            System.out.println("FindWh annotation is not null.");
             new CustomElementLocator(searchContext, field);
         }
         return null;
