@@ -82,4 +82,25 @@ public class XPathBuilderTest {
         String xpath = xpath().byTagOnly("mytag").nth(2).buildExpression();
         assertThat(xpath, is("//mytag[2]"));
     }
+
+    @Test
+    public void testDirectChild() {
+        String xpath = xpath().byClassOnly("myClass").byTagOnly("myTag").directChild().buildExpression();
+        assertThat(xpath, is("//*[contains(@class,'myClass')]/myTag"));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testDirectChildAsFirstLocator() {
+        xpath().directChild();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testDirectChildOnFirstLocator() {
+        xpath().byClassOnly("myClass").directChild();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testDirectChildOnSingleSlashedLocator() {
+        xpath().byClassOnly("myClass").parent().directChild();
+    }
 }
