@@ -26,7 +26,7 @@ public class XPathBuilder {
         }
         if(doubleSlashIndex == -1) {
             throw new IllegalStateException("The direct child operation can not be used as first locator. " +
-                    "It modifies the last double slashed one the a single one. " +
+                    "It modifies the last double slashed locator to a single slashed one. " +
                     "Actual locator: '" + buildExpression() + "'");
         }
         if (doubleSlashIndex == 0) {
