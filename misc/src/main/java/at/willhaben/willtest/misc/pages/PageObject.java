@@ -50,7 +50,7 @@ public abstract class PageObject {
      * This method calls the {@link PageFactory#initElements(WebDriver, Object)} method to init every annotated
      * {@link WebElement} in the pageobject. It is automatically called on pageobject creation.
      */
-    protected final void initElements() {
+    protected void initElements() {
 //        PageFactory.initElements(this.driver, this);
         PageFactory.initElements(new CustomFieldDecorator(new WhElementLocatorFactory(this.driver)), this);
     }

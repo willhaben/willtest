@@ -1,4 +1,4 @@
-package at.willhaben.misc.test;
+package at.willhaben.misc.test.util;
 
 public class StaticResourceHtmlUtil {
 

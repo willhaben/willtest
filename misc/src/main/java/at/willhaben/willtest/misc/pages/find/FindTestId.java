@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.TYPE})
-public @interface FindWh {
-    String dataTestId() default "";
+public @interface FindTestId {
+    String value();
+    String tagName() default "";
 }

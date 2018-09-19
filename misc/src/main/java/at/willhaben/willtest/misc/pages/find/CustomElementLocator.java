@@ -1,6 +1,5 @@
 package at.willhaben.willtest.misc.pages.find;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.Annotations;
@@ -8,7 +7,6 @@ import org.openqa.selenium.support.pagefactory.ElementLocator;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Objects;
 
 public class CustomElementLocator implements ElementLocator {
 
@@ -16,9 +14,13 @@ public class CustomElementLocator implements ElementLocator {
     private Annotations annotations;
     private WebElement cachedElement;
     private List<WebElement> cachedElementList;
+    private CustomUiComponentFactory factory;
+    private Field field;
 
-    public CustomElementLocator(SearchContext searchContext, Field field) {
+    public CustomElementLocator(SearchContext searchContext, Field field, CustomUiComponentFactory factory) {
         this(searchContext, new CustomAnnotation(field));
+        this.factory = factory;
+        this.field = field;
     }
 
     public CustomElementLocator(SearchContext searchContext, Annotations annotations) {
@@ -28,15 +30,7 @@ public class CustomElementLocator implements ElementLocator {
 
     @Override
     public WebElement findElement() {
-        System.out.println("Find element");
-        if(Objects.nonNull(cachedElement) && annotations.isLookupCached()) {
-            return cachedElement;
-        }
-        WebElement element = searchContext.findElement(annotations.buildBy());
-        if(annotations.isLookupCached()) {
-            cachedElement = element;
-        }
-        return element;
+        return searchContext.findElement(factory.buildBy(factory.getAnnotation(field)));
     }
 
     @Override
