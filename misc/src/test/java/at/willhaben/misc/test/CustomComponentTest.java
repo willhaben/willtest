@@ -2,6 +2,7 @@ package at.willhaben.misc.test;
 
 import at.willhaben.misc.test.pages.StaticPage;
 import at.willhaben.misc.test.util.category.PhantomTest;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -37,5 +38,6 @@ public class CustomComponentTest {
         selectList.get(0).selectByVisibleText("Second1Option");
         assertThat(selectList.get(0).getFirstSelectedOption().getText().trim(), is("Second1Option"));
         assertThat(selectList.get(1).getFirstSelectedOption().getText().trim(), is("First2Option"));
+        assertThat(selectList, Matchers.hasSize(2));
     }
 }

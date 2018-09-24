@@ -7,7 +7,7 @@ import org.openqa.selenium.support.ui.ISelect;
 
 import java.util.List;
 
-import static at.willhaben.misc.test.util.StaticResourceHtmlUtil.getAbsolutePath;
+import static at.willhaben.misc.test.util.StaticResourceHtmlUtil.resourceHtmlFilePath;
 
 public class StaticPage extends AbstractTestingPage {
 
@@ -28,7 +28,7 @@ public class StaticPage extends AbstractTestingPage {
     }
 
     public static StaticPage open(WebDriver driver) {
-        driver.navigate().to(getAbsolutePath("static"));
+        driver.navigate().to(resourceHtmlFilePath("static"));
         return new StaticPage(driver);
     }
 
