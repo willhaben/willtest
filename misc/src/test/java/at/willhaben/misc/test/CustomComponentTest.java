@@ -1,8 +1,10 @@
 package at.willhaben.misc.test;
 
 import at.willhaben.misc.test.pages.StaticPage;
+import at.willhaben.misc.test.util.category.PhantomTest;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.support.ui.ISelect;
@@ -12,7 +14,8 @@ import java.util.List;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class CustomAndComponentTest {
+@Category(PhantomTest.class)
+public class CustomComponentTest {
 
     WebDriver driver;
 
