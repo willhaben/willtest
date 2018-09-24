@@ -7,12 +7,14 @@ import org.openqa.selenium.support.ui.Select;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-public class SelectInvocationHandler implements InvocationHandler {
+public class WhInvocationHandler implements InvocationHandler {
 
     private ElementLocator locator;
+    private WebElementTransformer transformer;
 
-    public SelectInvocationHandler(ElementLocator locator) {
+    public WhInvocationHandler(ElementLocator locator, WebElementTransformer transformer) {
         this.locator = locator;
+        this.transformer = transformer;
     }
 
     @Override
@@ -22,8 +24,8 @@ public class SelectInvocationHandler implements InvocationHandler {
         if ("getWrappedElement".equals(method.getName())) {
             return element;
         }
-        Select select = new Select(element);
-        System.out.println(method.getName());
-        return method.invoke(select, objects);
+
+        Object customUiComponent = transformer.generateElement(element);
+        return method.invoke(customUiComponent, objects);
     }
 }

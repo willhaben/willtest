@@ -1,40 +1,52 @@
 package at.willhaben.willtest.misc.pages.find;
 
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.internal.Locatable;
-import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.pagefactory.DefaultFieldDecorator;
 import org.openqa.selenium.support.pagefactory.ElementLocatorFactory;
-import org.openqa.selenium.support.ui.ISelect;
-import org.openqa.selenium.support.ui.Select;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class CustomFieldDecorator extends DefaultFieldDecorator {
 
-//    private Map<Class, >
+    private List<AbstractUiComponent> customFactories = new ArrayList<>();
 
     public CustomFieldDecorator(ElementLocatorFactory factory) {
         super(factory);
+
+    }
+
+    public CustomFieldDecorator addCustomUiComponent(AbstractUiComponent customFactory) {
+        this.customFactories.add(customFactory);
+        return this;
     }
 
     @Override
     public Object decorate(ClassLoader loader, Field field) {
-        Object element = null;
+        Object element = super.decorate(loader, field);
         if(Objects.isNull(element)) {
-            System.out.println("Default decorate has no success.");
-            if(Select.class.isAssignableFrom(field.getType())) {
-                System.out.println("Is assignable to Select.");
-                SelectInvocationHandler handler = new SelectInvocationHandler(factory.createLocator(field));
-                Select select = (Select) Proxy.newProxyInstance(loader, new Class[]{ISelect.class}, handler);
-                return select;
-            } else {
-                return super.decorate(loader, field);
+
+            Optional<AbstractUiComponent> suitableFactory = getSuitableFactory(field);
+
+            if(suitableFactory.isPresent()) {
+                AbstractUiComponent customFactory = suitableFactory.get();
+                if(customFactory.isCompatibleList(field)) {
+                    WhListInvocationHandler handler = new WhListInvocationHandler(factory.createLocator(field), customFactory);
+                    return Proxy.newProxyInstance(loader, new Class[]{List.class}, handler);
+                }
+                WhInvocationHandler handler = new WhInvocationHandler(factory.createLocator(field), customFactory);
+                return Proxy.newProxyInstance(loader, (Class<?>[]) customFactory.getFieldInterfacedTypes().toArray(), handler);
             }
-        } else {
-            return super.decorate(loader, field);
         }
+        return element;
+    }
+
+    private Optional<AbstractUiComponent> getSuitableFactory(Field field) {
+        return customFactories.stream()
+                .filter(factory -> factory.isFieldCompatible(field))
+                .findFirst();
     }
 }

@@ -2,9 +2,9 @@ package at.willhaben.misc.test.pages;
 
 import at.willhaben.willtest.misc.pages.PageObject;
 import at.willhaben.willtest.misc.pages.find.CustomFieldDecorator;
-import at.willhaben.willtest.misc.pages.find.WhElementLocatorFactory;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.pagefactory.DefaultElementLocatorFactory;
 
 public class AbstractTestingPage extends PageObject {
 
@@ -14,8 +14,9 @@ public class AbstractTestingPage extends PageObject {
 
     @Override
     protected void initElements() {
-        WhElementLocatorFactory factory = new WhElementLocatorFactory(getWebDriver());
-        factory.addComponent(new FindTestIdComponent());
-        PageFactory.initElements(new CustomFieldDecorator(factory), this);
+        CustomFieldDecorator fieldDecorator = new CustomFieldDecorator(new DefaultElementLocatorFactory(getWebDriver()));
+        fieldDecorator.addCustomUiComponent(new SelectComponent());
+
+        PageFactory.initElements(fieldDecorator, this);
     }
 }

@@ -1,8 +1,6 @@
 package at.willhaben.willtest.misc.pages;
 
 import at.willhaben.willtest.config.SeleniumProvider;
-import at.willhaben.willtest.misc.pages.find.CustomFieldDecorator;
-import at.willhaben.willtest.misc.pages.find.WhElementLocatorFactory;
 import at.willhaben.willtest.misc.utils.WhFluentWait;
 import at.willhaben.willtest.misc.utils.XPathOrCssUtil;
 import org.openqa.selenium.*;
@@ -14,7 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -51,8 +48,7 @@ public abstract class PageObject {
      * {@link WebElement} in the pageobject. It is automatically called on pageobject creation.
      */
     protected void initElements() {
-//        PageFactory.initElements(this.driver, this);
-        PageFactory.initElements(new CustomFieldDecorator(new WhElementLocatorFactory(this.driver)), this);
+        PageFactory.initElements(this.driver, this);
     }
 
     /**

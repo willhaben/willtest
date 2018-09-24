@@ -3,7 +3,10 @@ package at.willhaben.misc.test.pages;
 import at.willhaben.willtest.misc.pages.find.FindTestId;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ISelect;
 import org.openqa.selenium.support.ui.Select;
+
+import java.util.List;
 
 import static at.willhaben.misc.test.util.StaticResourceHtmlUtil.getAbsolutePath;
 
@@ -16,7 +19,10 @@ public class StaticPage extends AbstractTestingPage {
     private WebElement spanElementText;
 
     @FindTestId("select-id")
-    private Select select;
+    private ISelect select;
+
+    @FindTestId("select-id-list")
+    private List<ISelect> selectList;
 
     protected StaticPage(WebDriver driver) {
         super(driver);
@@ -41,5 +47,9 @@ public class StaticPage extends AbstractTestingPage {
 
     public String getSelectedValue() {
         return select.getFirstSelectedOption().getText().trim();
+    }
+
+    public List<ISelect> getSelectList() {
+        return selectList;
     }
 }
