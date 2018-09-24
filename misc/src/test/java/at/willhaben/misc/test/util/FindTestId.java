@@ -1,4 +1,4 @@
-package at.willhaben.willtest.misc.pages.find;
+package at.willhaben.misc.test.util;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.AbstractFindByBuilder;

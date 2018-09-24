@@ -1,4 +1,4 @@
-package at.willhaben.misc.test.pages;
+package at.willhaben.misc.test.util;
 
 import at.willhaben.willtest.misc.pages.find.AbstractUiComponent;
 import org.openqa.selenium.WebElement;

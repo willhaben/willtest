@@ -10,16 +10,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class CustomFieldDecorator extends DefaultFieldDecorator {
+public class WhFieldDecorator extends DefaultFieldDecorator {
 
     private List<AbstractUiComponent> customFactories = new ArrayList<>();
 
-    public CustomFieldDecorator(ElementLocatorFactory factory) {
+    public WhFieldDecorator(ElementLocatorFactory factory) {
         super(factory);
 
     }
 
-    public CustomFieldDecorator addCustomUiComponent(AbstractUiComponent customFactory) {
+    public WhFieldDecorator addCustomUiComponent(AbstractUiComponent customFactory) {
         this.customFactories.add(customFactory);
         return this;
     }

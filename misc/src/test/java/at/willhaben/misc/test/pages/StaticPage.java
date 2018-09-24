@@ -1,10 +1,9 @@
 package at.willhaben.misc.test.pages;
 
-import at.willhaben.willtest.misc.pages.find.FindTestId;
+import at.willhaben.misc.test.util.FindTestId;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ISelect;
-import org.openqa.selenium.support.ui.Select;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class StaticPage extends AbstractTestingPage {
     }
 
     public static StaticPage open(WebDriver driver) {
-        driver.navigate().to("file://" + getAbsolutePath("static"));
+        driver.navigate().to(getAbsolutePath("static"));
         return new StaticPage(driver);
     }
 

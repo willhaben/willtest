@@ -1,7 +1,9 @@
 package at.willhaben.misc.test;
 
 import at.willhaben.misc.test.pages.StaticPage;
+import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.support.ui.ISelect;
 
@@ -12,9 +14,16 @@ import static org.junit.Assert.assertThat;
 
 public class TestCustomAnnotation {
 
+    WebDriver driver;
+
+    @Before
+    public void setUpDriver() {
+        driver = new PhantomJSDriver();
+    }
+
     @Test
     public void test() {
-        StaticPage staticPage = StaticPage.open(new PhantomJSDriver());
+        StaticPage staticPage = StaticPage.open(driver);
         assertThat(staticPage.getTextOfDivElement(), is("This text is in the div element"));
         assertThat(staticPage.getTextOfSpanElement(), is("This text is in the span element"));
         assertThat(staticPage.getSelectedValue(), is("FirstOption"));
