@@ -17,11 +17,9 @@
             <artifactId>junit</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.sun</groupId>
-            <artifactId>tools</artifactId>
-            <scope>system</scope>
-            <version>${java.version}</version>
-            <systemPath>${toolsjar}</systemPath>
+            <groupId>com.sun.codemodel</groupId>
+            <artifactId>codemodel</artifactId>
+            <version>2.6</version>
         </dependency>
         <dependency>
             <groupId>com.github.stefanbirkner</groupId>
