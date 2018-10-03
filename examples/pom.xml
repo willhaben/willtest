@@ -7,11 +7,11 @@
     <parent>
         <groupId>at.willhaben.willtest</groupId>
         <artifactId>parent</artifactId>
-        <version>1.3.0</version>
+        <version>1.3.1</version>
     </parent>
 
     <artifactId>examples</artifactId>
-    <version>1.3.0</version>
+    <version>1.3.1</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Practical examples</description>
@@ -58,7 +58,7 @@
         <geckodriver.type>This will be overwritten by a profile for the specific platform</geckodriver.type>
         <geckodriver.archive>geckodriver-${geckodriver.version}-${geckodriver.type}</geckodriver.archive>
         <geckodriver.url>https://github.com/mozilla/geckodriver/releases/download/${geckodriver.version}/${geckodriver.archive}</geckodriver.url>
-        <geckodriver.extension></geckodriver.extension>
+        <geckodriver.extension/>
         <geckodriver.folder>${project.build.directory}</geckodriver.folder>
     </properties>
 
