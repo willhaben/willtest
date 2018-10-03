@@ -29,7 +29,7 @@ public class PageSource extends TestFailureAwareRule {
         PageContentException pageContentException = new PageContentException(pageSource);
         testFailure.addSuppressed(pageContentException);
         File destFile = TestReportFile.forTest(description).withPostix(".html").build().getFile();
-        Files.write(pageSource, destFile, StandardCharsets.UTF_8);
+        Files.write(pageSource.getBytes(), destFile);
         LOGGER.info("Saved page source as " + destFile.getAbsolutePath());
     }
 }
