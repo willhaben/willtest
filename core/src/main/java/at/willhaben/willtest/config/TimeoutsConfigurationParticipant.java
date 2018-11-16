@@ -19,6 +19,7 @@ import java.util.function.Function;
  * If all timeouts are set through this class, then there is a possibility to get the current timeout settings of the
  * {@link WebDriver}, which is not possible out of the box in Selenium.
  */
+@Deprecated
 public class TimeoutsConfigurationParticipant<D extends WebDriver> implements WebDriverConfigurationParticipant<D> {
     private Duration implicitWait;
     private Duration scriptTimeout;

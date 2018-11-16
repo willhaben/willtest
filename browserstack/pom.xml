@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>at.willhaben.willtest</groupId>
-        <artifactId>parent</artifactId>
+        <artifactId>willtest</artifactId>
         <version>1.3.0</version>
     </parent>
 

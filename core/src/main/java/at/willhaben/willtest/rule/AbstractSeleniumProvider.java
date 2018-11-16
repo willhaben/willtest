@@ -20,6 +20,7 @@ import java.util.Objects;
  * for a test. This class implements the default cleanup after a test with a created webDriver. Registers and calls
  * {@link WebDriverConfigurationParticipant} instances, which can influence the creation of the {@link WebDriver}.
  */
+@Deprecated
 public abstract class AbstractSeleniumProvider<P extends SeleniumProvider<P, D>, D extends WebDriver>
         extends TestFailureAwareRule
         implements SeleniumProvider<P, D> {

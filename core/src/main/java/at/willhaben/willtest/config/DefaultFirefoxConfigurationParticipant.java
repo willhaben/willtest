@@ -17,6 +17,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  * <li>Moves the opened window to the left screen maximized with Full HD resolution.</li>
  * </ul>
  */
+@Deprecated
 public class DefaultFirefoxConfigurationParticipant<D extends WebDriver>
         implements FirefoxConfigurationParticipant, WebDriverConfigurationParticipant<D> {
     /**

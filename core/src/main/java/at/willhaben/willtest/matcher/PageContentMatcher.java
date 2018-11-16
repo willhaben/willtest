@@ -19,6 +19,7 @@ import static java.util.stream.Collectors.toList;
  * {@link at.willhaben.willtest.rule.PageSource} to retry on a specific page content.
  * Example: a "Gateway Timeout" page sent by Apache could mean that we want to retry a test.
  */
+@Deprecated
 public class PageContentMatcher extends TypeSafeMatcher<Throwable> {
     private final Matcher<String> pageContentMatcher;
 

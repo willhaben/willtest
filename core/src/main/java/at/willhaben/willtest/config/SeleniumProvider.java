@@ -12,6 +12,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * @param <P> concrete implementation class. Makes type safe method chaining in implementations possible
  * @param <D> concrete implementation of {@link WebDriver} provided
  */
+@Deprecated
 public interface SeleniumProvider<P extends SeleniumProvider, D extends WebDriver> {
     long FIND_ELEMENT_TIMEOUT = 30;
 

@@ -10,6 +10,7 @@ import java.util.Optional;
  * Matches a given exception type with an optional additional message matcher.
  * @param <T> expected exception type
  */
+@Deprecated
 public class ExceptionMatcher<T extends Throwable> extends TypeSafeMatcher<T>{
     private final Matcher<String> messageMatcher;
     private final Class<T> expectedType;

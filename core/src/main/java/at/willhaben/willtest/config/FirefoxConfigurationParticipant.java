@@ -6,6 +6,7 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 /**
  * Can change the settings of a Firefox instance used by the tests.
  */
+@Deprecated
 public interface FirefoxConfigurationParticipant {
     /**
      * It can adjust a {@link FirefoxProfile}. It can load for example browser plugins.

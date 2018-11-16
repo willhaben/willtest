@@ -11,9 +11,9 @@ like:
 * Abstract PageObject with some common functions
 
 ## Requirements
-* Currently Selenium 3.7.1 is used
+* Currently Selenium 3.14.0 is used
 * Firefox local and on Selenium Hub is supported. Adding new Browsers is easily possible with implementing the ```SeleniumProvider``` interface.
-* Java 8
+* Java 10
 
 ## Getting Started
 The code is built up from several small building blocks. There is a default setting we are using, which can be used 
