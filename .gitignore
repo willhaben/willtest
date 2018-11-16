@@ -78,3 +78,6 @@ buildNumber.properties
 
 ### Surefire Reports ###
 */surefire-reports/*
+
+### Drivers ###
+*/drivers
