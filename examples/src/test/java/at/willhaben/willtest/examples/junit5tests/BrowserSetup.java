@@ -20,4 +20,5 @@ public class BrowserSetup extends BrowserOptionInterceptor {
         capabilities.setBrowserName(nameOfBrowser);
         return capabilities;
     }
+
 }

@@ -36,6 +36,10 @@ public class TestReportFile {
         return new Builder(testDescription);
     }
 
+    public static Builder forTest(ExtensionContext context) {
+        return new Builder(context);
+    }
+
     /**
      * Gives back the {@link File} object, which can be used as target for report.
      *

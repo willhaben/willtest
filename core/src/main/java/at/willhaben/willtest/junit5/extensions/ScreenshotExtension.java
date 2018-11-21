@@ -4,7 +4,7 @@ import at.willhaben.willtest.config.DefaultScreenshotProvider;
 import at.willhaben.willtest.junit5.BrowserUtil;
 import at.willhaben.willtest.junit5.BrowserUtilExtension;
 import at.willhaben.willtest.junit5.ScreenshotInterceptor;
-import at.willhaben.willtest.junit5.extensions.DriverParameterResolver;
+import at.willhaben.willtest.util.TestReportFile;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 import org.openqa.selenium.WebDriver;
@@ -15,10 +15,6 @@ import ru.yandex.qatools.ashot.screentaker.ShootingStrategy;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Optional;
@@ -30,36 +26,25 @@ public class ScreenshotExtension implements TestExecutionExceptionHandler {
 
     @Override
     public void handleTestExecutionException(ExtensionContext extensionContext, Throwable throwable) throws Throwable {
-        ExtensionContext.Store store = extensionContext.getStore(ExtensionContext.Namespace.GLOBAL);
-        WebDriver driver = (WebDriver) store.get(DriverParameterResolver.DRIVER_KEY);
+        WebDriver driver = DriverParameterResolver.getWebDriverFromStore(extensionContext);
         if (driver != null) {
             File screenshotAs;
             ScreenshotInterceptor screenshotInterceptor = getScreenshotInterceptor(extensionContext);
             BufferedImage screenShot = new AShot().shootingStrategy(screenshotInterceptor
                     .provideShootingStrategy())
                     .takeScreenshot(driver).getImage();
-            new File(TEST_REPORT_FOLDER).mkdir();
-            try {
-                String testClassName = extensionContext.getRequiredTestClass().getSimpleName();
-                String methodName = extensionContext.getRequiredTestMethod().getName();
-                String screenShotName = "TR_" + testClassName + "_" + methodName + "-" +
-                        DATE_FORMAT.format(ZonedDateTime.now()) + ".png";
-                String finalFileName = TEST_REPORT_FOLDER + File.separator + screenShotName;
-                screenshotAs = new File(finalFileName);
-                ImageIO.write(screenShot,"png",screenshotAs);
-                Files.move(screenshotAs.toPath(), new File(finalFileName).toPath());
-            } catch (IOException e) {
-                throw new FileNotFoundException("Error while moving screenshot to '" + TEST_REPORT_FOLDER + "' folder.");
-            }
+            screenshotAs = TestReportFile.forTest(extensionContext).withPostix(".png").build().getFile();
+            ImageIO.write(screenShot, "png", screenshotAs);
         } else {
-            throw new WebDriverException("Driver isn't initialized");
+            throw new WebDriverException("Driver isn't initialized. " +
+                    "This extension can only be used in combination with the DriverParameterResolver");
         }
         throw throwable;
     }
 
     private ScreenshotInterceptor getScreenshotInterceptor(ExtensionContext context) {
         BrowserUtil browserUtil = context.getRequiredTestMethod().getAnnotation(BrowserUtil.class);
-        if(browserUtil == null) {
+        if (browserUtil == null) {
             browserUtil = context.getRequiredTestClass().getAnnotation(BrowserUtil.class);
         }
         if (browserUtil == null) {
