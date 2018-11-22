@@ -40,11 +40,7 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         Class<?> type = parameterContext.getParameter().getType();
-        if (WebDriver.class.isAssignableFrom(type)) {
-            return true;
-        } else {
-            return false;
-        }
+        return WebDriver.class.isAssignableFrom(type);
     }
 
     @Override
