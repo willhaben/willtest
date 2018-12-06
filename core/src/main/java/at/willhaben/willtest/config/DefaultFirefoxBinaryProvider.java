@@ -9,6 +9,7 @@ import java.io.File;
  * when the selenium version you are using does not support the latest firefox version. The place of the firefox
  * binary can be defined by {@value FIREFOX_BINARY_LOCATION_SYSTEM_PROPERTY_KEY} system property.
  */
+@Deprecated
 public class DefaultFirefoxBinaryProvider implements FirefoxBinaryProvider {
     /**
      * Env entry to contain a path to the firefox binary to be used.

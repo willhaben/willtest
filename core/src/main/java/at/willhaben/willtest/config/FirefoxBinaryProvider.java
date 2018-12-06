@@ -6,6 +6,7 @@ import org.openqa.selenium.firefox.FirefoxBinary;
  * You might want to run tests with different versions of Firefox. The implementations of this interface should
  * return a {@link FirefoxBinary} instance.
  */
+@Deprecated
 public interface FirefoxBinaryProvider {
 
     /**

@@ -45,6 +45,7 @@ import java.net.URL;
  </pre>
  *
  */
+@Deprecated
 public class AdBlockerConfigurator implements FirefoxConfigurationParticipant {
     private static final String ADBLOCK_XPI_RESOURCE_PATH = "/adblock.xpi";
 

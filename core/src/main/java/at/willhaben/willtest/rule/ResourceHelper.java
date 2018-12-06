@@ -17,7 +17,9 @@ import java.io.InputStream;
  * This rule can copy such resources into a temp file, which will be then available during the test for being uploaded.
  * After the test the cleanup of such files happens automatically.
  * See also {@link at.willhaben.willtest.config.FileDetectorConfigurator}.
+ * @deprecated use Temporary Folder Extension
  */
+@Deprecated
 public class ResourceHelper extends TestFailureAwareRule {
     private final TemporaryFolder temporaryFolder = new TemporaryFolder();
 

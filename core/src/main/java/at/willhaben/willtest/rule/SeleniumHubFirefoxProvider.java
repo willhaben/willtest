@@ -16,6 +16,7 @@ import java.net.URL;
  * {@link #setFirefoxConfiguration(FirefoxConfiguration)},
  * {@link #addWebDriverConfigurationParticipant(WebDriverConfigurationParticipant)} methods
  */
+@Deprecated
 public class SeleniumHubFirefoxProvider extends AbstractFirefoxProvider<SeleniumHubFirefoxProvider, RemoteWebDriver> {
     private static final String DEFAULT_PLATFORM_LINUX = "Linux";
     private static final String SELENIUM_HUB_SYSTEM_PROPERTY_KEY = "seleniumHub";

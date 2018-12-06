@@ -40,6 +40,7 @@ import java.util.function.Consumer;
  * {@link #withAdjustmentsOfFirefoxConfiguration(Consumer)}, {@link #secondOuterRule(TestRule)},
  * {@link #around(TestRule)} and other methods.
  */
+@Deprecated
 public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends WebDriver> implements
         SeleniumProvider<SeleniumRule<P, D>, D>, TestRule {
     private static final Duration DEFAULT_IMPLICIT_WAIT = Duration.ofSeconds(15);
