@@ -10,6 +10,7 @@ import io.appium.java_client.ios.IOSDriver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.extension.*;
+import org.junit.jupiter.api.extension.ExtensionContext.Store;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -30,25 +31,41 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
 
     public static final String DRIVER_KEY = "wh-webDriver";
     private static Logger logger = LogManager.getLogger();
-    private WebDriver driver;
-
-    public static WebDriver getWebDriverFromStore(ExtensionContext extensionContext) {
-        ExtensionContext.Store store = extensionContext.getStore(ExtensionContext.Namespace.GLOBAL);
-        return (WebDriver) store.get(DRIVER_KEY);
-    }
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        Class<?> type = parameterContext.getParameter().getType();
-        return WebDriver.class.isAssignableFrom(type);
+        Class<?> parameterType = parameterContext.getParameter().getType();
+        return parameterType.isAssignableFrom(WebDriver.class);
     }
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        ExtensionContext.Store store = extensionContext.getStore(ExtensionContext.Namespace.GLOBAL);
         BrowserOptionInterceptor browserOptionInterceptor = getBrowserOptionInterceptor(extensionContext);
         List<WebDriverPostInterceptor> driverPostInterceptorList = getBrowserPostProcess(extensionContext);
+        WebDriver driver = createDriver(browserOptionInterceptor, driverPostInterceptorList);
+        getStore(extensionContext).put(DRIVER_KEY, driver);
+        return driver;
+    }
+
+    @Override
+    public void afterEach(ExtensionContext extensionContext) throws Exception {
+        WebDriver driver = getDriverFromStore(extensionContext);
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+
+    public static Store getStore(ExtensionContext context) {
+        return context.getStore(ExtensionContext.Namespace.create(DriverParameterResolver.class));
+    }
+
+    public static WebDriver getDriverFromStore(ExtensionContext context) {
+        return (WebDriver) getStore(context).get(DRIVER_KEY);
+    }
+
+    private WebDriver createDriver(BrowserOptionInterceptor browserOptionInterceptor, List<WebDriverPostInterceptor> driverPostInterceptorList) {
         String seleniumHub = System.getProperty("seleniumHub");
+        WebDriver driver;
         if (PlatformUtils.isAndroid()) {
             if (RemoteSelectionUtils.isRemote()) {
                 URL seleniumHubUrl = convertSeleniumHubToURL(seleniumHub);
@@ -80,7 +97,7 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
                     throw new RuntimeException("The specified browser '" + BrowserSelectionUtils.getBrowser() + "' is not supported");
                 }
                 remoteDriver.setFileDetector(new LocalFileDetector());
-                this.driver = remoteDriver;
+                driver = remoteDriver;
             } else {
                 if (BrowserSelectionUtils.isFirefox()) {
                     driver = new FirefoxDriver(browserOptionInterceptor.getFirefoxOptions());
@@ -97,7 +114,6 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
             throw new RuntimeException("The specified platform '" + PlatformUtils.getPlatform() + "' is not supported.");
         }
         driverPostInterceptorList.forEach(postProcessor -> postProcessor.postProcessWebDriver(driver));
-        store.put(DRIVER_KEY, driver);
         return driver;
     }
 
@@ -106,14 +122,6 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
             return new URL(seleniumHub);
         } catch (MalformedURLException e) {
             throw new RuntimeException("Malformed url created", e);
-        }
-    }
-
-    @Override
-    public void afterEach(ExtensionContext extensionContext) throws Exception {
-        driver = getWebDriverFromStore(extensionContext);
-        if (driver != null) {
-            driver.quit();
         }
     }
 

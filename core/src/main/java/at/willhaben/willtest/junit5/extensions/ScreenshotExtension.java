@@ -15,18 +15,14 @@ import ru.yandex.qatools.ashot.screentaker.ShootingStrategy;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Optional;
 
 public class ScreenshotExtension implements TestExecutionExceptionHandler {
 
-    private static final String TEST_REPORT_FOLDER = "surefire-reports";
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd-HH.mm.ss.SSS");
-
     @Override
     public void handleTestExecutionException(ExtensionContext extensionContext, Throwable throwable) throws Throwable {
-        WebDriver driver = DriverParameterResolver.getWebDriverFromStore(extensionContext);
+        WebDriver driver = DriverParameterResolver.getDriverFromStore(extensionContext);
         if (driver != null) {
             File screenshotAs;
             ScreenshotInterceptor screenshotInterceptor = getScreenshotInterceptor(extensionContext);
