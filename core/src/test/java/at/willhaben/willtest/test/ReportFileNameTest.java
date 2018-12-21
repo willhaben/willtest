@@ -1,4 +1,4 @@
-package at.willhaben.willtest;
+package at.willhaben.willtest.test;
 
 import at.willhaben.willtest.util.TestReportFile;
 import org.junit.Test;

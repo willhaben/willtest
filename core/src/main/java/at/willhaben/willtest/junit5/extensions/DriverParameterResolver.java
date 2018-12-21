@@ -1,6 +1,7 @@
 package at.willhaben.willtest.junit5.extensions;
 
 import at.willhaben.willtest.junit5.*;
+import at.willhaben.willtest.util.AnnotationHelper;
 import at.willhaben.willtest.util.BrowserSelectionUtils;
 import at.willhaben.willtest.util.PlatformUtils;
 import at.willhaben.willtest.util.RemoteSelectionUtils;
@@ -23,7 +24,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -126,44 +126,51 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
     }
 
     private BrowserOptionInterceptor getBrowserOptionInterceptor(ExtensionContext context) {
-        BrowserUtil browserUtil = context.getRequiredTestMethod().getAnnotation(BrowserUtil.class);
-        if (browserUtil == null) {
-            browserUtil = context.getRequiredTestClass().getAnnotation(BrowserUtil.class);
-        }
-        if (browserUtil == null) {
+        List<BrowserOptionInterceptor> browserOptionInterceptors = getBrowserUtilExtensionList(context, BrowserOptionInterceptor.class);
+        if (browserOptionInterceptors.isEmpty()) {
             return new DefaultBrowserOptionInterceptor();
-        }
-        Optional<Class<? extends BrowserUtilExtension>> browserOptionInterceptor = Arrays.stream(browserUtil.value())
-                .filter(BrowserOptionInterceptor.class::isAssignableFrom)
-                .findFirst();
-        if (browserOptionInterceptor.isPresent()) {
-            try {
-                return (BrowserOptionInterceptor) browserOptionInterceptor.get().getConstructor().newInstance();
-            } catch (Exception e) {
-                throw new RuntimeException("Can't instantiate BrowserOption", e);
-            }
         } else {
-            return new DefaultBrowserOptionInterceptor();
+            if (browserOptionInterceptors.size() > 1) {
+                throw new RuntimeException("There should only be one " + BrowserOptionInterceptor.class.getName());
+            }
+            return browserOptionInterceptors.get(0);
         }
     }
 
     private List<WebDriverPostInterceptor> getBrowserPostProcess(ExtensionContext context) {
-        BrowserUtil browserUtil = context.getRequiredTestMethod().getAnnotation(BrowserUtil.class);
-        if (browserUtil == null) {
-            browserUtil = context.getRequiredTestClass().getAnnotation(BrowserUtil.class);
+        return getBrowserUtilExtensionList(context, WebDriverPostInterceptor.class);
+    }
+
+    private <T extends BrowserUtilExtension> List<T> getBrowserUtilExtensionList(ExtensionContext context, Class<T> utilType) {
+        BrowserUtil methodBrowserUtil = context.getRequiredTestMethod().getAnnotation(BrowserUtil.class);
+        List<T> browserExtensions = getBrowserUtilList(methodBrowserUtil, utilType);
+        if (!browserExtensions.isEmpty()) {
+            return browserExtensions;
         }
-        if (browserUtil == null) {
+        BrowserUtil testBrowserUtil = context.getRequiredTestClass().getAnnotation(BrowserUtil.class);
+        browserExtensions = getBrowserUtilList(testBrowserUtil, utilType);
+        if (!browserExtensions.isEmpty()) {
+            return browserExtensions;
+        }
+        BrowserUtil superClassBrowserUtil = AnnotationHelper.getFirstSuperClassAnnotation(context.getRequiredTestClass(), BrowserUtil.class);
+        browserExtensions = getBrowserUtilList(superClassBrowserUtil, utilType);
+        return browserExtensions;
+    }
+
+    private <T extends BrowserUtilExtension> List<T> getBrowserUtilList(BrowserUtil browserUtilAnnotation, Class<T> type) {
+        if (browserUtilAnnotation != null) {
+            return Arrays.stream(browserUtilAnnotation.value())
+                    .filter(type::isAssignableFrom)
+                    .map(extension -> {
+                        try {
+                            return (T) extension.getConstructor().newInstance();
+                        } catch (Exception e) {
+                            throw new RuntimeException("Can't instantiate " + extension.getName() + ".", e);
+                        }
+                    })
+                    .collect(Collectors.toList());
+        } else {
             return Collections.emptyList();
         }
-        return Arrays.stream(browserUtil.value())
-                .filter(WebDriverPostInterceptor.class::isAssignableFrom)
-                .map(webDriverInterceptor -> {
-                    try {
-                        return (WebDriverPostInterceptor) webDriverInterceptor.getConstructor().newInstance();
-                    } catch (Exception e) {
-                        throw new RuntimeException("Can't instantiate BrowserOption", e);
-                    }
-                })
-                .collect(Collectors.toList());
     }
 }
