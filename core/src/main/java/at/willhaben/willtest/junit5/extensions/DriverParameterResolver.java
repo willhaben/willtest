@@ -1,7 +1,9 @@
 package at.willhaben.willtest.junit5.extensions;
 
-import at.willhaben.willtest.junit5.*;
-import at.willhaben.willtest.util.AnnotationHelper;
+import at.willhaben.willtest.junit5.BrowserOptionInterceptor;
+import at.willhaben.willtest.junit5.DefaultBrowserOptionInterceptor;
+import at.willhaben.willtest.junit5.WebDriverPostInterceptor;
+import at.willhaben.willtest.util.BrowserOptionProvider;
 import at.willhaben.willtest.util.BrowserSelectionUtils;
 import at.willhaben.willtest.util.PlatformUtils;
 import at.willhaben.willtest.util.RemoteSelectionUtils;
@@ -12,19 +14,20 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static at.willhaben.willtest.util.AnnotationHelper.getBrowserUtilExtensionList;
 
 
 public class DriverParameterResolver implements ParameterResolver, AfterEachCallback {
@@ -40,9 +43,9 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        BrowserOptionInterceptor browserOptionInterceptor = getBrowserOptionInterceptor(extensionContext);
+        BrowserOptionInterceptor optionProvider = getBrowserOptionInterceptor(extensionContext);
         List<WebDriverPostInterceptor> driverPostInterceptorList = getBrowserPostProcess(extensionContext);
-        WebDriver driver = createDriver(browserOptionInterceptor, driverPostInterceptorList);
+        WebDriver driver = createDriver(optionProvider, driverPostInterceptorList);
         getStore(extensionContext).put(DRIVER_KEY, driver);
         return driver;
     }
@@ -63,22 +66,24 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
         return (WebDriver) getStore(context).get(DRIVER_KEY);
     }
 
-    private WebDriver createDriver(BrowserOptionInterceptor browserOptionInterceptor, List<WebDriverPostInterceptor> driverPostInterceptorList) {
+    private WebDriver createDriver(BrowserOptionInterceptor options, List<WebDriverPostInterceptor> driverPostInterceptorList) {
         String seleniumHub = System.getProperty("seleniumHub");
         WebDriver driver;
         if (PlatformUtils.isAndroid()) {
+            DesiredCapabilities androidCaps = options.getAndroidCapabilities();
             if (RemoteSelectionUtils.isRemote()) {
                 URL seleniumHubUrl = convertSeleniumHubToURL(seleniumHub);
-                driver = new AndroidDriver<>(seleniumHubUrl, browserOptionInterceptor.getAndroidCapabilities());
+                driver = new AndroidDriver<>(seleniumHubUrl, androidCaps);
             } else {
-                driver = new AndroidDriver<>(browserOptionInterceptor.getAndroidCapabilities());
+                driver = new AndroidDriver<>(androidCaps);
             }
         } else if (PlatformUtils.isIOS()) {
+            DesiredCapabilities iosCaps = options.getIOsCapabilities();
             if (RemoteSelectionUtils.isRemote()) {
                 URL seleniumHubUrl = convertSeleniumHubToURL(seleniumHub);
-                driver = new IOSDriver<>(seleniumHubUrl, browserOptionInterceptor.getIOsCapabilities());
+                driver = new IOSDriver<>(seleniumHubUrl, iosCaps);
             } else {
-                driver = new IOSDriver<>(browserOptionInterceptor.getIOsCapabilities());
+                driver = new IOSDriver<>(iosCaps);
             }
             ((AppiumDriver) driver).context("NATIVE_APP");
         } else if (PlatformUtils.isLinux() || PlatformUtils.isWindows()) {
@@ -86,13 +91,13 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
                 URL seleniumHubUrl = convertSeleniumHubToURL(seleniumHub);
                 RemoteWebDriver remoteDriver;
                 if (BrowserSelectionUtils.isFirefox()) {
-                    remoteDriver = new RemoteWebDriver(seleniumHubUrl, browserOptionInterceptor.getFirefoxOptions());
+                    remoteDriver = new RemoteWebDriver(seleniumHubUrl, options.getFirefoxOptions());
                 } else if (BrowserSelectionUtils.isChrome()) {
-                    remoteDriver = new RemoteWebDriver(seleniumHubUrl, browserOptionInterceptor.getChromeOptions());
+                    remoteDriver = new RemoteWebDriver(seleniumHubUrl, options.getChromeOptions());
                 } else if (BrowserSelectionUtils.isIE()) {
-                    remoteDriver = new RemoteWebDriver(seleniumHubUrl, browserOptionInterceptor.getInternetExplorerOptions());
+                    remoteDriver = new RemoteWebDriver(seleniumHubUrl, options.getInternetExplorerOptions());
                 } else if (BrowserSelectionUtils.isEdge()) {
-                    remoteDriver = new RemoteWebDriver(seleniumHubUrl, browserOptionInterceptor.getEdgeOptions());
+                    remoteDriver = new RemoteWebDriver(seleniumHubUrl, options.getInternetExplorerOptions());
                 } else {
                     throw new RuntimeException("The specified browser '" + BrowserSelectionUtils.getBrowser() + "' is not supported");
                 }
@@ -100,12 +105,12 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
                 driver = remoteDriver;
             } else {
                 if (BrowserSelectionUtils.isFirefox()) {
-                    driver = new FirefoxDriver(browserOptionInterceptor.getFirefoxOptions());
+                    driver = new FirefoxDriver(options.getFirefoxOptions());
                     //Could be replaced by Boolean.getBoolean("maximizeFF"), which is the same
                 } else if (BrowserSelectionUtils.isChrome()) {
-                    driver = new ChromeDriver(browserOptionInterceptor.getChromeOptions());
+                    driver = new ChromeDriver(options.getChromeOptions());
                 } else if (BrowserSelectionUtils.isIE()) {
-                    driver = new InternetExplorerDriver(browserOptionInterceptor.getInternetExplorerOptions());
+                    driver = new InternetExplorerDriver(options.getInternetExplorerOptions());
                 } else {
                     throw new RuntimeException("The specified browser '" + BrowserSelectionUtils.getBrowser() + "' is not supported");
                 }
@@ -126,51 +131,15 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
     }
 
     private BrowserOptionInterceptor getBrowserOptionInterceptor(ExtensionContext context) {
-        List<BrowserOptionInterceptor> browserOptionInterceptors = getBrowserUtilExtensionList(context, BrowserOptionInterceptor.class);
+        List<BrowserOptionInterceptor> browserOptionInterceptors = getBrowserUtilExtensionList(context, BrowserOptionInterceptor.class, false);
         if (browserOptionInterceptors.isEmpty()) {
             return new DefaultBrowserOptionInterceptor();
-        } else {
-            if (browserOptionInterceptors.size() > 1) {
-                throw new RuntimeException("There should only be one " + BrowserOptionInterceptor.class.getName());
-            }
-            return browserOptionInterceptors.get(0);
         }
+        return new BrowserOptionProvider(browserOptionInterceptors);
     }
 
     private List<WebDriverPostInterceptor> getBrowserPostProcess(ExtensionContext context) {
-        return getBrowserUtilExtensionList(context, WebDriverPostInterceptor.class);
+        return getBrowserUtilExtensionList(context, WebDriverPostInterceptor.class, true);
     }
 
-    private <T extends BrowserUtilExtension> List<T> getBrowserUtilExtensionList(ExtensionContext context, Class<T> utilType) {
-        BrowserUtil methodBrowserUtil = context.getRequiredTestMethod().getAnnotation(BrowserUtil.class);
-        List<T> browserExtensions = getBrowserUtilList(methodBrowserUtil, utilType);
-        if (!browserExtensions.isEmpty()) {
-            return browserExtensions;
-        }
-        BrowserUtil testBrowserUtil = context.getRequiredTestClass().getAnnotation(BrowserUtil.class);
-        browserExtensions = getBrowserUtilList(testBrowserUtil, utilType);
-        if (!browserExtensions.isEmpty()) {
-            return browserExtensions;
-        }
-        BrowserUtil superClassBrowserUtil = AnnotationHelper.getFirstSuperClassAnnotation(context.getRequiredTestClass(), BrowserUtil.class);
-        browserExtensions = getBrowserUtilList(superClassBrowserUtil, utilType);
-        return browserExtensions;
-    }
-
-    private <T extends BrowserUtilExtension> List<T> getBrowserUtilList(BrowserUtil browserUtilAnnotation, Class<T> type) {
-        if (browserUtilAnnotation != null) {
-            return Arrays.stream(browserUtilAnnotation.value())
-                    .filter(type::isAssignableFrom)
-                    .map(extension -> {
-                        try {
-                            return (T) extension.getConstructor().newInstance();
-                        } catch (Exception e) {
-                            throw new RuntimeException("Can't instantiate " + extension.getName() + ".", e);
-                        }
-                    })
-                    .collect(Collectors.toList());
-        } else {
-            return Collections.emptyList();
-        }
-    }
 }
