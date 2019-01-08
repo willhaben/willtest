@@ -1,5 +1,6 @@
 package at.willhaben.willtest.util;
 
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.runner.Description;
 
 import java.io.File;
@@ -21,11 +22,27 @@ public class TestReportFile {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd-HH.mm.ss.SSS");
 
     private Description testDescription;
+    private ExtensionContext testExtensionContext;
     private String prefix = "";
     private String postfix = "";
 
     /**
+     * Starts building of a test report file
+     *
+     * @param testDescription
+     * @return this builder
+     */
+    public static Builder forTest(Description testDescription) {
+        return new Builder(testDescription);
+    }
+
+    public static Builder forTest(ExtensionContext context) {
+        return new Builder(context);
+    }
+
+    /**
      * Gives back the {@link File} object, which can be used as target for report.
+     *
      * @return the file which can be used as report file
      */
     public File getFile() {
@@ -37,13 +54,29 @@ public class TestReportFile {
         return new File(reportFolder, generateFileName());
     }
 
+    private String getClassName() {
+        if (testDescription == null) {
+            return testExtensionContext.getRequiredTestClass().getSimpleName();
+        } else {
+            return testDescription.getTestClass().getSimpleName();
+        }
+    }
+
+    private String getMethodName() {
+        if(testDescription == null) {
+            return testExtensionContext.getRequiredTestMethod().getName();
+        } else {
+            return testDescription.getMethodName().replace('.', '_');
+        }
+    }
+
     public String getGeneratedName() {
         return generateFileName();
     }
 
     private String generateFileName() {
-        String className = testDescription.getTestClass().getSimpleName();
-        String methodName = testDescription.getMethodName().replace('.', '_');
+        String className = getClassName();
+        String methodName = getMethodName();
         String timeStamp = DATE_FORMAT.format(ZonedDateTime.now());
         return escapeFileName(COMMON_PREFIX_FOR_ALL_REPORT_FILES + prefix + className +
                 "_" + methodName + "-" + timeStamp + postfix);
@@ -53,7 +86,7 @@ public class TestReportFile {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < originalName.length(); i++) {
             char c = originalName.charAt(i);
-            if((c >= '0' && c <= '9') ||
+            if ((c >= '0' && c <= '9') ||
                     (c >= 'A' && c <= 'Z') ||
                     (c >= 'a' && c <= 'z') ||
                     (c == '.') ||
@@ -70,6 +103,10 @@ public class TestReportFile {
 
         Builder(Description testDescription) {
             testReportFile.testDescription = testDescription;
+        }
+
+        Builder(ExtensionContext context) {
+            testReportFile.testExtensionContext = context;
         }
 
         /**
@@ -93,14 +130,5 @@ public class TestReportFile {
         public TestReportFile build() {
             return testReportFile;
         }
-    }
-
-    /**
-     * Starts building of a test report file
-     * @param testDescription
-     * @return this builder
-     */
-    public static Builder forTest(Description testDescription) {
-        return new Builder(testDescription);
     }
 }

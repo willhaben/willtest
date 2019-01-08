@@ -6,12 +6,12 @@
 
     <parent>
         <groupId>at.willhaben.willtest</groupId>
-        <artifactId>parent</artifactId>
-        <version>1.3.1</version>
+        <artifactId>willtest</artifactId>
+        <version>2.0.4</version>
     </parent>
 
     <artifactId>examples</artifactId>
-    <version>1.3.1</version>
+    <version>2.0.4</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Practical examples</description>
@@ -51,15 +51,29 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.25</version>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <properties>
-        <geckodriver.version>v0.19.1</geckodriver.version>
-        <geckodriver.type>This will be overwritten by a profile for the specific platform</geckodriver.type>
-        <geckodriver.archive>geckodriver-${geckodriver.version}-${geckodriver.type}</geckodriver.archive>
-        <geckodriver.url>https://github.com/mozilla/geckodriver/releases/download/${geckodriver.version}/${geckodriver.archive}</geckodriver.url>
-        <geckodriver.extension></geckodriver.extension>
-        <geckodriver.folder>${project.build.directory}</geckodriver.folder>
+        <driver.platform/>
+        <driver.arch/>
+        <driver.chrome.arch/>
+        <driver.folder>${project.basedir}${file.separator}drivers${file.separator}</driver.folder>
+        <geckodriver.version>0.23.0</geckodriver.version>
+        <chromedriver.version>2.43</chromedriver.version>
+        <driver.extension/>
     </properties>
 
     <build>
@@ -68,45 +82,18 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>-Dwebdriver.gecko.driver=${geckodriver.folder}${file.separator}geckodriver${geckodriver.extension}</argLine>
+                    <skip>true</skip>
+                    <systemPropertyVariables>
+                        <buildDirectory>${project.build.directory}</buildDirectory>
+                        <webdriver.gecko.driver>
+                            ${driver.folder}geckodriver-${driver.platform}-${driver.arch}bit${driver.extension}
+                        </webdriver.gecko.driver>
+                        <webdriver.chrome.driver>
+                            ${driver.folder}chromedriver-${driver.platform}-${driver.chrome.arch}bit${driver.extension}
+                        </webdriver.chrome.driver>
+                    </systemPropertyVariables>
+                    <skipTests>true</skipTests>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.gmaven</groupId>
-                <artifactId>groovy-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>download-geckodriver</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>execute</goal>
-                        </goals>
-                        <configuration>
-                            <source><![CDATA[
-                                String url = project.properties['geckodriver.url'];
-                                String archiveName = project.properties['geckodriver.archive'];
-                                AntBuilder ant = new AntBuilder();
-                                String geckodriverFolder = project.properties['geckodriver.folder'];
-                                String archivePath = geckodriverFolder + File.separator + archiveName;
-                                File archiveFile = new File(archivePath);
-                                if (!archiveFile.exists()) {
-                                    println("Downloading geckodriver from " + url + "...");
-                                    ant.mkdir(dir: geckodriverFolder);
-                                    ant.get(
-                                            src: url,
-                                            dest: archivePath,
-                                            skipexisting: false);
-                                    if (archiveName.endsWith("tar.gz")) {
-                                        ant.untar(src: archivePath, dest: geckodriverFolder, compression: 'gzip');
-                                        ant.chmod(file:geckodriverFolder + File.separator + 'geckodriver',perm:'+x');
-                                    } else {
-                                        ant.unzip(src: archivePath, dest: geckodriverFolder);
-                                    }
-                                }
-                                ]]></source>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -120,7 +107,9 @@
                 </os>
             </activation>
             <properties>
-                <geckodriver.type>macos.tar.gz</geckodriver.type>
+                <driver.platform>mac</driver.platform>
+                <driver.arch>64</driver.arch>
+                <driver.chrome.arch>64</driver.chrome.arch>
             </properties>
         </profile>
         <profile>
@@ -132,7 +121,9 @@
                 </os>
             </activation>
             <properties>
-                <geckodriver.type>linux64.tar.gz</geckodriver.type>
+                <driver.platform>linux</driver.platform>
+                <driver.arch>64</driver.arch>
+                <driver.chrome.arch>64</driver.chrome.arch>
             </properties>
         </profile>
         <profile>
@@ -144,8 +135,10 @@
                 </os>
             </activation>
             <properties>
-                <geckodriver.type>win32.zip</geckodriver.type>
-                <geckodriver.extension>.exe</geckodriver.extension>
+                <driver.platform>windows</driver.platform>
+                <driver.arch>32</driver.arch>
+                <driver.chrome.arch>32</driver.chrome.arch>
+                <driver.extension>.exe</driver.extension>
             </properties>
         </profile>
         <profile>
@@ -157,9 +150,47 @@
                 </os>
             </activation>
             <properties>
-                <geckodriver.type>win64.zip</geckodriver.type>
-                <geckodriver.extension>.exe</geckodriver.extension>
+                <driver.platform>windows</driver.platform>
+                <driver.arch>64</driver.arch>
+                <driver.chrome.arch>32</driver.chrome.arch>
+                <driver.extension>.exe</driver.extension>
             </properties>
+        </profile>
+        <profile>
+            <id>download-drivers</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.webdriverextensions</groupId>
+                        <artifactId>webdriverextensions-maven-plugin</artifactId>
+                        <version>3.1.3</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>install-drivers</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <installationDirectory>${project.basedir}${file.separator}drivers</installationDirectory>
+                            <drivers>
+                                <driver>
+                                    <name>geckodriver</name>
+                                    <platform>${driver.platform}</platform>
+                                    <bit>${driver.arch}</bit>
+                                    <version>${geckodriver.version}</version>
+                                </driver>
+                                <driver>
+                                    <name>chromedriver</name>
+                                    <platform>${driver.platform}</platform>
+                                    <bit>${driver.chrome.arch}</bit>
+                                    <version>${chromedriver.version}</version>
+                                </driver>
+                            </drivers>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>

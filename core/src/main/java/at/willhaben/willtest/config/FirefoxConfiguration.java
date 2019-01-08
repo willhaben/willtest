@@ -16,6 +16,7 @@ import java.util.Objects;
  * takes care of calling {@link FirefoxBinaryProvider} to get a {@link FirefoxBinary}.
  * {@link FirefoxConfigurationParticipant} instances can also change the settings of the {@link FirefoxBinary}.
  */
+@Deprecated
 public class FirefoxConfiguration<D extends WebDriver> {
     private final List<FirefoxConfigurationParticipant> firefoxConfigurationParticipantList = new ArrayList<>();
     private FirefoxBinaryProvider firefoxBinaryProvider = new DefaultFirefoxBinaryProvider();
@@ -51,14 +52,5 @@ public class FirefoxConfiguration<D extends WebDriver> {
         FirefoxBinary firefoxBinary = firefoxBinaryProvider.getFirefoxBinary();
         firefoxConfigurationParticipantList.forEach(participant -> participant.adjustFirefoxBinary(firefoxBinary));
         return firefoxBinary;
-    }
-
-    /**
-     * @return fully configured firefox profile
-     */
-    public FirefoxProfile getFirefoxProfile() {
-        FirefoxProfile firefoxProfile = new FirefoxProfile();
-        firefoxConfigurationParticipantList.forEach(participant -> participant.adjustFirefoxProfile(firefoxProfile));
-        return firefoxProfile;
     }
 }

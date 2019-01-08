@@ -6,6 +6,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.*;
 import org.junit.runner.Description;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.WebDriverEventListener;
@@ -156,6 +157,26 @@ public class SeleniumEventListener extends TestFailureAwareRule implements WebDr
 
     @Override
     public void onException(Throwable throwable, WebDriver webDriver) {
+
+    }
+
+    @Override
+    public <X> void beforeGetScreenshotAs(OutputType<X> outputType) {
+
+    }
+
+    @Override
+    public <X> void afterGetScreenshotAs(OutputType<X> outputType, X x) {
+
+    }
+
+    @Override
+    public void beforeGetText(WebElement webElement, WebDriver webDriver) {
+
+    }
+
+    @Override
+    public void afterGetText(WebElement webElement, WebDriver webDriver, String s) {
 
     }
 

@@ -15,6 +15,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  *
  * @param <D> concrete webDriver implementation class
  */
+@Deprecated
 public interface WebDriverConfigurationParticipant<D extends WebDriver> {
 
     /**

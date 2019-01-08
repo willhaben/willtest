@@ -23,6 +23,7 @@ import java.util.List;
  * @param <P> {@link SeleniumProvider} implementation
  * @param <D> {@link WebDriver} implementation
  */
+@Deprecated
 public class JavascriptError<P extends SeleniumProvider<P, D>, D extends WebDriver>
         extends TestFailureAwareRule
         implements FirefoxConfigurationParticipant {

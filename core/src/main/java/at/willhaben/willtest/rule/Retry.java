@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
  * This rule gives you the possibility to retry a test if the exception matches a given {@link Matcher}.
  * It is possible to change the maximum of retries, default configuration is {@value #DEFAULT_MAXIMAL_TRIALS}.
  */
+@Deprecated
 public class Retry implements TestRule {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverLog.class);
     private static final int DEFAULT_MAXIMAL_TRIALS = 3;

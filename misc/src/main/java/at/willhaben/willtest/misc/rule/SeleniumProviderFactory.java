@@ -15,6 +15,7 @@ import java.util.Arrays;
  * Creates {@link SeleniumProvider} according to system property, and it injects
  * its basic dependencies based on class+object pairs (see {@link ParameterObject}).
  */
+@Deprecated
 public class SeleniumProviderFactory {
     public static final String SELENIUM_PROVIDER_CLASS_NAME = "seleniumProvider";
     private static final String DEFAULT_SELENIUM_PROVIDER_CLASS_NAME = LocalFirefoxProvider.class.getName();

@@ -24,6 +24,7 @@ import java.util.logging.Level;
  *
  * See also {@link LogContext} and at.willhaben.willtest.log4j.LogFileRule
  */
+@Deprecated
 public class WebDriverLog<P extends SeleniumProvider<P, D>, D extends WebDriver>
         extends TestFailureAwareRule
         implements WebDriverConfigurationParticipant<D> {
