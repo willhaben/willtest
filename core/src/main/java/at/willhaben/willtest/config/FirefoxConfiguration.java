@@ -53,4 +53,14 @@ public class FirefoxConfiguration<D extends WebDriver> {
         firefoxConfigurationParticipantList.forEach(participant -> participant.adjustFirefoxBinary(firefoxBinary));
         return firefoxBinary;
     }
+
+
+    /**
+     * @return fully configured firefox profile
+     */
+    public FirefoxProfile getFirefoxProfile() {
+        FirefoxProfile firefoxProfile = new FirefoxProfile();
+        firefoxConfigurationParticipantList.forEach(participant -> participant.adjustFirefoxProfile(firefoxProfile));
+        return firefoxProfile;
+    }
 }

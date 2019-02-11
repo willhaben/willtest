@@ -22,6 +22,7 @@ public abstract class AbstractFirefoxProvider<P extends AbstractFirefoxProvider<
         addWebDriverConfigurationParticipant(new WebDriverConfigurationParticipant<D>() {
             @Override
             public void addDesiredCapabilities(DesiredCapabilities desiredCapabilities) {
+                desiredCapabilities.setCapability(FirefoxDriver.PROFILE, firefoxConfiguration.getFirefoxProfile());
             }
         });
     }

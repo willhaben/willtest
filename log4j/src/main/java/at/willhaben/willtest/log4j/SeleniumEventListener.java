@@ -160,26 +160,6 @@ public class SeleniumEventListener extends TestFailureAwareRule implements WebDr
 
     }
 
-    @Override
-    public <X> void beforeGetScreenshotAs(OutputType<X> outputType) {
-
-    }
-
-    @Override
-    public <X> void afterGetScreenshotAs(OutputType<X> outputType, X x) {
-
-    }
-
-    @Override
-    public void beforeGetText(WebElement webElement, WebDriver webDriver) {
-
-    }
-
-    @Override
-    public void afterGetText(WebElement webElement, WebDriver webDriver, String s) {
-
-    }
-
     private String getElementSelector(WebElement webElement) {
         String elementIdentifier = webElement.toString();
         String selector = elementIdentifier.substring(elementIdentifier.indexOf("->"));
