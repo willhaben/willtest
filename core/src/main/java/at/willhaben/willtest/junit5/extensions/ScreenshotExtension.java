@@ -37,16 +37,16 @@ public class ScreenshotExtension implements TestExecutionExceptionHandler {
     }
 
     public void createScreenshot(ExtensionContext context, WebDriver driver) throws Throwable {
-        File screenshotAs;
+        File screenshotFile;
         ScreenshotInterceptor screenshotInterceptor = getScreenshotInterceptor(context);
         BufferedImage screenShot = new AShot().shootingStrategy(screenshotInterceptor
                 .provideShootingStrategy())
                 .takeScreenshot(driver).getImage();
-        screenshotAs = TestReportFile.forTest(context).withPostix(".png").build().getFile();
+        screenshotFile = TestReportFile.forTest(context).withPostix(".png").build().getFile();
         LOGGER.info("Saved screenshot of failed test " +
                 context.getRequiredTestClass().getSimpleName() + "." +
-                context.getRequiredTestMethod().getName() + " to " + screenshotAs.getAbsolutePath());
-        ImageIO.write(screenShot, "png", screenshotAs);
+                context.getRequiredTestMethod().getName() + " to " + screenshotFile.getAbsolutePath());
+        ImageIO.write(screenShot, "png", screenshotFile);
     }
 
     private ScreenshotInterceptor getScreenshotInterceptor(ExtensionContext context) {
