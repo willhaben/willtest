@@ -5,8 +5,8 @@ import at.willhaben.willtest.junit5.BrowserUtil;
 import at.willhaben.willtest.util.AnnotationHelper;
 import at.willhaben.willtest.util.BrowserOptionProvider;
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -22,14 +22,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class AnnotationHelperTest {
+class AnnotationHelperTest {
 
     private static final String TEST_CAP_NAME = "test";
 
     ExtensionContext extensionContext;
 
-    @Before
-    public void before() throws NoSuchMethodException {
+    @BeforeEach
+    void before() throws NoSuchMethodException {
         extensionContext = mock(ExtensionContext.class);
 
         when(extensionContext.getRequiredTestClass())
@@ -40,13 +40,13 @@ public class AnnotationHelperTest {
     }
 
     @Test
-    public void testBrowserUtilOnSuperClass() {
+    void testBrowserUtilOnSuperClass() {
         BrowserUtil browserUtil = AnnotationHelper.getFirstSuperClassAnnotation(Testing.class, BrowserUtil.class);
         assertThat(browserUtil, Matchers.notNullValue());
     }
 
     @Test
-    public void testNoBrowserUtil() {
+    void testNoBrowserUtil() {
         BrowserUtil browserUtil = AnnotationHelper.getFirstSuperClassAnnotation(NoAnnotation.class, BrowserUtil.class);
         assertThat(browserUtil, Matchers.nullValue());
         browserUtil = AnnotationHelper.getFirstSuperClassAnnotation(NoAnnotationSuperClass.class, BrowserUtil.class);
@@ -54,7 +54,7 @@ public class AnnotationHelperTest {
     }
 
     @Test
-    public void testOrderOfExtensions() {
+    void testOrderOfExtensions() {
         List<BrowserOptionInterceptor> optionInterceptors =
                 getBrowserUtilExtensionList(extensionContext, BrowserOptionInterceptor.class, false);
         assertTrue(optionInterceptors.get(0).getClass().isAssignableFrom(Browserconfig3.class));

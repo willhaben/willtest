@@ -9,6 +9,8 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.yandex.qatools.ashot.AShot;
 import ru.yandex.qatools.ashot.screentaker.ShootingStrategy;
 
@@ -20,22 +22,31 @@ import java.util.Optional;
 
 public class ScreenshotExtension implements TestExecutionExceptionHandler {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScreenshotExtension.class);
+
     @Override
     public void handleTestExecutionException(ExtensionContext extensionContext, Throwable throwable) throws Throwable {
         WebDriver driver = DriverParameterResolver.getDriverFromStore(extensionContext);
         if (driver != null) {
-            File screenshotAs;
-            ScreenshotInterceptor screenshotInterceptor = getScreenshotInterceptor(extensionContext);
-            BufferedImage screenShot = new AShot().shootingStrategy(screenshotInterceptor
-                    .provideShootingStrategy())
-                    .takeScreenshot(driver).getImage();
-            screenshotAs = TestReportFile.forTest(extensionContext).withPostix(".png").build().getFile();
-            ImageIO.write(screenShot, "png", screenshotAs);
+            createScreenshot(extensionContext, driver);
         } else {
             throw new WebDriverException("Driver isn't initialized. " +
                     "This extension can only be used in combination with the DriverParameterResolver");
         }
         throw throwable;
+    }
+
+    public void createScreenshot(ExtensionContext context, WebDriver driver) throws Throwable {
+        File screenshotAs;
+        ScreenshotInterceptor screenshotInterceptor = getScreenshotInterceptor(context);
+        BufferedImage screenShot = new AShot().shootingStrategy(screenshotInterceptor
+                .provideShootingStrategy())
+                .takeScreenshot(driver).getImage();
+        screenshotAs = TestReportFile.forTest(context).withPostix(".png").build().getFile();
+        LOGGER.info("Saved screenshot of failed test " +
+                context.getRequiredTestClass().getSimpleName() + "." +
+                context.getRequiredTestMethod().getName() + " to " + screenshotAs.getAbsolutePath());
+        ImageIO.write(screenShot, "png", screenshotAs);
     }
 
     private ScreenshotInterceptor getScreenshotInterceptor(ExtensionContext context) {

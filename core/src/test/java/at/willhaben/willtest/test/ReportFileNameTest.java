@@ -1,7 +1,7 @@
 package at.willhaben.willtest.test;
 
 import at.willhaben.willtest.util.TestReportFile;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.Description;
 
 import static org.hamcrest.MatcherAssert.assertThat;
