@@ -8,6 +8,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.mockito.Mockito;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,14 +40,14 @@ class ScreenshotExtensionTest {
     void setUp() throws Throwable {
         methodName = "testMethod" + System.nanoTime();
         driver = mock(TestWebdriver.class);
-        byte[] image = Files.readAllBytes(Paths.get(ScreenshotExtension.class.getClassLoader().getResource("test-image.png").toURI()));
+        Path testImagePath = Paths.get(ScreenshotExtension.class.getClassLoader().getResource("test-image.png").toURI());
+        byte[] image = Files.readAllBytes(testImagePath);
         when(driver.getScreenshotAs(OutputType.BYTES))
                 .thenReturn(image);
         context = mock(ExtensionContext.class);
-        when(context.getRequiredTestClass())
-                .thenReturn(((Class) ScreenshotExtension.class));
-        when(context.getRequiredTestClass())
-                .thenReturn(((Class) ScreenshotExtension.class));
+        Mockito.doReturn(ScreenshotExtensionTest.class)
+                .when(context)
+                .getRequiredTestClass();
         Method testMethod = mock(Method.class);
         when(testMethod.getName()).thenReturn(methodName);
         when(context.getRequiredTestMethod()).thenReturn(testMethod);
