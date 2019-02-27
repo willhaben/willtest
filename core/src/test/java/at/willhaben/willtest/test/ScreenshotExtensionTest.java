@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,7 +72,12 @@ class ScreenshotExtensionTest {
 
     private List<String> getScreenshotNames() {
         String reportFolderDir = TestReportFile.getReportFolderDir();
-        return Arrays.asList(new File(reportFolderDir).list());
+        File file = new File(reportFolderDir);
+        if (file.exists() && file.isDirectory()) {
+            return Arrays.asList(file.list());
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     public abstract class TestWebdriver implements WebDriver, TakesScreenshot {}
