@@ -7,7 +7,7 @@ import org.junit.runner.Description;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class ReportFileNameTest {
+class ReportFileNameTest {
 
     private static final String PREFIX = "prefix123_";
     private static final String POSTFIX = "_postfix";
@@ -15,7 +15,7 @@ public class ReportFileNameTest {
     private static final String INVALID_CHARS = ":<>*/?";
 
     @Test
-    public void testFileNameGeneration() {
+    void testFileNameGeneration() {
         Description testDescription = Description.createTestDescription(ReportFileNameTest.class, METHOD_NAME);
 
         TestReportFile reportFile = TestReportFile.forTest(testDescription)
