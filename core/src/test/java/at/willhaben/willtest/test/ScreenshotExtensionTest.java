@@ -38,7 +38,7 @@ class ScreenshotExtensionTest {
     void setUp() throws Throwable {
         methodName = "testMethod" + System.nanoTime();
         driver = mock(TestWebdriver.class);
-        byte[] image = Files.readAllBytes(Paths.get(ScreenshotExtension.class.getClassLoader().getResource("Google-Screenshot.png").toURI()));
+        byte[] image = Files.readAllBytes(Paths.get(ScreenshotExtension.class.getClassLoader().getResource("test-image.png").toURI()));
         when(driver.getScreenshotAs(OutputType.BYTES))
                 .thenReturn(image);
         context = mock(ExtensionContext.class);
