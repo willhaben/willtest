@@ -1,15 +1,12 @@
 package at.willhaben.willtest.test;
 
 import at.willhaben.willtest.junit5.extensions.ScreenshotExtension;
-import at.willhaben.willtest.util.Environment;
 import at.willhaben.willtest.util.TestReportFile;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.mockito.Mockito;
-import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
@@ -40,17 +37,16 @@ class ScreenshotExtensionTest {
     void setUp() throws Throwable {
         methodName = "testMethod" + System.nanoTime();
         driver = mock(TestWebdriver.class);
+        context = mock(ExtensionContext.class);
+        Method testMethod = mock(Method.class);
+
         Path testImagePath = Paths.get(ScreenshotExtension.class.getClassLoader().getResource("test-image.png").toURI());
         byte[] image = Files.readAllBytes(testImagePath);
-        when(driver.getScreenshotAs(OutputType.BYTES))
-                .thenReturn(image);
-        context = mock(ExtensionContext.class);
-        Mockito.doReturn(ScreenshotExtensionTest.class)
-                .when(context)
-                .getRequiredTestClass();
-        Method testMethod = mock(Method.class);
-        when(testMethod.getName()).thenReturn(methodName);
-        when(context.getRequiredTestMethod()).thenReturn(testMethod);
+
+        doReturn(image).when(driver).getScreenshotAs(any());
+        doReturn(ScreenshotExtensionTest.class).when(context).getRequiredTestClass();
+        doReturn(methodName).when(testMethod).getName();
+        doReturn(testMethod).when(context).getRequiredTestMethod();
     }
 
     @Test
