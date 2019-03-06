@@ -74,7 +74,7 @@ public class AnnotationHelper {
         return annotationList;
     }
 
-    public static  <T extends BrowserUtilExtension> List<T> getBrowserUtilExtensionList(ExtensionContext context, Class<T> utilType, boolean allowMultipleExtension) {
+    public static <T extends BrowserUtilExtension> List<T> getBrowserUtilExtensionList(ExtensionContext context, Class<T> utilType, boolean allowMultipleExtension) {
         return getAnnotationOrdered(context, BrowserUtil.class).stream()
                 .flatMap(anno -> getBrowserUtilList(anno, utilType, allowMultipleExtension).stream())
                 .collect(Collectors.toList());

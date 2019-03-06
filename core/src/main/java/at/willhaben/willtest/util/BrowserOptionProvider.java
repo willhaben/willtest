@@ -15,44 +15,68 @@ import java.util.function.Function;
 public class BrowserOptionProvider extends BrowserOptionInterceptor {
 
     private List<BrowserOptionInterceptor> interceptors;
+    private DesiredCapabilities fixedCapabilities;
+
+    public BrowserOptionProvider(List<BrowserOptionInterceptor> interceptors, DesiredCapabilities fixedCapabilities) {
+        this.interceptors = interceptors;
+        this.fixedCapabilities = fixedCapabilities;
+    }
 
     public BrowserOptionProvider(List<BrowserOptionInterceptor> interceptors) {
         this.interceptors = interceptors;
+        this.fixedCapabilities = new DesiredCapabilities();
     }
 
     @Override
     public FirefoxOptions getFirefoxOptions() {
-        return super.getFirefoxOptions().merge(combine(BrowserOptionInterceptor::getFirefoxOptions));
+        return super.getFirefoxOptions()
+                .merge(combine(BrowserOptionInterceptor::getFirefoxOptions))
+                .merge(fixedCapabilities);
     }
 
     @Override
     public ChromeOptions getChromeOptions() {
-        return super.getChromeOptions().merge(combine(BrowserOptionInterceptor::getChromeOptions));
+        return super.getChromeOptions()
+                .merge(combine(BrowserOptionInterceptor::getChromeOptions))
+                .merge(fixedCapabilities);
     }
 
     @Override
     public EdgeOptions getEdgeOptions() {
-        return super.getEdgeOptions().merge(combine(BrowserOptionInterceptor::getEdgeOptions));
+        return super.getEdgeOptions()
+                .merge(combine(BrowserOptionInterceptor::getEdgeOptions))
+                .merge(fixedCapabilities);
     }
 
     @Override
     public InternetExplorerOptions getInternetExplorerOptions() {
-        return super.getInternetExplorerOptions().merge(combine(BrowserOptionInterceptor::getInternetExplorerOptions));
+        return super.getInternetExplorerOptions()
+                .merge(combine(BrowserOptionInterceptor::getInternetExplorerOptions))
+                .merge(fixedCapabilities);
     }
 
     @Override
     public DesiredCapabilities getAndroidCapabilities() {
-        return super.getAndroidCapabilities().merge(combine(BrowserOptionInterceptor::getChromeOptions));
+        return super.getAndroidCapabilities()
+                .merge(combine(BrowserOptionInterceptor::getAndroidCapabilities))
+                .merge(fixedCapabilities);
     }
 
     @Override
     public DesiredCapabilities getIOsCapabilities() {
-        return super.getIOsCapabilities().merge(combine(BrowserOptionInterceptor::getChromeOptions));
+        return super.getIOsCapabilities()
+                .merge(combine(BrowserOptionInterceptor::getIOsCapabilities))
+                .merge(fixedCapabilities);
     }
 
     private Capabilities combine(Function<BrowserOptionInterceptor, Capabilities> getCaps) {
         Iterator<BrowserOptionInterceptor> optionIterator = interceptors.iterator();
-        Capabilities parentCaps = getCaps.apply(optionIterator.next());
+        Capabilities parentCaps;
+        if (optionIterator.hasNext()) {
+            parentCaps = getCaps.apply(optionIterator.next());
+        } else {
+            parentCaps = new DesiredCapabilities();
+        }
         while (optionIterator.hasNext()) {
             parentCaps = parentCaps.merge(getCaps.apply(optionIterator.next()));
         }
