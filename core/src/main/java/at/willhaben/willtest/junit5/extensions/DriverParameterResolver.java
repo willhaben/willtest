@@ -1,6 +1,9 @@
 package at.willhaben.willtest.junit5.extensions;
 
-import at.willhaben.willtest.junit5.*;
+import at.willhaben.willtest.junit5.BrowserOptionInterceptor;
+import at.willhaben.willtest.junit5.BrowserProxyFactory;
+import at.willhaben.willtest.junit5.ProxyWrapper;
+import at.willhaben.willtest.junit5.WebDriverPostInterceptor;
 import at.willhaben.willtest.junit5.impl.ProxyWrapperImpl;
 import at.willhaben.willtest.util.BrowserOptionProvider;
 import at.willhaben.willtest.util.BrowserSelectionUtils;
@@ -11,10 +14,8 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.client.ClientUtil;
-import org.apache.logging.log4j.LogManager;
 import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -25,7 +26,6 @@ import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.font.ExtendedTextLabel;
 
 import java.net.MalformedURLException;
 import java.net.URL;
