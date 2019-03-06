@@ -1,6 +1,9 @@
 package at.willhaben.willtest.maven.utils;
 
-import com.sun.codemodel.internal.*;
+import com.sun.codemodel.JAnnotationArrayMember;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.RunWith;
