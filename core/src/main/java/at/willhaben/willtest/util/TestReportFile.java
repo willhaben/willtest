@@ -46,12 +46,16 @@ public class TestReportFile {
      * @return the file which can be used as report file
      */
     public File getFile() {
-        String reportFolderPath = Environment.getValue(REPORT_FOLDER_SYSTEM_PROPERTY, DEFAULT_REPORT_FOLDER);
+        String reportFolderPath = getReportFolderDir();
         File reportFolder = new File(reportFolderPath);
         if (!reportFolder.exists() && !reportFolder.mkdirs()) {
             throw new RuntimeException("Could not create folder " + reportFolder + "!");
         }
         return new File(reportFolder, generateFileName());
+    }
+
+    public static String getReportFolderDir() {
+        return Environment.getValue(REPORT_FOLDER_SYSTEM_PROPERTY, DEFAULT_REPORT_FOLDER);
     }
 
     private String getClassName() {
