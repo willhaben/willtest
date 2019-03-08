@@ -1,4 +1,4 @@
-package at.willhaben.willtest.junit5;
+package at.willhaben.willtest.proxy;
 
 import net.lightbody.bmp.BrowserMobProxy;
 

@@ -1,6 +1,6 @@
-package at.willhaben.willtest.junit5.impl;
+package at.willhaben.willtest.proxy.impl;
 
-import at.willhaben.willtest.junit5.ProxyWrapper;
+import at.willhaben.willtest.proxy.ProxyWrapper;
 import net.lightbody.bmp.BrowserMobProxy;
 
 public class ProxyWrapperImpl implements ProxyWrapper {

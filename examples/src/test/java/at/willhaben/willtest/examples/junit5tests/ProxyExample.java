@@ -1,6 +1,6 @@
 package at.willhaben.willtest.examples.junit5tests;
 
-import at.willhaben.willtest.junit5.ProxyWrapper;
+import at.willhaben.willtest.proxy.ProxyWrapper;
 import at.willhaben.willtest.junit5.extensions.DriverParameterResolver;
 import net.lightbody.bmp.core.har.HarEntry;
 import net.lightbody.bmp.proxy.CaptureType;

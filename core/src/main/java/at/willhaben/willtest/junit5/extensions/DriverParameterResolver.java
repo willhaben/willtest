@@ -1,10 +1,10 @@
 package at.willhaben.willtest.junit5.extensions;
 
 import at.willhaben.willtest.junit5.BrowserOptionInterceptor;
-import at.willhaben.willtest.junit5.BrowserProxyFactory;
-import at.willhaben.willtest.junit5.ProxyWrapper;
 import at.willhaben.willtest.junit5.WebDriverPostInterceptor;
-import at.willhaben.willtest.junit5.impl.ProxyWrapperImpl;
+import at.willhaben.willtest.proxy.BrowserProxyBuilder;
+import at.willhaben.willtest.proxy.ProxyWrapper;
+import at.willhaben.willtest.proxy.impl.ProxyWrapperImpl;
 import at.willhaben.willtest.util.BrowserOptionProvider;
 import at.willhaben.willtest.util.BrowserSelectionUtils;
 import at.willhaben.willtest.util.PlatformUtils;
@@ -13,7 +13,6 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import net.lightbody.bmp.BrowserMobProxy;
-import net.lightbody.bmp.client.ClientUtil;
 import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
 import org.openqa.selenium.WebDriver;
@@ -55,9 +54,9 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
         if (parameterType.isAssignableFrom(WebDriver.class)) {
             DesiredCapabilities fixedCapabilities = new DesiredCapabilities();
             if (shouldStartProxy(extensionContext)) {
-                LOGGER.info("Starting Proxy...");
-                BrowserMobProxy proxy = new BrowserProxyFactory().createProxy();
-                fixedCapabilities.setCapability(CapabilityType.PROXY, ClientUtil.createSeleniumProxy(proxy));
+                BrowserMobProxy proxy = BrowserProxyBuilder.builder()
+                        .startProxy();
+                fixedCapabilities.setCapability(CapabilityType.PROXY, BrowserProxyBuilder.createSeleniumProxy(proxy));
                 getStore(extensionContext).put(PROXY_KEY, new ProxyWrapperImpl(proxy));
             }
             BrowserOptionInterceptor optionProvider = getBrowserOptionInterceptor(extensionContext, fixedCapabilities);
