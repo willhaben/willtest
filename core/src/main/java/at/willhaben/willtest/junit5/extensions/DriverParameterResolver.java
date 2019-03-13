@@ -1,8 +1,10 @@
 package at.willhaben.willtest.junit5.extensions;
 
 import at.willhaben.willtest.junit5.BrowserOptionInterceptor;
-import at.willhaben.willtest.junit5.DefaultBrowserOptionInterceptor;
 import at.willhaben.willtest.junit5.WebDriverPostInterceptor;
+import at.willhaben.willtest.proxy.BrowserProxyBuilder;
+import at.willhaben.willtest.proxy.ProxyWrapper;
+import at.willhaben.willtest.proxy.impl.ProxyWrapperImpl;
 import at.willhaben.willtest.util.BrowserOptionProvider;
 import at.willhaben.willtest.util.BrowserSelectionUtils;
 import at.willhaben.willtest.util.PlatformUtils;
@@ -10,22 +12,25 @@ import at.willhaben.willtest.util.RemoteSelectionUtils;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.lightbody.bmp.BrowserMobProxy;
 import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static at.willhaben.willtest.util.AnnotationHelper.getBrowserUtilExtensionList;
 
@@ -33,21 +38,38 @@ import static at.willhaben.willtest.util.AnnotationHelper.getBrowserUtilExtensio
 public class DriverParameterResolver implements ParameterResolver, AfterEachCallback {
 
     public static final String DRIVER_KEY = "wh-webDriver";
-    private static Logger logger = LogManager.getLogger();
+    private static final String PROXY_KEY = "wh-proxy";
+    private static final Logger LOGGER = LoggerFactory.getLogger(DriverParameterResolver.class);
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         Class<?> parameterType = parameterContext.getParameter().getType();
-        return parameterType.isAssignableFrom(WebDriver.class);
+        return parameterType.isAssignableFrom(WebDriver.class) ||
+                parameterType.isAssignableFrom(ProxyWrapper.class);
     }
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        BrowserOptionInterceptor optionProvider = getBrowserOptionInterceptor(extensionContext);
-        List<WebDriverPostInterceptor> driverPostInterceptorList = getBrowserPostProcess(extensionContext);
-        WebDriver driver = createDriver(optionProvider, driverPostInterceptorList);
-        getStore(extensionContext).put(DRIVER_KEY, driver);
-        return driver;
+        Class<?> parameterType = parameterContext.getParameter().getType();
+        if (parameterType.isAssignableFrom(WebDriver.class)) {
+            DesiredCapabilities fixedCapabilities = new DesiredCapabilities();
+            if (shouldStartProxy(extensionContext)) {
+                BrowserMobProxy proxy = BrowserProxyBuilder.builder()
+                        .startProxy();
+                fixedCapabilities.setCapability(CapabilityType.PROXY, BrowserProxyBuilder.createSeleniumProxy(proxy));
+                fixedCapabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
+                getStore(extensionContext).put(PROXY_KEY, new ProxyWrapperImpl(proxy));
+            }
+            BrowserOptionInterceptor optionProvider = getBrowserOptionInterceptor(extensionContext, fixedCapabilities);
+            List<WebDriverPostInterceptor> driverPostInterceptorList = getBrowserPostProcess(extensionContext);
+            WebDriver driver = createDriver(optionProvider, driverPostInterceptorList);
+            getStore(extensionContext).put(DRIVER_KEY, driver);
+            return driver;
+        } else if (parameterType.isAssignableFrom(ProxyWrapper.class)) {
+            return getStore(extensionContext).get(PROXY_KEY, ProxyWrapper.class);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -56,6 +78,11 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
         if (driver != null) {
             driver.quit();
         }
+        getProxyFromStore(extensionContext).ifPresent(proxyUtil -> proxyUtil.getProxy().abort());
+    }
+
+    public boolean shouldStartProxy(ExtensionContext context) {
+        return Arrays.asList(context.getRequiredTestMethod().getParameterTypes()).contains(ProxyWrapper.class);
     }
 
     public static Store getStore(ExtensionContext context) {
@@ -63,7 +90,11 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
     }
 
     public static WebDriver getDriverFromStore(ExtensionContext context) {
-        return (WebDriver) getStore(context).get(DRIVER_KEY);
+        return getStore(context).get(DRIVER_KEY, WebDriver.class);
+    }
+
+    public static Optional<ProxyWrapper> getProxyFromStore(ExtensionContext context) {
+        return Optional.ofNullable(getStore(context).get(PROXY_KEY, ProxyWrapper.class));
     }
 
     private WebDriver createDriver(BrowserOptionInterceptor options, List<WebDriverPostInterceptor> driverPostInterceptorList) {
@@ -130,16 +161,14 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
         }
     }
 
-    private BrowserOptionInterceptor getBrowserOptionInterceptor(ExtensionContext context) {
+    private BrowserOptionInterceptor getBrowserOptionInterceptor(ExtensionContext context, DesiredCapabilities fixedCapabilities) {
         List<BrowserOptionInterceptor> browserOptionInterceptors = getBrowserUtilExtensionList(context, BrowserOptionInterceptor.class, false);
-        if (browserOptionInterceptors.isEmpty()) {
-            return new DefaultBrowserOptionInterceptor();
-        }
-        return new BrowserOptionProvider(browserOptionInterceptors);
+        return new BrowserOptionProvider(browserOptionInterceptors, fixedCapabilities);
     }
 
     private List<WebDriverPostInterceptor> getBrowserPostProcess(ExtensionContext context) {
         return getBrowserUtilExtensionList(context, WebDriverPostInterceptor.class, true);
     }
+
 
 }
