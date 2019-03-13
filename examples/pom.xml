@@ -70,8 +70,8 @@
         <driver.arch/>
         <driver.chrome.arch/>
         <driver.folder>${project.basedir}${file.separator}drivers${file.separator}</driver.folder>
-        <geckodriver.version>0.23.0</geckodriver.version>
-        <chromedriver.version>2.43</chromedriver.version>
+        <geckodriver.version>0.24.0</geckodriver.version>
+        <chromedriver.version>2.46</chromedriver.version>
         <driver.extension/>
     </properties>
 
