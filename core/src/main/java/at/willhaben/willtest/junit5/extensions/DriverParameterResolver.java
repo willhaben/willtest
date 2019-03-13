@@ -57,6 +57,7 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
                 BrowserMobProxy proxy = BrowserProxyBuilder.builder()
                         .startProxy();
                 fixedCapabilities.setCapability(CapabilityType.PROXY, BrowserProxyBuilder.createSeleniumProxy(proxy));
+                fixedCapabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
                 getStore(extensionContext).put(PROXY_KEY, new ProxyWrapperImpl(proxy));
             }
             BrowserOptionInterceptor optionProvider = getBrowserOptionInterceptor(extensionContext, fixedCapabilities);
