@@ -95,7 +95,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <excludedGroups>at.willhaben.misc.test.util.category.PhantomTest</excludedGroups>
+                    <excludedGroups>phantomtest</excludedGroups>
                     <systemPropertyVariables>
                         <phantomjs.binary.path>${project.basedir}${file.separator}drivers${file.separator}phantomjs-linux-64bit</phantomjs.binary.path>
                     </systemPropertyVariables>

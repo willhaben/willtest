@@ -1,11 +1,10 @@
 package at.willhaben.misc.test;
 
 import at.willhaben.misc.test.pages.StaticPage;
-import at.willhaben.misc.test.util.category.PhantomTest;
 import org.hamcrest.Matchers;
-import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
@@ -16,7 +15,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-@Category(PhantomTest.class)
+@Tag("phantomtest")
 class CustomComponentTest {
 
     WebDriver driver;
