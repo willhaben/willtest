@@ -38,10 +38,15 @@ public class WhFieldDecorator extends DefaultFieldDecorator {
                     return Proxy.newProxyInstance(loader, new Class[]{List.class}, handler);
                 }
                 WhInvocationHandler handler = new WhInvocationHandler(factory.createLocator(field), customFactory);
-                return Proxy.newProxyInstance(loader, (Class<?>[]) customFactory.getFieldInterfacedTypes().toArray(), handler);
+                return Proxy.newProxyInstance(loader, getFieldInterfacedTypes(customFactory).toArray(new Class[0]), handler);
             }
         }
         return element;
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Class<?>> getFieldInterfacedTypes(AbstractUiComponent uiComponent) {
+        return uiComponent.getFieldInterfacedTypes();
     }
 
     private Optional<AbstractUiComponent> getSuitableFactory(Field field) {
