@@ -31,7 +31,7 @@ public class ScreenshotExtension implements TestExecutionExceptionHandler {
             createScreenshot(extensionContext, driver);
         } else {
             throw new WebDriverException("Driver isn't initialized. " +
-                    "This extension can only be used in combination with the DriverParameterResolver");
+                    "This extension can only be used in combination with the DriverParameterResolver", throwable);
         }
         throw throwable;
     }
