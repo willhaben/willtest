@@ -3,6 +3,7 @@ package at.willhaben.willtest.test;
 import at.willhaben.willtest.junit5.extensions.ScreenshotExtension;
 import at.willhaben.willtest.util.TestReportFile;
 import org.hamcrest.Matchers;
+import org.junit.AssumptionViolatedException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 
 class ScreenshotExtensionTest {
@@ -54,6 +56,16 @@ class ScreenshotExtensionTest {
         ScreenshotExtension extension = new ScreenshotExtension();
         extension.createScreenshot(context, driver);
         assertThat(getScreenshotNames(), Matchers.hasItem(Matchers.containsString(methodName)));
+    }
+
+    @Test
+    void testAssumptionViolationExclude() {
+        AssumptionViolatedException assumption = new AssumptionViolatedException("This is just an assumption!!!");
+        ScreenshotExtension screenshotExtension = new ScreenshotExtension();
+        assertThat(screenshotExtension.isAssumptionViolation(assumption), is(true));
+
+        RuntimeException runtimeException = new RuntimeException("No assumption!!!");
+        assertThat(screenshotExtension.isAssumptionViolation(runtimeException), is(false));
     }
 
     @AfterEach
