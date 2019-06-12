@@ -3,6 +3,7 @@ package at.willhaben.willtest.junit5.extensions;
 import at.willhaben.willtest.config.DefaultScreenshotProvider;
 import at.willhaben.willtest.junit5.ScreenshotInterceptor;
 import at.willhaben.willtest.util.TestReportFile;
+import org.junit.AssumptionViolatedException;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 import org.openqa.selenium.WebDriver;
@@ -28,7 +29,9 @@ public class ScreenshotExtension implements TestExecutionExceptionHandler {
         WebDriver driver = DriverParameterResolver.getDriverFromStore(extensionContext);
         if (driver != null) {
             try {
-                createScreenshot(extensionContext, driver);
+                if (!isAssumptionViolation(throwable)) {
+                    createScreenshot(extensionContext, driver);
+                }
             } catch (Throwable th) {
                 throwable.addSuppressed(th);
             }
@@ -37,6 +40,10 @@ public class ScreenshotExtension implements TestExecutionExceptionHandler {
                     "This extension can only be used in combination with the DriverParameterResolver"));
         }
         throw throwable;
+    }
+
+    public boolean isAssumptionViolation(Throwable throwable) {
+        return AssumptionViolatedException.class.isAssignableFrom(throwable.getClass());
     }
 
     public void createScreenshot(ExtensionContext context, WebDriver driver) throws Throwable {
