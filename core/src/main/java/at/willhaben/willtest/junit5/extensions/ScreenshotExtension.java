@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.opentest4j.TestAbortedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.yandex.qatools.ashot.AShot;
@@ -43,7 +44,8 @@ public class ScreenshotExtension implements TestExecutionExceptionHandler {
     }
 
     public boolean isAssumptionViolation(Throwable throwable) {
-        return AssumptionViolatedException.class.isAssignableFrom(throwable.getClass());
+        return AssumptionViolatedException.class.isAssignableFrom(throwable.getClass()) ||
+                TestAbortedException.class.isAssignableFrom(throwable.getClass());
     }
 
     public void createScreenshot(ExtensionContext context, WebDriver driver) throws Throwable {
