@@ -60,7 +60,9 @@ public class AnnotationHelper {
         Class<?> testClass = context.getRequiredTestClass();
         T superClassAnnotation = getFirstSuperClassAnnotation(testClass, type);
         T testClassAnnotation = testClass.getAnnotation(type);
-        T methodAnnotation = context.getRequiredTestMethod().getAnnotation(type);
+        T methodAnnotation = context.getTestMethod()
+                .map(method -> method.getAnnotation(type))
+                .orElse(null);
         List<T> annotationList = new ArrayList<>();
         if (superClassAnnotation != null) {
             annotationList.add(superClassAnnotation);
