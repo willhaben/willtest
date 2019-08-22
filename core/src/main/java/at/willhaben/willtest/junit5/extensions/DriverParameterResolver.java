@@ -26,6 +26,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -35,9 +36,10 @@ import java.util.Optional;
 import static at.willhaben.willtest.util.AnnotationHelper.getBrowserUtilExtensionList;
 
 
-public class DriverParameterResolver implements ParameterResolver, AfterEachCallback {
+public class DriverParameterResolver implements ParameterResolver, AfterEachCallback, AfterAllCallback {
 
     public static final String DRIVER_KEY = "wh-webDriver";
+    public static final String BEFOREALL_DRIVER_KEY = "wh-beforeall-webDriver";
     private static final String PROXY_KEY = "wh-proxy";
     private static final Logger LOGGER = LoggerFactory.getLogger(DriverParameterResolver.class);
 
@@ -51,7 +53,13 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         Class<?> parameterType = parameterContext.getParameter().getType();
-        if (parameterType.isAssignableFrom(WebDriver.class)) {
+        WebDriver driverCreatedInBeforeEach = getDriverFromStore(extensionContext, DRIVER_KEY);
+        ProxyWrapper proxyCreatedInBeforeEach = getStore(extensionContext).get(PROXY_KEY, ProxyWrapper.class);
+        if (parameterType.isAssignableFrom(WebDriver.class) && driverCreatedInBeforeEach != null) {
+            return driverCreatedInBeforeEach;
+        } else if (parameterType.isAssignableFrom(ProxyWrapper.class) && proxyCreatedInBeforeEach != null) {
+            return proxyCreatedInBeforeEach;
+        }else if (parameterType.isAssignableFrom(WebDriver.class)) {
             DesiredCapabilities fixedCapabilities = new DesiredCapabilities();
             if (shouldStartProxy(extensionContext)) {
                 BrowserMobProxy proxy = BrowserProxyBuilder.builder()
@@ -63,7 +71,11 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
             BrowserOptionInterceptor optionProvider = getBrowserOptionInterceptor(extensionContext, fixedCapabilities);
             List<WebDriverPostInterceptor> driverPostInterceptorList = getBrowserPostProcess(extensionContext);
             WebDriver driver = createDriver(optionProvider, driverPostInterceptorList);
-            getStore(extensionContext).put(DRIVER_KEY, driver);
+            if (extensionContext.getTestMethod().isPresent()) {
+                getStore(extensionContext).put(DRIVER_KEY, driver);
+            } else {
+                getStore(extensionContext).put(BEFOREALL_DRIVER_KEY, driver);
+            }
             return driver;
         } else if (parameterType.isAssignableFrom(ProxyWrapper.class)) {
             return getStore(extensionContext).get(PROXY_KEY, ProxyWrapper.class);
@@ -74,23 +86,39 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
 
     @Override
     public void afterEach(ExtensionContext extensionContext) throws Exception {
-        WebDriver driver = getDriverFromStore(extensionContext);
-        if (driver != null) {
-            driver.quit();
-        }
+        closeDriver(extensionContext, DRIVER_KEY);
         getProxyFromStore(extensionContext).ifPresent(proxyUtil -> proxyUtil.getProxy().abort());
     }
 
+    private void closeDriver(ExtensionContext extensionContext, String driverKey) {
+        WebDriver driver = getDriverFromStore(extensionContext, driverKey);
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+
+    @Override
+    public void afterAll(ExtensionContext context) throws Exception {
+        closeDriver(context, BEFOREALL_DRIVER_KEY);
+    }
+
+
     public boolean shouldStartProxy(ExtensionContext context) {
-        return Arrays.asList(context.getRequiredTestMethod().getParameterTypes()).contains(ProxyWrapper.class);
+        Optional<Method> testMethod = context.getTestMethod();
+        if (testMethod.isPresent()) {
+            return Arrays.asList(testMethod.get().getParameterTypes()).contains(ProxyWrapper.class);
+        } else {
+            LOGGER.debug("The test method is not present. No proxy can be started.");
+            return false;
+        }
     }
 
     public static Store getStore(ExtensionContext context) {
         return context.getStore(ExtensionContext.Namespace.create(DriverParameterResolver.class));
     }
 
-    public static WebDriver getDriverFromStore(ExtensionContext context) {
-        return getStore(context).get(DRIVER_KEY, WebDriver.class);
+    public static WebDriver getDriverFromStore(ExtensionContext context, String driverKey) {
+        return getStore(context).get(driverKey, WebDriver.class);
     }
 
     public static Optional<ProxyWrapper> getProxyFromStore(ExtensionContext context) {
@@ -169,6 +197,4 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
     private List<WebDriverPostInterceptor> getBrowserPostProcess(ExtensionContext context) {
         return getBrowserUtilExtensionList(context, WebDriverPostInterceptor.class, true);
     }
-
-
 }

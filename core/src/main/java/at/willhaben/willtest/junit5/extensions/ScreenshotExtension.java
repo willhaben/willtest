@@ -27,7 +27,7 @@ public class ScreenshotExtension implements TestExecutionExceptionHandler {
 
     @Override
     public void handleTestExecutionException(ExtensionContext extensionContext, Throwable throwable) throws Throwable {
-        WebDriver driver = DriverParameterResolver.getDriverFromStore(extensionContext);
+        WebDriver driver = DriverParameterResolver.getDriverFromStore(extensionContext, DriverParameterResolver.DRIVER_KEY);
         if (driver != null) {
             try {
                 if (!isAssumptionViolation(throwable)) {
