@@ -18,6 +18,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 
 import static at.willhaben.willtest.util.AnnotationHelper.getBrowserUtilExtensionList;
 
@@ -27,11 +28,11 @@ public class ScreenshotExtension implements TestExecutionExceptionHandler {
 
     @Override
     public void handleTestExecutionException(ExtensionContext extensionContext, Throwable throwable) throws Throwable {
-        WebDriver driver = DriverParameterResolver.getDriverFromStore(extensionContext, DriverParameterResolver.DRIVER_KEY);
-        if (driver != null) {
+        Optional<WebDriver> driver = DriverParameterResolver.getDriverFromStore(extensionContext, DriverParameterResolver.DRIVER_KEY);
+        if (driver.isPresent()) {
             try {
                 if (!isAssumptionViolation(throwable)) {
-                    createScreenshot(extensionContext, driver);
+                    createScreenshot(extensionContext, driver.get());
                 }
             } catch (Throwable th) {
                 throwable.addSuppressed(th);
