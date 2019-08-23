@@ -1,5 +1,10 @@
+env:
+  global:
+    - MOZ_HEADLESS=1
 language: java
 jdk:
   - openjdk11
+addons:
+  firefox: latest
 sudo: false
 script: mvn clean verify -DrunPhantomTests=true
