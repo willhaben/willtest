@@ -57,9 +57,9 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
         Optional<ProxyWrapper> proxyCreatedInBeforeEach = getProxyFromStore(extensionContext);
 
         if (parameterType.isAssignableFrom(WebDriver.class) && driverCreatedInBeforeEach.isPresent()) {
-            return driverCreatedInBeforeEach;
+            return driverCreatedInBeforeEach.get();
         } else if (parameterType.isAssignableFrom(ProxyWrapper.class) && proxyCreatedInBeforeEach.isPresent()) {
-            return proxyCreatedInBeforeEach;
+            return proxyCreatedInBeforeEach.get();
         } else if (parameterType.isAssignableFrom(WebDriver.class)) {
             DesiredCapabilities fixedCapabilities = new DesiredCapabilities();
             if (shouldStartProxy(extensionContext)) {
@@ -78,8 +78,8 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
                 getStore(extensionContext).put(BEFOREALL_DRIVER_KEY, driver);
             }
             return driver;
-        } else if (parameterType.isAssignableFrom(ProxyWrapper.class)) {
-            return getStore(extensionContext).get(PROXY_KEY, ProxyWrapper.class);
+        } else if (parameterType.isAssignableFrom(ProxyWrapper.class) && getProxyFromStore(extensionContext).isPresent()) {
+            return getProxyFromStore(extensionContext).get();
         } else {
             return null;
         }
