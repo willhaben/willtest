@@ -45,8 +45,9 @@ public class ScreenshotExtension implements TestExecutionExceptionHandler {
     }
 
     public boolean isAssumptionViolation(Throwable throwable) {
-        return AssumptionViolatedException.class.isAssignableFrom(throwable.getClass()) ||
-                TestAbortedException.class.isAssignableFrom(throwable.getClass());
+        String exceptionClassName = throwable.getClass().getName();
+        return exceptionClassName.equals("org.junit.AssumptionViolatedException") ||
+                exceptionClassName.equals("org.opentest4j.TestAbortedException");
     }
 
     public void createScreenshot(ExtensionContext context, WebDriver driver) throws Throwable {
