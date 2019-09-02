@@ -10,6 +10,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.Objects;
 
+@Deprecated
 public abstract class BrowserOptionInterceptor implements BrowserUtilExtension {
 
     public FirefoxOptions getFirefoxOptions() {

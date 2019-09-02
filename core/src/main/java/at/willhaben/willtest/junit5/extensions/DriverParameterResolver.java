@@ -1,6 +1,8 @@
 package at.willhaben.willtest.junit5.extensions;
 
 import at.willhaben.willtest.junit5.BrowserOptionInterceptor;
+import at.willhaben.willtest.junit5.OptionCombiner;
+import at.willhaben.willtest.junit5.OptionModifier;
 import at.willhaben.willtest.junit5.WebDriverPostInterceptor;
 import at.willhaben.willtest.proxy.BrowserProxyBuilder;
 import at.willhaben.willtest.proxy.ProxyWrapper;
@@ -17,8 +19,13 @@ import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
@@ -71,7 +78,8 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
             }
             BrowserOptionInterceptor optionProvider = getBrowserOptionInterceptor(extensionContext, fixedCapabilities);
             List<WebDriverPostInterceptor> driverPostInterceptorList = getBrowserPostProcess(extensionContext);
-            WebDriver driver = createDriver(optionProvider, driverPostInterceptorList);
+            List<OptionModifier> modifiers = getBrowserOptionModifiers(extensionContext);
+            WebDriver driver = createDriver(optionProvider, modifiers, driverPostInterceptorList);
             if (extensionContext.getTestMethod().isPresent()) {
                 getStore(extensionContext).put(DRIVER_KEY, driver);
             } else {
@@ -123,8 +131,25 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
         return Optional.ofNullable(getStore(context).get(PROXY_KEY, ProxyWrapper.class));
     }
 
-    private WebDriver createDriver(BrowserOptionInterceptor options, List<WebDriverPostInterceptor> driverPostInterceptorList) {
+    private WebDriver createDriver(BrowserOptionInterceptor options, List<OptionModifier> modifiers, List<WebDriverPostInterceptor> driverPostInterceptorList) {
         String seleniumHub = System.getProperty("seleniumHub");
+        FirefoxOptions firefoxOptions;
+        ChromeOptions chromeOptions;
+        EdgeOptions edgeOptions;
+        InternetExplorerOptions internetExplorerOptions;
+        if (modifiers.size() > 0) {
+            OptionCombiner optionCombiner = new OptionCombiner(modifiers);
+            firefoxOptions = optionCombiner.getBrowserOptions(FirefoxOptions.class);
+            chromeOptions = optionCombiner.getBrowserOptions(ChromeOptions.class);
+            edgeOptions = optionCombiner.getBrowserOptions(EdgeOptions.class);
+            internetExplorerOptions = optionCombiner.getBrowserOptions(InternetExplorerOptions.class);
+        } else {
+            firefoxOptions = options.getFirefoxOptions();
+            chromeOptions = options.getChromeOptions();
+            edgeOptions = options.getEdgeOptions();
+            internetExplorerOptions = options.getInternetExplorerOptions();
+        }
+
         WebDriver driver;
         if (PlatformUtils.isAndroid()) {
             DesiredCapabilities androidCaps = options.getAndroidCapabilities();
@@ -148,13 +173,13 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
                 URL seleniumHubUrl = convertSeleniumHubToURL(seleniumHub);
                 RemoteWebDriver remoteDriver;
                 if (BrowserSelectionUtils.isFirefox()) {
-                    remoteDriver = new RemoteWebDriver(seleniumHubUrl, options.getFirefoxOptions());
+                    remoteDriver = new RemoteWebDriver(seleniumHubUrl, firefoxOptions);
                 } else if (BrowserSelectionUtils.isChrome()) {
-                    remoteDriver = new RemoteWebDriver(seleniumHubUrl, options.getChromeOptions());
+                    remoteDriver = new RemoteWebDriver(seleniumHubUrl, chromeOptions);
                 } else if (BrowserSelectionUtils.isIE()) {
-                    remoteDriver = new RemoteWebDriver(seleniumHubUrl, options.getInternetExplorerOptions());
+                    remoteDriver = new RemoteWebDriver(seleniumHubUrl, internetExplorerOptions);
                 } else if (BrowserSelectionUtils.isEdge()) {
-                    remoteDriver = new RemoteWebDriver(seleniumHubUrl, options.getInternetExplorerOptions());
+                    remoteDriver = new RemoteWebDriver(seleniumHubUrl, edgeOptions);
                 } else {
                     throw new RuntimeException("The specified browser '" + BrowserSelectionUtils.getBrowser() + "' is not supported");
                 }
@@ -162,12 +187,13 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
                 driver = remoteDriver;
             } else {
                 if (BrowserSelectionUtils.isFirefox()) {
-                    driver = new FirefoxDriver(options.getFirefoxOptions());
-                    //Could be replaced by Boolean.getBoolean("maximizeFF"), which is the same
+                    driver = new FirefoxDriver(firefoxOptions);
                 } else if (BrowserSelectionUtils.isChrome()) {
-                    driver = new ChromeDriver(options.getChromeOptions());
+                    driver = new ChromeDriver(chromeOptions);
                 } else if (BrowserSelectionUtils.isIE()) {
-                    driver = new InternetExplorerDriver(options.getInternetExplorerOptions());
+                    driver = new InternetExplorerDriver(internetExplorerOptions);
+                } else if (BrowserSelectionUtils.isEdge()) {
+                    driver = new EdgeDriver(edgeOptions);
                 } else {
                     throw new RuntimeException("The specified browser '" + BrowserSelectionUtils.getBrowser() + "' is not supported");
                 }
@@ -190,6 +216,10 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
     private BrowserOptionInterceptor getBrowserOptionInterceptor(ExtensionContext context, DesiredCapabilities fixedCapabilities) {
         List<BrowserOptionInterceptor> browserOptionInterceptors = getBrowserUtilExtensionList(context, BrowserOptionInterceptor.class, false);
         return new BrowserOptionProvider(browserOptionInterceptors, fixedCapabilities);
+    }
+
+    private List<OptionModifier> getBrowserOptionModifiers(ExtensionContext context) {
+        return getBrowserUtilExtensionList(context, OptionModifier.class, false);
     }
 
     private List<WebDriverPostInterceptor> getBrowserPostProcess(ExtensionContext context) {
