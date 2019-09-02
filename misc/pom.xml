@@ -7,11 +7,11 @@
     <parent>
         <groupId>at.willhaben.willtest</groupId>
         <artifactId>willtest</artifactId>
-        <version>2.1.2</version>
+        <version>2.2.0</version>
     </parent>
 
     <artifactId>misc</artifactId>
-    <version>2.1.2</version>
+    <version>2.2.0</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Classes to use the Core and Browserstack module in JUnit tests</description>
@@ -95,7 +95,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <excludedGroups>phantomtest</excludedGroups>
+                    <excludedGroups>realBrowser</excludedGroups>
                     <systemPropertyVariables>
                         <phantomjs.binary.path>${project.basedir}${file.separator}drivers${file.separator}phantomjs-linux-64bit</phantomjs.binary.path>
                         <webdriver.gecko.driver>${project.basedir}${file.separator}drivers${file.separator}geckodriver-linux-64bit</webdriver.gecko.driver>
@@ -110,7 +110,7 @@
             <id>download-drivers</id>
             <activation>
                 <property>
-                    <name>runPhantomTests</name>
+                    <name>runRealBrowserTests</name>
                     <value>true</value>
                 </property>
             </activation>
@@ -137,12 +137,6 @@
                         <configuration>
                             <installationDirectory>${project.basedir}${file.separator}drivers</installationDirectory>
                             <drivers>
-                                <driver>
-                                    <name>phantomjs</name>
-                                    <platform>linux</platform>
-                                    <bit>64</bit>
-                                    <version>2.1.1</version>
-                                </driver>
                                 <driver>
                                     <name>geckodriver</name>
                                     <platform>linux</platform>

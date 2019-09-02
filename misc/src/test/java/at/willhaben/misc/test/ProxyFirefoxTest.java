@@ -12,7 +12,7 @@ import org.openqa.selenium.WebDriver;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@Tag("phantomtest")
+@Tag("realBrowser")
 
 @ExtendWith(DriverParameterResolver.class)
 @BrowserUtil(HeadlessBrowserConfig.class)
