@@ -1,5 +1,7 @@
 package at.willhaben.willtest.junit5;
 
+import at.willhaben.willtest.util.AndroidOptions;
+import at.willhaben.willtest.util.IOsOptions;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -24,11 +26,11 @@ public interface OptionModifier extends BrowserUtilExtension {
         return options;
     }
 
-    default DesiredCapabilities modifyAndroidOptions(DesiredCapabilities options) {
+    default AndroidOptions modifyAndroidOptions(AndroidOptions options) {
         return options;
     }
 
-    default DesiredCapabilities modifyIOsOptions(DesiredCapabilities options) {
+    default IOsOptions modifyIOsOptions(IOsOptions options) {
         return options;
     }
 }

@@ -7,10 +7,7 @@ import at.willhaben.willtest.junit5.WebDriverPostInterceptor;
 import at.willhaben.willtest.proxy.BrowserProxyBuilder;
 import at.willhaben.willtest.proxy.ProxyWrapper;
 import at.willhaben.willtest.proxy.impl.ProxyWrapperImpl;
-import at.willhaben.willtest.util.BrowserOptionProvider;
-import at.willhaben.willtest.util.BrowserSelectionUtils;
-import at.willhaben.willtest.util.PlatformUtils;
-import at.willhaben.willtest.util.RemoteSelectionUtils;
+import at.willhaben.willtest.util.*;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
@@ -137,6 +134,9 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
         ChromeOptions chromeOptions;
         EdgeOptions edgeOptions;
         InternetExplorerOptions internetExplorerOptions;
+        // change this to android and ios options class when the old options implementation is removed
+        DesiredCapabilities androidOptions;
+        DesiredCapabilities iOsOptions;
 
         // use new optionmodifiers if the list is not empty
         if (modifiers.size() > 0) {
@@ -145,29 +145,31 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
             chromeOptions = optionCombiner.getBrowserOptions(ChromeOptions.class);
             edgeOptions = optionCombiner.getBrowserOptions(EdgeOptions.class);
             internetExplorerOptions = optionCombiner.getBrowserOptions(InternetExplorerOptions.class);
+            androidOptions = optionCombiner.getBrowserOptions(AndroidOptions.class);
+            iOsOptions = optionCombiner.getBrowserOptions(IOsOptions.class);
         } else {
             firefoxOptions = options.getFirefoxOptions();
             chromeOptions = options.getChromeOptions();
             edgeOptions = options.getEdgeOptions();
             internetExplorerOptions = options.getInternetExplorerOptions();
+            androidOptions = options.getAndroidCapabilities();
+            iOsOptions = options.getIOsCapabilities();
         }
 
         WebDriver driver;
         if (PlatformUtils.isAndroid()) {
-            DesiredCapabilities androidCaps = options.getAndroidCapabilities();
             if (RemoteSelectionUtils.isRemote()) {
                 URL seleniumHubUrl = convertSeleniumHubToURL(seleniumHub);
-                driver = new AndroidDriver<>(seleniumHubUrl, androidCaps);
+                driver = new AndroidDriver<>(seleniumHubUrl, androidOptions);
             } else {
-                driver = new AndroidDriver<>(androidCaps);
+                driver = new AndroidDriver<>(androidOptions);
             }
         } else if (PlatformUtils.isIOS()) {
-            DesiredCapabilities iosCaps = options.getIOsCapabilities();
             if (RemoteSelectionUtils.isRemote()) {
                 URL seleniumHubUrl = convertSeleniumHubToURL(seleniumHub);
-                driver = new IOSDriver<>(seleniumHubUrl, iosCaps);
+                driver = new IOSDriver<>(seleniumHubUrl, iOsOptions);
             } else {
-                driver = new IOSDriver<>(iosCaps);
+                driver = new IOSDriver<>(iOsOptions);
             }
             ((AppiumDriver) driver).context("NATIVE_APP");
         } else if (PlatformUtils.isLinux() || PlatformUtils.isWindows()) {

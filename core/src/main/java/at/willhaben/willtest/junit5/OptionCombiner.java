@@ -1,6 +1,8 @@
 package at.willhaben.willtest.junit5;
 
 import at.willhaben.willtest.exceptions.BrowserNotSupportedException;
+import at.willhaben.willtest.util.AndroidOptions;
+import at.willhaben.willtest.util.IOsOptions;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
@@ -36,6 +38,10 @@ public class OptionCombiner {
                 options = (T) modifier.modifyEdgeOptions(((EdgeOptions) options));
             } else if (optionType.isAssignableFrom(InternetExplorerOptions.class)) {
                 options = (T) modifier.modifyInternetExplorerOptions(((InternetExplorerOptions) options));
+            } else if (optionType.isAssignableFrom(AndroidOptions.class)) {
+                options = (T) modifier.modifyAndroidOptions(((AndroidOptions) options));
+            } else if (optionType.isAssignableFrom(IOsOptions.class)) {
+                options = (T) modifier.modifyIOsOptions(((IOsOptions) options));
             } else {
                 throw new BrowserNotSupportedException("The options class [" + optionType.getName() +
                         "] is not supported. There is no suitable Browser for this options.");
