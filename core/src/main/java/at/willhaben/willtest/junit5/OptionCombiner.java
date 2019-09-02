@@ -18,7 +18,7 @@ public class OptionCombiner {
         this.optionModifiers = optionModifiers;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "classcast"})
     public <T extends MutableCapabilities> T getBrowserOptions(Class<T> optionType) {
         T options;
         try {

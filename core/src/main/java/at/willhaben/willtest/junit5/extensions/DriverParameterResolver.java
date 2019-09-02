@@ -137,6 +137,8 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
         ChromeOptions chromeOptions;
         EdgeOptions edgeOptions;
         InternetExplorerOptions internetExplorerOptions;
+
+        // use new optionmodifiers if the list is not empty
         if (modifiers.size() > 0) {
             OptionCombiner optionCombiner = new OptionCombiner(modifiers);
             firefoxOptions = optionCombiner.getBrowserOptions(FirefoxOptions.class);
@@ -213,6 +215,7 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
         }
     }
 
+    @Deprecated
     private BrowserOptionInterceptor getBrowserOptionInterceptor(ExtensionContext context, DesiredCapabilities fixedCapabilities) {
         List<BrowserOptionInterceptor> browserOptionInterceptors = getBrowserUtilExtensionList(context, BrowserOptionInterceptor.class, false);
         return new BrowserOptionProvider(browserOptionInterceptors, fixedCapabilities);
