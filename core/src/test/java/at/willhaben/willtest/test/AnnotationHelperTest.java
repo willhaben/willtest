@@ -13,6 +13,7 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static at.willhaben.willtest.util.AnnotationHelper.getBrowserUtilExtensionList;
@@ -35,8 +36,8 @@ class AnnotationHelperTest {
         when(extensionContext.getRequiredTestClass())
                 .thenReturn((Class) OrderTesting.class);
 
-        when(extensionContext.getRequiredTestMethod())
-                .thenReturn(OrderTesting.class.getMethod("testing"));
+        when(extensionContext.getTestMethod())
+                .thenReturn(Optional.of(OrderTesting.class.getMethod("testing")));
     }
 
     @Test

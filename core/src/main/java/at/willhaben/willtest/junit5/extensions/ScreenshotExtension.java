@@ -3,12 +3,10 @@ package at.willhaben.willtest.junit5.extensions;
 import at.willhaben.willtest.config.DefaultScreenshotProvider;
 import at.willhaben.willtest.junit5.ScreenshotInterceptor;
 import at.willhaben.willtest.util.TestReportFile;
-import org.junit.AssumptionViolatedException;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.opentest4j.TestAbortedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.yandex.qatools.ashot.AShot;
@@ -18,6 +16,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 
 import static at.willhaben.willtest.util.AnnotationHelper.getBrowserUtilExtensionList;
 
@@ -27,11 +26,11 @@ public class ScreenshotExtension implements TestExecutionExceptionHandler {
 
     @Override
     public void handleTestExecutionException(ExtensionContext extensionContext, Throwable throwable) throws Throwable {
-        WebDriver driver = DriverParameterResolver.getDriverFromStore(extensionContext);
-        if (driver != null) {
+        Optional<WebDriver> driver = DriverParameterResolver.getDriverFromStore(extensionContext, DriverParameterResolver.DRIVER_KEY);
+        if (driver.isPresent()) {
             try {
                 if (!isAssumptionViolation(throwable)) {
-                    createScreenshot(extensionContext, driver);
+                    createScreenshot(extensionContext, driver.get());
                 }
             } catch (Throwable th) {
                 throwable.addSuppressed(th);
@@ -45,8 +44,9 @@ public class ScreenshotExtension implements TestExecutionExceptionHandler {
     }
 
     public boolean isAssumptionViolation(Throwable throwable) {
-        return AssumptionViolatedException.class.isAssignableFrom(throwable.getClass()) ||
-                TestAbortedException.class.isAssignableFrom(throwable.getClass());
+        String exceptionClassName = throwable.getClass().getName();
+        return exceptionClassName.equals("org.junit.AssumptionViolatedException") ||
+                exceptionClassName.equals("org.opentest4j.TestAbortedException");
     }
 
     public void createScreenshot(ExtensionContext context, WebDriver driver) throws Throwable {

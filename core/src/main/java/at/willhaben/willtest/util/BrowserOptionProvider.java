@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
+@Deprecated
 public class BrowserOptionProvider extends BrowserOptionInterceptor {
 
     private List<BrowserOptionInterceptor> interceptors;

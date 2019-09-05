@@ -8,7 +8,7 @@ public class BrowserSelectionUtils {
     private static final String DEFAULT_EDGE = "edge";
 
     public static String getBrowser() {
-        return Environment.getValue("browser", DEFAULT_FIREFOX);
+        return Environment.getValue("browser", DEFAULT_FIREFOX).toLowerCase();
     }
 
     public static boolean isFirefox() {
