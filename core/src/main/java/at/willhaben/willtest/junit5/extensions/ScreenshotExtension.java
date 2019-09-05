@@ -36,6 +36,7 @@ public class ScreenshotExtension implements TestExecutionExceptionHandler {
                 throwable.addSuppressed(th);
             }
         } else {
+            LOGGER.warn("Can't take screenshot because the webdriver crashed.",throwable);
             throwable.addSuppressed(new WebDriverException("Driver isn't initialized. " +
                     "This extension can only be used in combination with the DriverParameterResolver"));
         }
