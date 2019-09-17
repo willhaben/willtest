@@ -1,5 +1,6 @@
 package at.willhaben.willtest.proxy;
 
+import at.willhaben.willtest.util.RemoteSelectionUtils;
 import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.client.ClientUtil;
 import org.openqa.selenium.Proxy;
@@ -25,6 +26,8 @@ public class SeleniumProxy extends Proxy {
             proxyStr = String.format("%s:%d", proxyUrl, inetSocketAddress.getPort());
             LOGGER.debug("Use the following proxy address for the browser to connect '" + proxyStr + "'. " +
                     "(selected from system property [" + PROXY_URL_PROPERTY_KEY + "])");
+        } else if (!RemoteSelectionUtils.isRemote() && isOnMacOS()) {
+            proxyStr = String.format("%s:%d", "localhost", inetSocketAddress.getPort());
         } else {
             proxyStr = String.format("%s:%d", ClientUtil.getConnectableAddress().getHostAddress(), inetSocketAddress.getPort());
             LOGGER.debug("Use the following proxy address for the browser to connect '" + proxyStr + "'. " +
@@ -32,5 +35,9 @@ public class SeleniumProxy extends Proxy {
         }
         this.setHttpProxy(proxyStr);
         this.setSslProxy(proxyStr);
+    }
+
+    private boolean isOnMacOS() {
+        return System.getProperty("os.name").startsWith("Mac");
     }
 }
