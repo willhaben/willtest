@@ -1,9 +1,6 @@
 package at.willhaben.willtest.junit5.extensions;
 
-import at.willhaben.willtest.junit5.BrowserOptionInterceptor;
-import at.willhaben.willtest.junit5.OptionCombiner;
-import at.willhaben.willtest.junit5.OptionModifier;
-import at.willhaben.willtest.junit5.WebDriverPostInterceptor;
+import at.willhaben.willtest.junit5.*;
 import at.willhaben.willtest.proxy.BrowserProxyBuilder;
 import at.willhaben.willtest.proxy.ProxyWrapper;
 import at.willhaben.willtest.proxy.impl.ProxyWrapperImpl;
@@ -38,9 +35,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static at.willhaben.willtest.util.AnnotationHelper.getBrowserUtilExtensionList;
+import static at.willhaben.willtest.util.AssumptionUtil.isAssumptionViolation;
 
 
-public class DriverParameterResolver implements ParameterResolver, AfterEachCallback, AfterAllCallback {
+public class DriverParameterResolver implements ParameterResolver, AfterEachCallback, AfterAllCallback, TestExecutionExceptionHandler {
 
     public static final String DRIVER_KEY = "wh-webDriver";
     private static final String BEFOREALL_DRIVER_KEY = "wh-beforeall-webDriver";
@@ -105,6 +103,23 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
         closeDriver(context, BEFOREALL_DRIVER_KEY);
     }
 
+    @Override
+    public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
+        if (isAssumptionViolation(throwable)) {
+            throw throwable;
+        }
+        Optional<WebDriver> driver = getDriverFromStore(context, DRIVER_KEY);
+        if (driver.isPresent()) {
+            for (FailureListener failureListener : getFailureListeners(context)) {
+                try {
+                    failureListener.onFailure(context, driver.get(), throwable);
+                } catch (Exception e) {
+                    throwable.addSuppressed(e);
+                }
+            }
+        }
+        throw throwable;
+    }
 
     public boolean shouldStartProxy(ExtensionContext context) {
         Optional<Method> testMethod = context.getTestMethod();
@@ -229,5 +244,9 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
 
     private List<WebDriverPostInterceptor> getBrowserPostProcess(ExtensionContext context) {
         return getBrowserUtilExtensionList(context, WebDriverPostInterceptor.class, true);
+    }
+
+    private List<FailureListener> getFailureListeners(ExtensionContext context) {
+        return getBrowserUtilExtensionList(context, FailureListener.class, true);
     }
 }
