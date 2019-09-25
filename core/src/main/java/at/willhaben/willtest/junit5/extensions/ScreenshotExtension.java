@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static at.willhaben.willtest.util.AnnotationHelper.getBrowserUtilExtensionList;
+import static at.willhaben.willtest.util.AssumptionUtil.isAssumptionViolation;
 
 public class ScreenshotExtension implements TestExecutionExceptionHandler {
 
@@ -41,12 +42,6 @@ public class ScreenshotExtension implements TestExecutionExceptionHandler {
                     "This extension can only be used in combination with the DriverParameterResolver"));
         }
         throw throwable;
-    }
-
-    public boolean isAssumptionViolation(Throwable throwable) {
-        String exceptionClassName = throwable.getClass().getName();
-        return exceptionClassName.equals("org.junit.AssumptionViolatedException") ||
-                exceptionClassName.equals("org.opentest4j.TestAbortedException");
     }
 
     public void createScreenshot(ExtensionContext context, WebDriver driver) throws Throwable {
