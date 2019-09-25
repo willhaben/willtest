@@ -1,4 +1,4 @@
-package at.willhaben.willtest.test;
+package at.willhaben.willtest.test.mock;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
 

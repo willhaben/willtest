@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static at.willhaben.willtest.test.ExtensionMock.mockWithTestClassAndMethod;
+import static at.willhaben.willtest.test.mock.ExtensionMock.mockWithTestClassAndMethod;
 import static at.willhaben.willtest.util.AssumptionUtil.isAssumptionViolation;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

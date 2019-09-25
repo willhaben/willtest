@@ -1,6 +1,7 @@
 package at.willhaben.willtest.test;
 
 import at.willhaben.willtest.junit5.extensions.PageSourceExtension;
+import at.willhaben.willtest.test.mock.ExtensionMock;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
