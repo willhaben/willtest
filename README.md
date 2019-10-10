@@ -3,7 +3,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/at.willhaben.willtest/core)](https://mvnrepository.com/artifact/at.willhaben.willtest)
 ## Overview
 Willtest makes integrating JUnit and Selenium easier with providing a set of 
-[JUnit rules](https://github.com/junit-team/junit4/wiki/Rules) and other utility classes which let you complete tasks 
+[JUinit Extension](https://github.com/junit-team/junit4/wiki/Rules) and other utility classes which let you complete tasks 
 like:
 * Managing lifecycle of WebDriver instances
 * Reporting capabilities like saving logs, screenshots and HTML source
