@@ -1,7 +1,7 @@
 package at.willhaben.willtest.examples.junit5tests;
 
 import at.willhaben.willtest.proxy.ProxyWrapper;
-import at.willhaben.willtest.junit5.extensions.DriverParameterResolver;
+import at.willhaben.willtest.junit5.extensions.DriverParameterResolverExtension;
 import net.lightbody.bmp.core.har.HarEntry;
 import net.lightbody.bmp.proxy.CaptureType;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ExtendWith(DriverParameterResolver.class)
+@ExtendWith(DriverParameterResolverExtension.class)
 class ProxyExample {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProxyExample.class);

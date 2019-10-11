@@ -2,7 +2,7 @@ package at.willhaben.misc.test;
 
 import at.willhaben.misc.test.util.HeadlessBrowserConfig;
 import at.willhaben.willtest.junit5.BrowserUtil;
-import at.willhaben.willtest.junit5.extensions.DriverParameterResolver;
+import at.willhaben.willtest.junit5.extensions.DriverParameterResolverExtension;
 import at.willhaben.willtest.proxy.ProxyWrapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Tag;
@@ -14,7 +14,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @Tag("realBrowser")
 
-@ExtendWith(DriverParameterResolver.class)
+@ExtendWith(DriverParameterResolverExtension.class)
 @BrowserUtil(HeadlessBrowserConfig.class)
 class ProxyFirefoxTest {
 

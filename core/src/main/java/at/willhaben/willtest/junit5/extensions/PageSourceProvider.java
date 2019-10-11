@@ -11,9 +11,9 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
-public class PageSourceExtension implements FailureListener {
+public class PageSourceProvider implements FailureListener {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PageSourceExtension.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PageSourceProvider.class);
 
     @Override
     public void onFailure(ExtensionContext context, WebDriver driver, Throwable throwable) throws Throwable {

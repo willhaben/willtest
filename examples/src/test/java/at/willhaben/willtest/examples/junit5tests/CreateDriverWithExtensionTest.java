@@ -2,8 +2,8 @@ package at.willhaben.willtest.examples.junit5tests;
 
 import at.willhaben.willtest.junit5.BrowserUtil;
 import at.willhaben.willtest.junit5.DefaultBrowserOptionInterceptor;
-import at.willhaben.willtest.junit5.extensions.DriverParameterResolver;
-import at.willhaben.willtest.junit5.extensions.ScreenshotExtension;
+import at.willhaben.willtest.junit5.extensions.DriverParameterResolverExtension;
+import at.willhaben.willtest.junit5.extensions.ScreenshotProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.By;
@@ -14,8 +14,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 @ExtendWith({
-        DriverParameterResolver.class,
-        ScreenshotExtension.class
+        DriverParameterResolverExtension.class,
+        ScreenshotProvider.class
 })
 @BrowserUtil({DefaultBrowserOptionInterceptor.class})
 class CreateDriverWithExtensionTest {

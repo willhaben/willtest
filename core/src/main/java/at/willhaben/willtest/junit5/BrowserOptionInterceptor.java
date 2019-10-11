@@ -10,6 +10,10 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.Objects;
 
+/**
+ * @deprecated
+ * Use optionModifier class instead
+ */
 @Deprecated
 public abstract class BrowserOptionInterceptor implements BrowserUtilExtension {
 

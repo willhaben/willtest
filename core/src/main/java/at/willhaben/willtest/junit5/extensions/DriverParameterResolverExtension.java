@@ -38,12 +38,12 @@ import static at.willhaben.willtest.util.AnnotationHelper.getBrowserUtilExtensio
 import static at.willhaben.willtest.util.AssumptionUtil.isAssumptionViolation;
 
 
-public class DriverParameterResolver implements ParameterResolver, AfterEachCallback, AfterAllCallback, TestExecutionExceptionHandler {
+public class DriverParameterResolverExtension implements ParameterResolver, AfterEachCallback, AfterAllCallback, TestExecutionExceptionHandler {
 
     public static final String DRIVER_KEY = "wh-webDriver";
     private static final String BEFOREALL_DRIVER_KEY = "wh-beforeall-webDriver";
     private static final String PROXY_KEY = "wh-proxy";
-    private static final Logger LOGGER = LoggerFactory.getLogger(DriverParameterResolver.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DriverParameterResolverExtension.class);
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
@@ -132,7 +132,7 @@ public class DriverParameterResolver implements ParameterResolver, AfterEachCall
     }
 
     public static Store getStore(ExtensionContext context) {
-        return context.getStore(ExtensionContext.Namespace.create(DriverParameterResolver.class));
+        return context.getStore(ExtensionContext.Namespace.create(DriverParameterResolverExtension.class));
     }
 
     public static Optional<WebDriver> getDriverFromStore(ExtensionContext context, String driverKey) {

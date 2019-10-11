@@ -1,6 +1,6 @@
 package at.willhaben.willtest.test;
 
-import at.willhaben.willtest.junit5.extensions.PageSourceExtension;
+import at.willhaben.willtest.junit5.extensions.PageSourceProvider;
 import at.willhaben.willtest.test.mock.ExtensionMock;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
@@ -26,9 +26,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class PageSourceExtensionTest {
+class PageSourceProviderTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PageSourceExtensionTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PageSourceProviderTest.class);
     private static final String PAGESOURCE = "This is the Pagesource!";
 
     private ExtensionContext context;
@@ -38,14 +38,14 @@ class PageSourceExtensionTest {
     @BeforeEach
     void setUp() {
         testMethodName = "testPageSourceMethod" + System.nanoTime();
-        context = ExtensionMock.mockWithTestClassAndMethod(PageSourceExtensionTest.class, testMethodName);
+        context = ExtensionMock.mockWithTestClassAndMethod(PageSourceProviderTest.class, testMethodName);
         driver = Mockito.mock(WebDriver.class);
         Mockito.when(driver.getPageSource()).thenReturn(PAGESOURCE);
     }
 
     @Test
     void testPagesourceFileCreation() throws Throwable {
-        new PageSourceExtension().onFailure(context, driver, new AssertionError("Test failure"));
+        new PageSourceProvider().onFailure(context, driver, new AssertionError("Test failure"));
         File reportDirectory = new File(getReportFolderDir());
         assertTrue(reportDirectory.exists());
         assertTrue(reportDirectory.isDirectory());
