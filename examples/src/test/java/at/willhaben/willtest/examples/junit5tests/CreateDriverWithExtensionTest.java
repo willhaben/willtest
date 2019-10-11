@@ -1,7 +1,6 @@
 package at.willhaben.willtest.examples.junit5tests;
 
 import at.willhaben.willtest.junit5.BrowserUtil;
-import at.willhaben.willtest.junit5.DefaultBrowserOptionInterceptor;
 import at.willhaben.willtest.junit5.extensions.DriverParameterResolverExtension;
 import at.willhaben.willtest.junit5.extensions.ScreenshotProvider;
 import org.junit.jupiter.api.Test;
@@ -15,9 +14,8 @@ import static org.junit.Assert.assertThat;
 
 @ExtendWith({
         DriverParameterResolverExtension.class,
-        ScreenshotProvider.class
 })
-@BrowserUtil({DefaultBrowserOptionInterceptor.class})
+@BrowserUtil({ScreenshotProvider.class})
 class CreateDriverWithExtensionTest {
 
     private static final String WILLTEST_GITHUB_PAGE = "https://github.com/willhaben/willtest";
@@ -34,7 +32,7 @@ class CreateDriverWithExtensionTest {
 
     @Test
     @BrowserUtil(BrowserSetup.class)
-    void testCreateChromeDriver(WebDriver driver){
+    void testCreateChromeDriver(WebDriver driver) {
         driver.get(WILLTEST_GITHUB_PAGE);
         WebElement element = driver.findElement(By.cssSelector(REPO_HEADER_LOCATOR));
         assertThat(element.getText(), is(compareValue));

@@ -71,10 +71,9 @@ public class DriverParameterResolverExtension implements ParameterResolver, Afte
                 fixedCapabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
                 getStore(extensionContext).put(PROXY_KEY, new ProxyWrapperImpl(proxy));
             }
-            BrowserOptionInterceptor optionProvider = getBrowserOptionInterceptor(extensionContext, fixedCapabilities);
             List<WebDriverPostInterceptor> driverPostInterceptorList = getBrowserPostProcess(extensionContext);
             List<OptionModifier> modifiers = getBrowserOptionModifiers(extensionContext);
-            WebDriver driver = createDriver(optionProvider, modifiers, driverPostInterceptorList);
+            WebDriver driver = createDriver(modifiers, driverPostInterceptorList);
             if (extensionContext.getTestMethod().isPresent()) {
                 getStore(extensionContext).put(DRIVER_KEY, driver);
             } else {
@@ -143,7 +142,7 @@ public class DriverParameterResolverExtension implements ParameterResolver, Afte
         return Optional.ofNullable(getStore(context).get(PROXY_KEY, ProxyWrapper.class));
     }
 
-    private WebDriver createDriver(BrowserOptionInterceptor options, List<OptionModifier> modifiers, List<WebDriverPostInterceptor> driverPostInterceptorList) {
+    private WebDriver createDriver(List<OptionModifier> modifiers, List<WebDriverPostInterceptor> driverPostInterceptorList) {
         String seleniumHub = System.getProperty("seleniumHub");
         FirefoxOptions firefoxOptions;
         ChromeOptions chromeOptions;
@@ -153,8 +152,8 @@ public class DriverParameterResolverExtension implements ParameterResolver, Afte
         DesiredCapabilities androidOptions;
         DesiredCapabilities iOsOptions;
 
-        // use new optionmodifiers if the list is not empty
-        if (modifiers.size() > 0) {
+        // use new option modifiers if the list is not empty
+        if (modifiers.isEmpty()) {
             OptionCombiner optionCombiner = new OptionCombiner(modifiers);
             firefoxOptions = optionCombiner.getBrowserOptions(FirefoxOptions.class);
             chromeOptions = optionCombiner.getBrowserOptions(ChromeOptions.class);
@@ -163,12 +162,12 @@ public class DriverParameterResolverExtension implements ParameterResolver, Afte
             androidOptions = optionCombiner.getBrowserOptions(AndroidOptions.class);
             iOsOptions = optionCombiner.getBrowserOptions(IOsOptions.class);
         } else {
-            firefoxOptions = options.getFirefoxOptions();
-            chromeOptions = options.getChromeOptions();
-            edgeOptions = options.getEdgeOptions();
-            internetExplorerOptions = options.getInternetExplorerOptions();
-            androidOptions = options.getAndroidCapabilities();
-            iOsOptions = options.getIOsCapabilities();
+            firefoxOptions = new FirefoxOptions();
+            chromeOptions = new ChromeOptions();
+            edgeOptions = new EdgeOptions();
+            internetExplorerOptions = new InternetExplorerOptions();
+            androidOptions = new DesiredCapabilities();
+            iOsOptions = new DesiredCapabilities();
         }
 
         WebDriver driver;
@@ -230,12 +229,6 @@ public class DriverParameterResolverExtension implements ParameterResolver, Afte
         } catch (MalformedURLException e) {
             throw new RuntimeException("Malformed url created", e);
         }
-    }
-
-    @Deprecated
-    private BrowserOptionInterceptor getBrowserOptionInterceptor(ExtensionContext context, DesiredCapabilities fixedCapabilities) {
-        List<BrowserOptionInterceptor> browserOptionInterceptors = getBrowserUtilExtensionList(context, BrowserOptionInterceptor.class, false);
-        return new BrowserOptionProvider(browserOptionInterceptors, fixedCapabilities);
     }
 
     private List<OptionModifier> getBrowserOptionModifiers(ExtensionContext context) {
