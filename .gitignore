@@ -81,3 +81,5 @@ buildNumber.properties
 
 ### Drivers ###
 */drivers
+
+.generated

@@ -16,8 +16,8 @@ complete tasks like:
 * Support for mobile tests with appium (Android, iOS)
 
 ## Requirements
-* Currently Selenium [3.14.0] is used
-* JUnit 5 with version [5.5.2] is used
+* Currently Selenium with version [${version.selenium}] is used
+* JUnit 5 with version [${junit-jupiter-engine.version}] is used
 
 ## Getting Started
 The code is built up from several small building blocks. Only the ```core``` module is needed to start start
@@ -28,13 +28,13 @@ and an abstract ```PageObject``` which can be extended.
 <dependency>
     <groupId>at.willhaben.willtest</groupId>
     <artifactId>core</artifactId>
-    <version>2.2.2</version>
+    <version>${version}</version>
     <scope>compile</scope>
 </dependency>
 <dependency>
     <groupId>at.willhaben.willtest</groupId>
     <artifactId>misc</artifactId>
-    <version>2.2.2</version>
+    <version>${version}</version>
     <scope>compile</scope>
 </dependency>
 ```
