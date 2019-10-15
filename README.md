@@ -16,7 +16,7 @@ complete tasks like:
 * Support for mobile tests with appium (Android, iOS)
 
 ## Requirements
-* Currently Selenium [3.14.0] is used
+* Currently Selenium with version [3.14.0] is used
 * JUnit 5 with version [5.5.2] is used
 
 ## Getting Started
@@ -28,60 +28,55 @@ and an abstract ```PageObject``` which can be extended.
 <dependency>
     <groupId>at.willhaben.willtest</groupId>
     <artifactId>core</artifactId>
-    <version>2.2.2</version>
+    <version>3.0.0-M1</version>
     <scope>compile</scope>
 </dependency>
 <dependency>
     <groupId>at.willhaben.willtest</groupId>
     <artifactId>misc</artifactId>
-    <version>2.2.2</version>
+    <version>3.0.0-M1</version>
     <scope>compile</scope>
 </dependency>
 ```
 
-Firefox executable must be on the path, or the path to the executable can be defined by using the followint system property:
-```
-ffBinary=YOUR_PATH_TO_FIREFOX_EXECUTABLE
-```
-
 [Geckodriver](https://github.com/mozilla/geckodriver/releases) is also needed to run a test with Firefox + Selenium.
- The path of geckodriver executable is expected in [webdriver.gecko.driver](http://learn-automation.com/use-firefox-selenium-using-geckodriver-selenium-3/) 
- system property. In the [POM of the examples module](https://github.com/willhaben/willtest/blob/master/examples/pom.xml)
- there is an automated way shown, which downloads and applies the geckodriver in surefire settigns.
+The path of geckodriver executable is expected in [webdriver.gecko.driver](http://learn-automation.com/use-firefox-selenium-using-geckodriver-selenium-3/) 
+system property. In the [POM of the examples module](https://github.com/willhaben/willtest/blob/master/examples/pom.xml)
+there is an automated way shown, which downloads and applies the geckodriver and chromedriver in surefire settings.
 
 Now the environment is ready to be used like this:
 
 ```java
-public class FirstExample {
+@ExtendWith(DriverParameterResolverExtension.class)
+@BrowserUtil({ScreenshotProvider.class, PageSourceProvider.class})
+class FirstExample {
+
     private static final String REPO_HEADER_LOCATOR = "div.repohead-details-container h1";
     private static final String WILLTEST_GITHUB_PAGE = "https://github.com/willhaben/willtest";
 
-    @Rule
-    public SeleniumRule seleniumRule = new SeleniumRule();
-
     @Test
-    public void openPage() {
-        WebDriver webDriver = seleniumRule.getWebDriver();
-        webDriver.get(WILLTEST_GITHUB_PAGE);
-        WebElement element = webDriver.findElement(By.cssSelector(REPO_HEADER_LOCATOR));
-        assertThat(element.getText(),is("willhaben/willtest"));
+    void openPage(WebDriver driver) {
+        driver.get(WILLTEST_GITHUB_PAGE);
+        WebElement element = driver.findElement(By.cssSelector(REPO_HEADER_LOCATOR));
+        assertThat(element.getText(), is("willhaben/willtest"));
     }
 
     @Test
-    public void buggyTest() {
-        WebDriver webDriver = seleniumRule.getWebDriver();
-        webDriver.get(WILLTEST_GITHUB_PAGE);
-        WebElement element = webDriver.findElement(By.cssSelector(REPO_HEADER_LOCATOR));
-        assertThat(element.getText(),is("fooooo"));
+    void buggyTest(WebDriver driver) {
+        driver.get(WILLTEST_GITHUB_PAGE);
+        WebElement element = driver.findElement(By.cssSelector(REPO_HEADER_LOCATOR));
+        assertThat(element.getText(), is("fooooo"));
     }
 }
-
 ```
 
 If the test class is executed (it can be found in examples module), screenshot and 
-HTML source are automatically saved into the surefire reports case of the ```buggyTest``` method. This is done by the Willtest framework.
+HTML source are automatically saved into the surefire reports case of the ```buggyTest``` method. 
+This is done by the Willtest framework when u specify the two provider classes in the ```@BrowserUtil```
+annotation.
 
 ## Recipes
+
 All the code examples below can be found in the examples maven submodule.
 ### Using Selenium HUB to run Firefox
 

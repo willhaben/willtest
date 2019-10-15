@@ -5,6 +5,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class BrowserSetup implements OptionModifier {
+
     @Override
     public ChromeOptions modifyChromeOptions(ChromeOptions options) {
         options.merge(getDesiredCapabilities("chrome"));

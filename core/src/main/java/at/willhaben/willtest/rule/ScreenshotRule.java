@@ -1,6 +1,6 @@
 package at.willhaben.willtest.rule;
 
-import at.willhaben.willtest.config.ScreenshotProvider;
+import at.willhaben.willtest.config.ScreenshotGenerator;
 import at.willhaben.willtest.config.SeleniumProvider;
 import at.willhaben.willtest.util.TestReportFile;
 import org.junit.runner.Description;
@@ -22,7 +22,7 @@ import java.util.Objects;
 public class ScreenshotRule extends TestFailureAwareRule {
     private static final Logger LOGGER = LoggerFactory.getLogger(ScreenshotRule.class);
     private final SeleniumProvider seleniumProvider;
-    private ScreenshotProvider screenshotProvider;
+    private ScreenshotGenerator screenshotGenerator;
 
     public ScreenshotRule(SeleniumProvider seleniumProvider) {
         this.seleniumProvider = seleniumProvider;
@@ -31,10 +31,10 @@ public class ScreenshotRule extends TestFailureAwareRule {
     @Override
     protected void onError(Description description, Throwable testFailure) throws Throwable {
         super.onError(description, testFailure);
-        if(Objects.nonNull(screenshotProvider)) {
+        if(Objects.nonNull(screenshotGenerator)) {
             WebDriver webDriver = seleniumProvider.getWebDriver();
             if (webDriver instanceof TakesScreenshot) {
-                BufferedImage screenshot = screenshotProvider.takeScreenshot(webDriver);
+                BufferedImage screenshot = screenshotGenerator.takeScreenshot(webDriver);
 
                 File destFile = TestReportFile.forTest(description).withPostix(".png").build().getFile();
                 ImageIO.write(screenshot, "PNG", destFile);
@@ -52,8 +52,8 @@ public class ScreenshotRule extends TestFailureAwareRule {
         }
     }
 
-    public ScreenshotRule setScreenshotProvider(ScreenshotProvider screenshotProvider) {
-        this.screenshotProvider = screenshotProvider;
+    public ScreenshotRule setScreenshotGenerator(ScreenshotGenerator screenshotGenerator) {
+        this.screenshotGenerator = screenshotGenerator;
         return this;
     }
 }

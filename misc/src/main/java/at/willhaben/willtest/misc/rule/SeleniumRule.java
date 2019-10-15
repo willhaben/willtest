@@ -91,7 +91,7 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
         WebDriverLog<P, D> webDriverLog = new WebDriverLog<>(defaultSeleniumProvider);
         PageSource pageSource = new PageSource(defaultSeleniumProvider);
         screenshotRule = new ScreenshotRule(defaultSeleniumProvider)
-                .setScreenshotProvider(new DefaultScreenshotProvider());
+                .setScreenshotGenerator(new DefaultScreenshotGenerator());
         JavascriptAlert javascriptAlert = new JavascriptAlert(defaultSeleniumProvider);
 
         ruleChain = RuleChain
@@ -266,12 +266,12 @@ public class SeleniumRule<P extends SeleniumProvider<P, D> & TestRule, D extends
     }
 
     /**
-     * Sets the screenshotProvider to use a custom implementation to take a screenshot with {@link WebDriver}.
-     * @param screenshotProvider custom implementation of the {@link ScreenshotProvider} interface
+     * Sets the screenshotGenerator to use a custom implementation to take a screenshot with {@link WebDriver}.
+     * @param screenshotGenerator custom implementation of the {@link ScreenshotGenerator} interface
      * @return this to enable method chaining
      */
-    public SeleniumRule<P, D> setScreenshotProvider(ScreenshotProvider screenshotProvider) {
-        screenshotRule.setScreenshotProvider(screenshotProvider);
+    public SeleniumRule<P, D> setScreenshotProvider(ScreenshotGenerator screenshotGenerator) {
+        screenshotRule.setScreenshotGenerator(screenshotGenerator);
         return this;
     }
 

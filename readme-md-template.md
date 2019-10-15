@@ -39,134 +39,114 @@ and an abstract ```PageObject``` which can be extended.
 </dependency>
 ```
 
-Firefox executable must be on the path, or the path to the executable can be defined by using the followint system property:
-```
-ffBinary=YOUR_PATH_TO_FIREFOX_EXECUTABLE
-```
-
 [Geckodriver](https://github.com/mozilla/geckodriver/releases) is also needed to run a test with Firefox + Selenium.
- The path of geckodriver executable is expected in [webdriver.gecko.driver](http://learn-automation.com/use-firefox-selenium-using-geckodriver-selenium-3/) 
- system property. In the [POM of the examples module](https://github.com/willhaben/willtest/blob/master/examples/pom.xml)
- there is an automated way shown, which downloads and applies the geckodriver in surefire settigns.
+The path of geckodriver executable is expected in [webdriver.gecko.driver](http://learn-automation.com/use-firefox-selenium-using-geckodriver-selenium-3/) 
+system property. In the [POM of the examples module](https://github.com/willhaben/willtest/blob/master/examples/pom.xml)
+there is an automated way shown, which downloads and applies the geckodriver and chromedriver in surefire settings.
 
 Now the environment is ready to be used like this:
 
 ```java
-public class FirstExample {
+@ExtendWith(DriverParameterResolverExtension.class)
+@BrowserUtil({ScreenshotProvider.class, PageSourceProvider.class})
+class FirstExample {
+
     private static final String REPO_HEADER_LOCATOR = "div.repohead-details-container h1";
     private static final String WILLTEST_GITHUB_PAGE = "https://github.com/willhaben/willtest";
 
-    @Rule
-    public SeleniumRule seleniumRule = new SeleniumRule();
-
     @Test
-    public void openPage() {
-        WebDriver webDriver = seleniumRule.getWebDriver();
-        webDriver.get(WILLTEST_GITHUB_PAGE);
-        WebElement element = webDriver.findElement(By.cssSelector(REPO_HEADER_LOCATOR));
-        assertThat(element.getText(),is("willhaben/willtest"));
+    void openPage(WebDriver driver) {
+        driver.get(WILLTEST_GITHUB_PAGE);
+        WebElement element = driver.findElement(By.cssSelector(REPO_HEADER_LOCATOR));
+        assertThat(element.getText(), is("willhaben/willtest"));
     }
 
     @Test
-    public void buggyTest() {
-        WebDriver webDriver = seleniumRule.getWebDriver();
-        webDriver.get(WILLTEST_GITHUB_PAGE);
-        WebElement element = webDriver.findElement(By.cssSelector(REPO_HEADER_LOCATOR));
-        assertThat(element.getText(),is("fooooo"));
+    void buggyTest(WebDriver driver) {
+        driver.get(WILLTEST_GITHUB_PAGE);
+        WebElement element = driver.findElement(By.cssSelector(REPO_HEADER_LOCATOR));
+        assertThat(element.getText(), is("fooooo"));
     }
 }
-
 ```
 
 If the test class is executed (it can be found in examples module), screenshot and 
-HTML source are automatically saved into the surefire reports case of the ```buggyTest``` method. This is done by the Willtest framework.
+HTML source are automatically saved into the surefire reports case of the ```buggyTest``` method. 
+This is done by the Willtest framework when u specify the two provider classes in the ```@BrowserUtil```
+annotation.
 
 ## Recipes
 All the code examples below can be found in the examples maven submodule.
+
 ### Using Selenium HUB to run Firefox
 
-```SeleniumRule``` uses by default local firefox instances to run the tests. If this behaviour needs to be changed, 
-the name of the ```SeleniumProvider``` implementation has to be defined as system property.
-For example, to get a Firefox instance on a specific selenium hub, the following values has to be defined:
+By default the willtest framework will start a local firefox instance to run the tests. If this behaviour 
+needs to be changed there are some properties to change this.
 
-```
-seleniumProvider=at.willhaben.willtest.rule.SeleniumHubFirefoxProvider
-seleniumHub=YOUR_SELENIUM_HUB_URL
-```
-
-In the background the ```SeleniumProvider``` is instantiated using Reflection by the 
-```SeleniumProviderFactory``` class.
+|name|description|default|possible|
+|---|---|---|---|
+|browser|Select which browser should be started|```firefox```|```firefox```, ```chrome```, ```ie```, ```edge```|
+|remote|Execute tests locally or on a selenium grid|```false```|```false```, ```true```|
+|seleniumHub|Specify the url to the selenium grid or remote browser|EMPTY|```http://sel-grid:1234/wd/hub```|
 
 ### PageObject
-The write tests with the page-object-pattern you can use the provided ```PageObject``` as base
-class. It provides some commonly needed functions to improve the readability of your page objects.
+To write tests with the page-object-pattern you can use the provided ```PageObject``` as base
+class. It provides some commonly needed functions to improve the readability of your page objects and tests.
 Every method is documented in JavaDoc.
 
-### Creating new SeleniumProvider implementations
-By design Willtest was not intended to depend on any dependency injection framework, so a really simple workaround
-is added to let the user to create new ```SeleniumProvider``` implementations.
+### Customization options
+Extending the willtest framework is done with the ```@BrowserUtil``` annotation. There are multiple interfaces
+which can be implemented to change the behaviour of the framework. The annotation can be used on class and method level.
+The method level will override the class level one.
 
-If a ```SeleniumProvider``` has a default constructor, it can be instantiated by the ```SeleniumRule``` class based on its 
-fully qualified name. If some dependencies has to be injected to it, the constructor of ```SeleniumRule``` accepts
-an array of class<->object pairs in form of ```ParameterObject``` instances. These dependencies are tried to be injected
-using the a setter called "set" + class name.
-
-Example code:
+#### Browseroptions
+The browser options and capabilities can be modified by implementing the ```Optionmodifier``` interface.
 
 ```java
-public class DummySeleniumProvider extends AbstractSeleniumProvider<DummySeleniumProvider,WebDriver> {
-    private Pattern patternField;
+public class BrowserSetup implements OptionModifier {
     
-    /**
-     * This will be injected by {@link at.willhaben.willtest.misc.rule.SeleniumProviderFactory} based on the setter name
-     * @param patternField
-     */
-    public void setPattern(Pattern patternField) {
-        this.patternField = patternField;
+    @Override
+    public ChromeOptions modifyChromeOptions(ChromeOptions options) {
+        options.merge(getDesiredCapabilities("chrome"));
+        options.addArguments("--start-maximized");
+        return options;
     }
 
-    @Override
-    public DummySeleniumProvider getThis() {
-        return this;
-    }
-
-    @Override
-    protected WebDriver constructWebDriver(DesiredCapabilities desiredCapabilities) {
-        WebDriver webDriver = mock(WebDriver.class, RETURNS_DEEP_STUBS);
-        doReturn(patternField.pattern()).when(webDriver).getCurrentUrl();
-        return webDriver;
+    public DesiredCapabilities getDesiredCapabilities(String nameOfBrowser) {
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability("applicationCacheEnabled", false);
+        capabilities.setJavascriptEnabled(true);
+        capabilities.setBrowserName(nameOfBrowser);
+        return capabilities;
     }
 }
+
+// ad the class to the test
+@ExtendWith(DriverParameterResolverExtension.class)
+@BrowserUtil(BrowserSetup.class)
+class FirstExample {}
 ```
+
+#### Webdriver modifications
+If it is needed to modify the ```WebDriver``` (e.g. maximise the browser) the ```WebDriverPostInterceptor``` interface 
+can be used.
 
 ```java
-public class DummyTest {
-    private static Pattern THIS_WILL_BE_INJECTED_INTO_DUMMY_SELENIUM_PROVIDER = Pattern.compile("fooooo");
-    private static String originalProvider;
-
-    @AfterClass
-    public static void afterClass() {
-        if ( originalProvider != null ) {
-            System.setProperty(SeleniumProviderFactory.SELENIUM_PROVIDER_CLASS_NAME, originalProvider);
-        }
-    }
-
-    @Rule
-    public SeleniumRule seleniumRule = new SeleniumRule(
-            new SeleniumProviderFactory.ParameterObject(Pattern.class,THIS_WILL_BE_INJECTED_INTO_DUMMY_SELENIUM_PROVIDER))
-            .withoutImplicitWait()
-            .withoutScriptTimeout();
-
-    @Test
-    public void testInjection() {
-        assertThat(seleniumRule.getWebDriver().getCurrentUrl(),is("fooooo"));
+public class PostProcessSetup implements WebDriverPostInterceptor {
+    @Override
+    public void postProcessWebDriver(WebDriver driver) {
+        driver.manage().window().maximize();
     }
 }
+
+// ad the class to the test
+@ExtendWith(DriverParameterResolverExtension.class)
+@BrowserUtil(PostProcessSetup.class)
+class FirstExample {}
 ```
 
-Alternative way is to completely dismiss the ```SeleniumRule``` class and implement a new similar class, which wires all
-the necessary classes together. ```SeleniumProvider``` as interface can be also simply implemented with completely dismissing 
-```AbstractSeleniumProvider```. These are the harder way.
+#### On failure behaviour
+When it is needed to clear up resources or signal a test failure then the interface ```FailureListener``` must be used.
 
 ### File Upload
 The ```SeleniumRule``` configures by default a simple way to upload any file from the filesystem or from the classpath.
