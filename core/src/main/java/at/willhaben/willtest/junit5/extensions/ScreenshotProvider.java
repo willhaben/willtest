@@ -1,12 +1,14 @@
 package at.willhaben.willtest.junit5.extensions;
 
 import at.willhaben.willtest.config.DefaultScreenshotProvider;
+import at.willhaben.willtest.junit5.FailureListener;
 import at.willhaben.willtest.junit5.ScreenshotInterceptor;
 import at.willhaben.willtest.util.TestReportFile;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.ScreenshotException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.yandex.qatools.ashot.AShot;
@@ -19,34 +21,23 @@ import java.util.List;
 import java.util.Optional;
 
 import static at.willhaben.willtest.util.AnnotationHelper.getBrowserUtilExtensionList;
+import static at.willhaben.willtest.util.AssumptionUtil.isAssumptionViolation;
 
-public class ScreenshotExtension implements TestExecutionExceptionHandler {
+public class ScreenshotProvider implements FailureListener {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScreenshotExtension.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScreenshotProvider.class);
 
     @Override
-    public void handleTestExecutionException(ExtensionContext extensionContext, Throwable throwable) throws Throwable {
-        Optional<WebDriver> driver = DriverParameterResolver.getDriverFromStore(extensionContext, DriverParameterResolver.DRIVER_KEY);
-        if (driver.isPresent()) {
-            try {
-                if (!isAssumptionViolation(throwable)) {
-                    createScreenshot(extensionContext, driver.get());
-                }
-            } catch (Throwable th) {
-                throwable.addSuppressed(th);
+    public void onFailure(ExtensionContext context, WebDriver driver, Throwable throwable) throws Throwable {
+        try {
+            if (!isAssumptionViolation(throwable)) {
+                createScreenshot(context, driver);
             }
-        } else {
-            LOGGER.warn("Can't take screenshot because the webdriver crashed.",throwable);
-            throwable.addSuppressed(new WebDriverException("Driver isn't initialized. " +
-                    "This extension can only be used in combination with the DriverParameterResolver"));
+        } catch (Throwable th) {
+            throwable.addSuppressed(th);
+            throwable.addSuppressed(new ScreenshotException("Screenshot couldn't be made!"));
         }
         throw throwable;
-    }
-
-    public boolean isAssumptionViolation(Throwable throwable) {
-        String exceptionClassName = throwable.getClass().getName();
-        return exceptionClassName.equals("org.junit.AssumptionViolatedException") ||
-                exceptionClassName.equals("org.opentest4j.TestAbortedException");
     }
 
     public void createScreenshot(ExtensionContext context, WebDriver driver) throws Throwable {

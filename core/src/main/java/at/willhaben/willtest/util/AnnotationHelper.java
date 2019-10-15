@@ -1,8 +1,8 @@
 package at.willhaben.willtest.util;
 
-import at.willhaben.willtest.junit5.BrowserOptionInterceptor;
 import at.willhaben.willtest.junit5.BrowserUtil;
 import at.willhaben.willtest.junit5.BrowserUtilExtension;
+import at.willhaben.willtest.junit5.OptionModifier;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.lang.annotation.Annotation;
@@ -47,7 +47,8 @@ public class AnnotationHelper {
                     .collect(Collectors.toList());
             if (!allowMultipleExtension) {
                 if (extensions.size() > 1) {
-                    throw new IllegalStateException("Only one extension of type " + BrowserOptionInterceptor.class.getName() + ".");
+                    //TODO:Change that we can have two OptionModifier classes
+                    throw new IllegalStateException("Only one extension of type " + OptionModifier.class.getName() + ".");
                 }
             }
             return extensions;

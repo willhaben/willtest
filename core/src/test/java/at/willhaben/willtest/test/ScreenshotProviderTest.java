@@ -1,6 +1,6 @@
 package at.willhaben.willtest.test;
 
-import at.willhaben.willtest.junit5.extensions.ScreenshotExtension;
+import at.willhaben.willtest.junit5.extensions.ScreenshotProvider;
 import at.willhaben.willtest.util.TestReportFile;
 import org.hamcrest.Matchers;
 import org.junit.AssumptionViolatedException;
@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,13 +22,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static at.willhaben.willtest.test.mock.ExtensionMock.mockWithTestClassAndMethod;
+import static at.willhaben.willtest.util.AssumptionUtil.isAssumptionViolation;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 
-class ScreenshotExtensionTest {
+class ScreenshotProviderTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScreenshotExtensionTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScreenshotProviderTest.class);
 
     private ExtensionContext context;
     private TestWebdriver driver;
@@ -39,21 +40,17 @@ class ScreenshotExtensionTest {
     void setUp() throws Throwable {
         methodName = "testMethod" + System.nanoTime();
         driver = mock(TestWebdriver.class);
-        context = mock(ExtensionContext.class);
-        Method testMethod = mock(Method.class);
+        context = mockWithTestClassAndMethod(ScreenshotProviderTest.class, methodName);
 
-        Path testImagePath = Paths.get(ScreenshotExtension.class.getClassLoader().getResource("test-image.png").toURI());
+        Path testImagePath = Paths.get(ScreenshotProvider.class.getClassLoader().getResource("test-image.png").toURI());
         byte[] image = Files.readAllBytes(testImagePath);
 
         doReturn(image).when(driver).getScreenshotAs(any());
-        doReturn(ScreenshotExtensionTest.class).when(context).getRequiredTestClass();
-        doReturn(methodName).when(testMethod).getName();
-        doReturn(testMethod).when(context).getRequiredTestMethod();
     }
 
     @Test
     void testCreateScreenshot() throws Throwable {
-        ScreenshotExtension extension = new ScreenshotExtension();
+        ScreenshotProvider extension = new ScreenshotProvider();
         extension.createScreenshot(context, driver);
         assertThat(getScreenshotNames(), Matchers.hasItem(Matchers.containsString(methodName)));
     }
@@ -61,11 +58,10 @@ class ScreenshotExtensionTest {
     @Test
     void testAssumptionViolationExclude() {
         AssumptionViolatedException assumption = new AssumptionViolatedException("This is just an assumption!!!");
-        ScreenshotExtension screenshotExtension = new ScreenshotExtension();
-        assertThat(screenshotExtension.isAssumptionViolation(assumption), is(true));
+        assertThat(isAssumptionViolation(assumption), is(true));
 
         RuntimeException runtimeException = new RuntimeException("No assumption!!!");
-        assertThat(screenshotExtension.isAssumptionViolation(runtimeException), is(false));
+        assertThat(isAssumptionViolation(runtimeException), is(false));
     }
 
     @AfterEach
