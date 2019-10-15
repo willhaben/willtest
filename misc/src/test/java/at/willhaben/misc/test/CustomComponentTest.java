@@ -1,12 +1,17 @@
 package at.willhaben.misc.test;
 
 import at.willhaben.misc.test.pages.StaticPage;
-import at.willhaben.misc.test.util.category.PhantomTest;
+import at.willhaben.misc.test.util.HeadlessBrowserConfig;
+import at.willhaben.willtest.junit5.BrowserUtil;
+import at.willhaben.willtest.junit5.extensions.DriverParameterResolver;
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.support.ui.ISelect;
 
@@ -15,18 +20,14 @@ import java.util.List;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-@Category(PhantomTest.class)
-public class CustomComponentTest {
+@Tag("realBrowser")
 
-    WebDriver driver;
-
-    @Before
-    public void setUpDriver() {
-        driver = new PhantomJSDriver();
-    }
+@ExtendWith(DriverParameterResolver.class)
+@BrowserUtil(HeadlessBrowserConfig.class)
+class CustomComponentTest {
 
     @Test
-    public void test() {
+    void test(WebDriver driver) {
         StaticPage staticPage = StaticPage.open(driver);
         assertThat(staticPage.getTextOfDivElement(), is("This text is in the div element"));
         assertThat(staticPage.getTextOfSpanElement(), is("This text is in the span element"));

@@ -18,7 +18,7 @@ import static org.junit.Assert.assertThat;
         ScreenshotExtension.class
 })
 @BrowserUtil({DefaultBrowserOptionInterceptor.class})
-public class CreateDriverWithExtensionTest {
+class CreateDriverWithExtensionTest {
 
     private static final String WILLTEST_GITHUB_PAGE = "https://github.com/willhaben/willtest";
     private static final String REPO_HEADER_LOCATOR = "div.repohead-details-container h1";
@@ -26,7 +26,7 @@ public class CreateDriverWithExtensionTest {
 
     @Test
     @BrowserUtil(PostProcessSetup.class)
-    public void testCreateDriverWithExtension(WebDriver driver) {
+    void testCreateDriverWithExtension(WebDriver driver) {
         driver.get(WILLTEST_GITHUB_PAGE);
         WebElement element = driver.findElement(By.cssSelector(REPO_HEADER_LOCATOR));
         assertThat(element.getText(), is(compareValue));
@@ -34,7 +34,7 @@ public class CreateDriverWithExtensionTest {
 
     @Test
     @BrowserUtil(BrowserSetup.class)
-    public void testCreateChromeDriver(WebDriver driver){
+    void testCreateChromeDriver(WebDriver driver){
         driver.get(WILLTEST_GITHUB_PAGE);
         WebElement element = driver.findElement(By.cssSelector(REPO_HEADER_LOCATOR));
         assertThat(element.getText(), is(compareValue));

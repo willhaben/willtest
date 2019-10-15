@@ -1,67 +1,69 @@
 package at.willhaben.willtest.junit5.extensions;
 
 import at.willhaben.willtest.config.DefaultScreenshotProvider;
-import at.willhaben.willtest.junit5.BrowserUtil;
-import at.willhaben.willtest.junit5.BrowserUtilExtension;
 import at.willhaben.willtest.junit5.ScreenshotInterceptor;
 import at.willhaben.willtest.util.TestReportFile;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.yandex.qatools.ashot.AShot;
 import ru.yandex.qatools.ashot.screentaker.ShootingStrategy;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+
+import static at.willhaben.willtest.util.AnnotationHelper.getBrowserUtilExtensionList;
+import static at.willhaben.willtest.util.AssumptionUtil.isAssumptionViolation;
 
 public class ScreenshotExtension implements TestExecutionExceptionHandler {
 
-    private static final String TEST_REPORT_FOLDER = "surefire-reports";
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd-HH.mm.ss.SSS");
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScreenshotExtension.class);
 
     @Override
     public void handleTestExecutionException(ExtensionContext extensionContext, Throwable throwable) throws Throwable {
-        WebDriver driver = DriverParameterResolver.getWebDriverFromStore(extensionContext);
-        if (driver != null) {
-            File screenshotAs;
-            ScreenshotInterceptor screenshotInterceptor = getScreenshotInterceptor(extensionContext);
-            BufferedImage screenShot = new AShot().shootingStrategy(screenshotInterceptor
-                    .provideShootingStrategy())
-                    .takeScreenshot(driver).getImage();
-            screenshotAs = TestReportFile.forTest(extensionContext).withPostix(".png").build().getFile();
-            ImageIO.write(screenShot, "png", screenshotAs);
+        Optional<WebDriver> driver = DriverParameterResolver.getDriverFromStore(extensionContext, DriverParameterResolver.DRIVER_KEY);
+        if (driver.isPresent()) {
+            try {
+                if (!isAssumptionViolation(throwable)) {
+                    createScreenshot(extensionContext, driver.get());
+                }
+            } catch (Throwable th) {
+                throwable.addSuppressed(th);
+            }
         } else {
-            throw new WebDriverException("Driver isn't initialized. " +
-                    "This extension can only be used in combination with the DriverParameterResolver");
+            LOGGER.warn("Can't take screenshot because the webdriver crashed.",throwable);
+            throwable.addSuppressed(new WebDriverException("Driver isn't initialized. " +
+                    "This extension can only be used in combination with the DriverParameterResolver"));
         }
         throw throwable;
     }
 
-    private ScreenshotInterceptor getScreenshotInterceptor(ExtensionContext context) {
-        BrowserUtil browserUtil = context.getRequiredTestMethod().getAnnotation(BrowserUtil.class);
-        if (browserUtil == null) {
-            browserUtil = context.getRequiredTestClass().getAnnotation(BrowserUtil.class);
-        }
-        if (browserUtil == null) {
-            return defaultScreenshotInterceptor();
-        }
-        Optional<Class<? extends BrowserUtilExtension>> screenShotExtension = Arrays.stream(browserUtil.value())
-                .filter(ScreenshotInterceptor.class::isAssignableFrom)
-                .findFirst();
+    public void createScreenshot(ExtensionContext context, WebDriver driver) throws Throwable {
+        File screenshotFile;
+        ScreenshotInterceptor screenshotInterceptor = getScreenshotInterceptor(context);
+        BufferedImage screenShot = new AShot().shootingStrategy(screenshotInterceptor
+                .provideShootingStrategy())
+                .takeScreenshot(driver).getImage();
+        screenshotFile = TestReportFile.forTest(context).withPostix(".png").build().getFile();
+        LOGGER.info("Saved screenshot of failed test " +
+                context.getRequiredTestClass().getSimpleName() + "." +
+                context.getRequiredTestMethod().getName() + " to " + screenshotFile.getAbsolutePath());
+        ImageIO.write(screenShot, "png", screenshotFile);
+    }
 
-        if (screenShotExtension.isPresent()) {
-            try {
-                return (ScreenshotInterceptor) screenShotExtension.get().getConstructor().newInstance();
-            } catch (Exception e) {
-                throw new RuntimeException("Can't instantiate ScreenshotExtension", e);
-            }
-        } else {
+    private ScreenshotInterceptor getScreenshotInterceptor(ExtensionContext context) {
+        List<ScreenshotInterceptor> screenshotInterceptors =
+                getBrowserUtilExtensionList(context, ScreenshotInterceptor.class, true);
+        if (screenshotInterceptors.isEmpty()) {
             return defaultScreenshotInterceptor();
+        } else {
+            return screenshotInterceptors.get(screenshotInterceptors.size() - 1);
         }
     }
 

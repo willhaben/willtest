@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>at.willhaben.willtest</groupId>
     <artifactId>willtest</artifactId>
-    <version>2.0.1</version>
+    <version>2.3.0</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -102,7 +102,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.selenium>3.14.0</version.selenium>
-        <junit-jupiter-engine.version>5.3.1</junit-jupiter-engine.version>
+        <junit-jupiter-engine.version>5.4.0</junit-jupiter-engine.version>
         <log4j-core.version>2.11.1</log4j-core.version>
         <version.log4j>1.2.16</version.log4j>
     </properties>
@@ -125,6 +125,11 @@
                 <version>${junit-jupiter-engine.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.junit.vintage</groupId>
+                <artifactId>junit-vintage-engine</artifactId>
+                <version>${junit-jupiter-engine.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>io.appium</groupId>
                 <artifactId>java-client</artifactId>
                 <version>6.1.0</version>
@@ -132,11 +137,6 @@
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-java</artifactId>
-                <version>${version.selenium}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.seleniumhq.selenium</groupId>
-                <artifactId>selenium-api</artifactId>
                 <version>${version.selenium}</version>
             </dependency>
             <dependency>
@@ -172,7 +172,13 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>1.10.19</version>
+                <version>2.25.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>1.7.26</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -197,10 +203,9 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.5.1</version>
+                    <version>3.8.0</version>
                     <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
+                        <release>8</release>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -208,9 +213,22 @@
                     <artifactId>maven-source-plugin</artifactId>
                     <version>3.0.0</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.22.1</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <generateBackupPoms>false</generateBackupPoms>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
@@ -255,7 +273,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>3.0.0</version>
+                        <version>3.0.1</version>
                         <inherited>true</inherited>
                         <executions>
                             <execution>

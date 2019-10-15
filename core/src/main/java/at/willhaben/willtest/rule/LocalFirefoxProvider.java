@@ -17,8 +17,10 @@ public class LocalFirefoxProvider extends AbstractFirefoxProvider<LocalFirefoxPr
     @Override
     public FirefoxDriver constructWebDriver(DesiredCapabilities desiredCapabilities) {
         FirefoxBinary firefoxBinary = getFirefoxConfiguration().getFirefoxBinary();
+        FirefoxProfile profile = getFirefoxConfiguration().getFirefoxProfile();
         FirefoxOptions firefoxOptions = new FirefoxOptions(desiredCapabilities);
         firefoxOptions.setBinary(firefoxBinary);
+        firefoxOptions.setProfile(profile);
         return new FirefoxDriver(firefoxOptions);
     }
 
