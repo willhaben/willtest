@@ -190,6 +190,7 @@
         <module>log4j</module>
         <module>examples</module>
         <module>maven-utils</module>
+        <module>test-rerun</module>
     </modules>
 
     <build>
