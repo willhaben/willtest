@@ -91,6 +91,7 @@
                             ${driver.folder}chromedriver-${driver.platform}-${driver.chrome.arch}bit${driver.extension}
                         </webdriver.chrome.driver>
                     </systemPropertyVariables>
+                    <skipTests>true</skipTests>
                 </configuration>
             </plugin>
         </plugins>
