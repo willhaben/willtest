@@ -1,6 +1,5 @@
 package at.willhaben.willtest.test;
 
-import at.willhaben.willtest.junit5.BrowserOptionInterceptor;
 import at.willhaben.willtest.junit5.BrowserUtil;
 import at.willhaben.willtest.junit5.OptionModifier;
 import at.willhaben.willtest.util.AnnotationHelper;
