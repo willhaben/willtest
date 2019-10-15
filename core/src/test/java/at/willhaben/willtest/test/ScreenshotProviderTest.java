@@ -1,6 +1,6 @@
 package at.willhaben.willtest.test;
 
-import at.willhaben.willtest.junit5.extensions.ScreenshotExtension;
+import at.willhaben.willtest.junit5.extensions.ScreenshotProvider;
 import at.willhaben.willtest.util.TestReportFile;
 import org.hamcrest.Matchers;
 import org.junit.AssumptionViolatedException;
@@ -28,9 +28,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 
-class ScreenshotExtensionTest {
+class ScreenshotProviderTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScreenshotExtensionTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScreenshotProviderTest.class);
 
     private ExtensionContext context;
     private TestWebdriver driver;
@@ -40,9 +40,9 @@ class ScreenshotExtensionTest {
     void setUp() throws Throwable {
         methodName = "testMethod" + System.nanoTime();
         driver = mock(TestWebdriver.class);
-        context = mockWithTestClassAndMethod(ScreenshotExtensionTest.class, methodName);
+        context = mockWithTestClassAndMethod(ScreenshotProviderTest.class, methodName);
 
-        Path testImagePath = Paths.get(ScreenshotExtension.class.getClassLoader().getResource("test-image.png").toURI());
+        Path testImagePath = Paths.get(ScreenshotProvider.class.getClassLoader().getResource("test-image.png").toURI());
         byte[] image = Files.readAllBytes(testImagePath);
 
         doReturn(image).when(driver).getScreenshotAs(any());
@@ -50,7 +50,7 @@ class ScreenshotExtensionTest {
 
     @Test
     void testCreateScreenshot() throws Throwable {
-        ScreenshotExtension extension = new ScreenshotExtension();
+        ScreenshotProvider extension = new ScreenshotProvider();
         extension.createScreenshot(context, driver);
         assertThat(getScreenshotNames(), Matchers.hasItem(Matchers.containsString(methodName)));
     }

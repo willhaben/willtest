@@ -3,16 +3,12 @@ package at.willhaben.misc.test;
 import at.willhaben.misc.test.pages.StaticPage;
 import at.willhaben.misc.test.util.HeadlessBrowserConfig;
 import at.willhaben.willtest.junit5.BrowserUtil;
-import at.willhaben.willtest.junit5.extensions.DriverParameterResolver;
+import at.willhaben.willtest.junit5.extensions.DriverParameterResolverExtension;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.support.ui.ISelect;
 
 import java.util.List;
@@ -22,7 +18,7 @@ import static org.junit.Assert.assertThat;
 
 @Tag("realBrowser")
 
-@ExtendWith(DriverParameterResolver.class)
+@ExtendWith(DriverParameterResolverExtension.class)
 @BrowserUtil(HeadlessBrowserConfig.class)
 class CustomComponentTest {
 

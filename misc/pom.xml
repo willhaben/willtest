@@ -7,17 +7,19 @@
     <parent>
         <groupId>at.willhaben.willtest</groupId>
         <artifactId>willtest</artifactId>
-        <version>2.3.0</version>
+        <version>3.0.0-M1</version>
     </parent>
 
     <artifactId>misc</artifactId>
-    <version>2.3.0</version>
+    <version>3.0.0-M1</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Classes to use the Core and Browserstack module in JUnit tests</description>
 
     <properties>
-        <runPhantomTests>false</runPhantomTests>
+        <runRealBrowserTests>false</runRealBrowserTests>
+        <geckodriver.version>0.24.0</geckodriver.version>
+        <chromedriver.version>76.0.3809.68</chromedriver.version>
     </properties>
 
     <dependencies>
@@ -97,8 +99,9 @@
                 <configuration>
                     <excludedGroups>realBrowser</excludedGroups>
                     <systemPropertyVariables>
-                        <phantomjs.binary.path>${project.basedir}${file.separator}drivers${file.separator}phantomjs-linux-64bit</phantomjs.binary.path>
-                        <webdriver.gecko.driver>${project.basedir}${file.separator}drivers${file.separator}geckodriver-linux-64bit</webdriver.gecko.driver>
+                        <webdriver.gecko.driver>
+                            ${project.basedir}${file.separator}drivers${file.separator}geckodriver-${driver.platform}-${driver.arch}bit${driver.extension}
+                        </webdriver.gecko.driver>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -106,6 +109,61 @@
     </build>
 
     <profiles>
+        <!-- Profiles for the driver download -->
+        <profile>
+            <id>mac</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <driver.platform>mac</driver.platform>
+                <driver.arch>64</driver.arch>
+            </properties>
+        </profile>
+        <profile>
+            <id>linux</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <arch>amd64</arch>
+                </os>
+            </activation>
+            <properties>
+                <driver.platform>linux</driver.platform>
+                <driver.arch>64</driver.arch>
+            </properties>
+        </profile>
+        <profile>
+            <id>win32</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                    <arch>x86</arch>
+                </os>
+            </activation>
+            <properties>
+                <driver.platform>windows</driver.platform>
+                <driver.arch>32</driver.arch>
+                <driver.extension>.exe</driver.extension>
+            </properties>
+        </profile>
+        <profile>
+            <id>win64</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                    <arch>amd64</arch>
+                </os>
+            </activation>
+            <properties>
+                <driver.platform>windows</driver.platform>
+                <driver.arch>32</driver.arch>
+                <driver.extension>.exe</driver.extension>
+            </properties>
+        </profile>
+
         <profile>
             <id>download-drivers</id>
             <activation>
@@ -139,9 +197,15 @@
                             <drivers>
                                 <driver>
                                     <name>geckodriver</name>
-                                    <platform>linux</platform>
-                                    <bit>64</bit>
-                                    <version>0.24.0</version>
+                                    <platform>${driver.platform}</platform>
+                                    <bit>${driver.arch}</bit>
+                                    <version>${geckodriver.version}</version>
+                                </driver>
+                                <driver>
+                                    <name>chromedriver</name>
+                                    <platform>${driver.platform}</platform>
+                                    <bit>${driver.arch}</bit>
+                                    <version>${chromedriver.version}</version>
                                 </driver>
                             </drivers>
                         </configuration>

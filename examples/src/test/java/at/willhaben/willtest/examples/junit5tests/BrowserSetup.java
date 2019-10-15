@@ -1,13 +1,12 @@
 package at.willhaben.willtest.examples.junit5tests;
 
-import at.willhaben.willtest.junit5.BrowserOptionInterceptor;
+import at.willhaben.willtest.junit5.OptionModifier;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-public class BrowserSetup extends BrowserOptionInterceptor {
+public class BrowserSetup implements OptionModifier {
     @Override
-    public ChromeOptions getChromeOptions() {
-        ChromeOptions options = super.getChromeOptions();
+    public ChromeOptions modifyChromeOptions(ChromeOptions options) {
         options.merge(getDesiredCapabilities("chrome"));
         options.addArguments("--start-maximized");
         return options;

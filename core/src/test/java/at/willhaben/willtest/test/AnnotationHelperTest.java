@@ -1,9 +1,9 @@
 package at.willhaben.willtest.test;
 
-import at.willhaben.willtest.junit5.BrowserOptionInterceptor;
 import at.willhaben.willtest.junit5.BrowserUtil;
+import at.willhaben.willtest.junit5.OptionCombiner;
+import at.willhaben.willtest.junit5.OptionModifier;
 import at.willhaben.willtest.util.AnnotationHelper;
-import at.willhaben.willtest.util.BrowserOptionProvider;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +12,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,31 +57,58 @@ class AnnotationHelperTest {
 
     @Test
     void testOrderOfExtensions() {
-        List<BrowserOptionInterceptor> optionInterceptors =
-                getBrowserUtilExtensionList(extensionContext, BrowserOptionInterceptor.class, false);
-        assertTrue(optionInterceptors.get(0).getClass().isAssignableFrom(Browserconfig3.class));
+        List<OptionModifier> optionModifierList =
+                getBrowserUtilExtensionList(extensionContext, OptionModifier.class, false);
+        assertTrue(optionModifierList.get(0).getClass().isAssignableFrom(Browserconfig3.class));
 
-        List<String> testCaps = optionInterceptors.stream()
-                .map(BrowserOptionInterceptor::getFirefoxOptions)
+        List<String> testCaps = optionModifierList.stream()
+                .map(modifier -> new OptionCombiner(Collections.singletonList(modifier)))
+                .map(combiner -> combiner.getBrowserOptions(FirefoxOptions.class))
                 .map(cap -> (String) cap.getCapability(TEST_CAP_NAME))
                 .collect(Collectors.toList());
 
         assertEquals(testCaps, Arrays.asList("3", "2", "1"));
 
-        Capabilities caps = new BrowserOptionProvider(optionInterceptors).getFirefoxOptions();
+        Capabilities caps = new OptionCombiner(optionModifierList).getBrowserOptions(FirefoxOptions.class);
         assertThat(caps.getCapability(TEST_CAP_NAME), Matchers.is("1"));
     }
 
-    private class Testing extends ValidSuperClass {}
+    public static class Browserconfig1 implements OptionModifier {
+        @Override
+        public FirefoxOptions modifyFirefoxOptions(FirefoxOptions options) {
+            options.setCapability(TEST_CAP_NAME, "1");
+            return options;
+        }
+    }
+
+    public static class Browserconfig2 implements OptionModifier {
+        @Override
+        public FirefoxOptions modifyFirefoxOptions(FirefoxOptions options) {
+            options.setCapability(TEST_CAP_NAME, "2");
+            return options;
+        }
+    }
+
+    public static class Browserconfig3 implements OptionModifier {
+        @Override
+        public FirefoxOptions modifyFirefoxOptions(FirefoxOptions options) {
+            options.setCapability(TEST_CAP_NAME, "3");
+            return options;
+        }
+    }
+
+    private class Testing extends ValidSuperClass {
+    }
 
     @BrowserUtil(Browserconfig3.class)
-    private class ValidSuperClass {}
+    private class ValidSuperClass {
+    }
 
-    private class NoAnnotation {}
+    private class NoAnnotation {
+    }
 
-    private class NoAnnotationSuperClass extends NoAnnotation {}
-
-
+    private class NoAnnotationSuperClass extends NoAnnotation {
+    }
 
     @BrowserUtil(Browserconfig2.class)
     private class OrderTesting extends ValidSuperClass {
@@ -91,30 +119,4 @@ class AnnotationHelperTest {
         }
     }
 
-    public static class Browserconfig1 extends BrowserOptionInterceptor {
-        @Override
-        public FirefoxOptions getFirefoxOptions() {
-            FirefoxOptions options = new FirefoxOptions();
-            options.setCapability(TEST_CAP_NAME, "1");
-            return options;
-        }
-    }
-
-    public static class Browserconfig2 extends BrowserOptionInterceptor {
-        @Override
-        public FirefoxOptions getFirefoxOptions() {
-            FirefoxOptions options = new FirefoxOptions();
-            options.setCapability(TEST_CAP_NAME, "2");
-            return options;
-        }
-    }
-
-    public static class Browserconfig3 extends BrowserOptionInterceptor {
-        @Override
-        public FirefoxOptions getFirefoxOptions() {
-            FirefoxOptions options = new FirefoxOptions();
-            options.setCapability(TEST_CAP_NAME, "3");
-            return options;
-        }
-    }
 }
