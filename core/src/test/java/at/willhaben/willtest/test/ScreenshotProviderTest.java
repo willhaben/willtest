@@ -3,13 +3,13 @@ package at.willhaben.willtest.test;
 import at.willhaben.willtest.junit5.extensions.ScreenshotProvider;
 import at.willhaben.willtest.util.TestReportFile;
 import org.hamcrest.Matchers;
-import org.junit.AssumptionViolatedException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.opentest4j.TestAbortedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,8 +56,8 @@ class ScreenshotProviderTest {
     }
 
     @Test
-    void testAssumptionViolationExclude() {
-        AssumptionViolatedException assumption = new AssumptionViolatedException("This is just an assumption!!!");
+    void testThrowTestAbortException() {
+        TestAbortedException assumption = new TestAbortedException("This is just an assumption!!!");
         assertThat(isAssumptionViolation(assumption), is(true));
 
         RuntimeException runtimeException = new RuntimeException("No assumption!!!");

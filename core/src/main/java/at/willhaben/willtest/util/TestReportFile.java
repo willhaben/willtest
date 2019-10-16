@@ -1,7 +1,6 @@
 package at.willhaben.willtest.util;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.runner.Description;
 
 import java.io.File;
 import java.time.ZonedDateTime;
@@ -21,20 +20,9 @@ public class TestReportFile {
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd-HH.mm.ss.SSS");
 
-    private Description testDescription;
     private ExtensionContext testExtensionContext;
     private String prefix = "";
     private String postfix = "";
-
-    /**
-     * Starts building of a test report file
-     *
-     * @param testDescription
-     * @return this builder
-     */
-    public static Builder forTest(Description testDescription) {
-        return new Builder(testDescription);
-    }
 
     public static Builder forTest(ExtensionContext context) {
         return new Builder(context);
@@ -59,19 +47,11 @@ public class TestReportFile {
     }
 
     private String getClassName() {
-        if (testDescription == null) {
-            return testExtensionContext.getRequiredTestClass().getSimpleName();
-        } else {
-            return testDescription.getTestClass().getSimpleName();
-        }
+        return testExtensionContext.getRequiredTestClass().getSimpleName();
     }
 
     private String getMethodName() {
-        if(testDescription == null) {
-            return testExtensionContext.getRequiredTestMethod().getName();
-        } else {
-            return testDescription.getMethodName().replace('.', '_');
-        }
+        return testExtensionContext.getRequiredTestMethod().getName();
     }
 
     public String getGeneratedName() {
@@ -104,10 +84,6 @@ public class TestReportFile {
 
     public static class Builder {
         private final TestReportFile testReportFile = new TestReportFile();
-
-        Builder(Description testDescription) {
-            testReportFile.testDescription = testDescription;
-        }
 
         Builder(ExtensionContext context) {
             testReportFile.testExtensionContext = context;

@@ -22,10 +22,10 @@ public class BrowserstackSeleniumProvider extends
 
     private static final String BROWSERSTACK_HUB_SYSTEM_PROPERTY_KEY = "browserstack.hub";
     private static final String BROWSERSTACK_HUB_LOCAL_SYSTEM_PROPERTY_KEY = "browserstack.local";
-    private static final String BROWSERSTACK_PLATFORM = "platforms";
-    private static final String BROWSERSTACK_PLATFORM_VERSION = "platform.versions";
-    private static final String BROWSERSTACK_BROWSER = "browsers";
-    private static final String BROWSERSTACK_BROWSER_VERSION = "browser.versions";
+    private static final String BROWSERSTACK_PLATFORM = "platform";
+    private static final String BROWSERSTACK_PLATFORM_VERSION = "platform.version";
+    private static final String BROWSERSTACK_BROWSER = "browser";
+    private static final String BROWSERSTACK_BROWSER_VERSION = "browser.version";
     private static final String BROWSERSTACK_DISPLAY_RESOLUTION = "display.resolution";
 
     private final DateTimeFormatter BUILD_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd");

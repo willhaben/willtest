@@ -1,6 +1,5 @@
 package at.willhaben.misc.test;
 
-import at.willhaben.willtest.config.SeleniumProvider;
 import at.willhaben.willtest.misc.pages.PageObject;
 import at.willhaben.willtest.misc.utils.WhFluentWait;
 import org.junit.Before;
@@ -76,10 +75,6 @@ public class CustomFluentWaitTest {
 
         protected DummyPage(WebDriver driver) {
             super(driver);
-        }
-
-        protected DummyPage(SeleniumProvider provider) {
-            super(provider);
         }
 
         public void waitError() {

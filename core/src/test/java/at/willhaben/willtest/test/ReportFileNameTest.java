@@ -2,8 +2,8 @@ package at.willhaben.willtest.test;
 
 import at.willhaben.willtest.util.TestReportFile;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.Description;
 
+import static at.willhaben.willtest.test.mock.ExtensionMock.mockWithTestClassAndMethod;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -16,9 +16,7 @@ class ReportFileNameTest {
 
     @Test
     void testFileNameGeneration() {
-        Description testDescription = Description.createTestDescription(ReportFileNameTest.class, METHOD_NAME);
-
-        TestReportFile reportFile = TestReportFile.forTest(testDescription)
+        TestReportFile reportFile = TestReportFile.forTest(mockWithTestClassAndMethod(ReportFileNameTest.class, METHOD_NAME))
                 .withPrefix(PREFIX + INVALID_CHARS)
                 .withPostix(POSTFIX)
                 .build();
