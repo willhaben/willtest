@@ -1,30 +1,35 @@
 package at.willhaben.willtest.examples;
 
-import at.willhaben.willtest.misc.rule.SeleniumRule;
+import at.willhaben.willtest.junit5.BrowserUtil;
+import at.willhaben.willtest.junit5.ScreenshotInterceptor;
+import at.willhaben.willtest.junit5.extensions.DriverParameterResolverExtension;
+import at.willhaben.willtest.junit5.extensions.ScreenshotProvider;
 import at.willhaben.willtest.util.FixedTopBarShootingStrategy;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import ru.yandex.qatools.ashot.AShot;
+import ru.yandex.qatools.ashot.screentaker.ShootingStrategy;
 
 import static org.junit.Assert.fail;
 
-public class ScreenshotProviderExample {
-
-    @Rule
-    public SeleniumRule rule = new SeleniumRule()
-            .setScreenshotProvider(webDriver -> new AShot()
-                    .shootingStrategy(
-                            new FixedTopBarShootingStrategy(By.cssSelector("div#topnav")))
-                    .takeScreenshot(webDriver)
-                    .getImage());
+@ExtendWith(DriverParameterResolverExtension.class)
+@BrowserUtil({
+        ScreenshotProvider.class,
+        ScreenshotProviderExample.RemoveFixedHeaderShootingStrategy.class
+})
+class ScreenshotProviderExample {
 
     @Test
-    public void testCustomScreenshotProviderOnError() {
-        WebDriver webDriver = rule.getWebDriver();
-        webDriver.get("https://www.w3schools.com/howto/howto_css_alert_buttons.asp");
-
+    void testCustomScreenshotProviderOnError(WebDriver driver) {
+        driver.get("https://www.w3schools.com/howto/howto_css_alert_buttons.asp");
         fail();
+    }
+
+    public static class RemoveFixedHeaderShootingStrategy implements ScreenshotInterceptor {
+        @Override
+        public ShootingStrategy provideShootingStrategy() {
+            return new FixedTopBarShootingStrategy(By.cssSelector("div#topnav"));
+        }
     }
 }

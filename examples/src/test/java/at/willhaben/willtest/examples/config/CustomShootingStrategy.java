@@ -1,4 +1,4 @@
-package at.willhaben.willtest.examples.junit5tests.config;
+package at.willhaben.willtest.examples.config;
 
 import at.willhaben.willtest.junit5.ScreenshotInterceptor;
 import at.willhaben.willtest.util.FixedTopBarShootingStrategy;

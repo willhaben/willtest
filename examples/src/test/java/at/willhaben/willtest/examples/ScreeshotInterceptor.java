@@ -1,4 +1,4 @@
-package at.willhaben.willtest.examples.junit5tests;
+package at.willhaben.willtest.examples;
 
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;

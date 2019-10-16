@@ -196,6 +196,10 @@ class ProxyExample {
 }
 ```
 
+## Screenshot settings
+If the site has a fixed top bar it is possible to provide a custom ```ShootingStrategy``` to cut this out on the
+screenshot. See the ```ScreenshotProviderExample```.
+
 ## Contribution
 Willhaben accepts pull requests or other type of feedback. We do our best to reply in a short period of time.
 

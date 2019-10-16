@@ -1,4 +1,4 @@
-package at.willhaben.willtest.examples.junit5tests;
+package at.willhaben.willtest.examples;
 
 import at.willhaben.willtest.junit5.OptionModifier;
 import org.openqa.selenium.chrome.ChromeOptions;
