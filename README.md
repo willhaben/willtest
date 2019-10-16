@@ -197,7 +197,7 @@ class ProxyExample {
 ```
 
 ## Screenshot settings
-If the site has a fixed top bar it is possible to provide a custom ```ShootingStrategy``` to cut this on the
+If the site has a fixed top bar it is possible to provide a custom ```ShootingStrategy``` to cut this out on the
 screenshot. See the ```ScreenshotProviderExample```.
 
 ## Contribution
