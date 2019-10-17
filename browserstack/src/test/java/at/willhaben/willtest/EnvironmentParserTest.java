@@ -1,6 +1,6 @@
 package at.willhaben.willtest;
 
-import at.willhaben.willtest.browserstack.rule.BrowserstackEnvironment;
+import at.willhaben.willtest.browserstack.BrowserstackEnvironment;
 import org.junit.Test;
 import org.openqa.selenium.remote.DesiredCapabilities;
 

@@ -1,5 +1,7 @@
 package at.willhaben.willtest.junit5.extensions;
 
+import at.willhaben.willtest.browserstack.BrowserstackEnvironment;
+import at.willhaben.willtest.browserstack.exception.BrowserstackEnvironmentException;
 import at.willhaben.willtest.junit5.*;
 import at.willhaben.willtest.proxy.BrowserProxyBuilder;
 import at.willhaben.willtest.proxy.ProxyWrapper;
@@ -36,6 +38,9 @@ import java.util.Optional;
 
 import static at.willhaben.willtest.util.AnnotationHelper.getBrowserUtilExtensionList;
 import static at.willhaben.willtest.util.AssumptionUtil.isAssumptionViolation;
+import static at.willhaben.willtest.util.RemoteSelectionUtils.RemotePlatform.BROWSERSTACK;
+import static at.willhaben.willtest.util.RemoteSelectionUtils.getRemotePlatform;
+import static at.willhaben.willtest.util.RemoteSelectionUtils.isRemote;
 
 
 public class DriverParameterResolverExtension implements ParameterResolver, AfterEachCallback, AfterAllCallback, TestExecutionExceptionHandler {
@@ -73,7 +78,7 @@ public class DriverParameterResolverExtension implements ParameterResolver, Afte
             }
             List<WebDriverPostInterceptor> driverPostInterceptorList = getBrowserPostProcess(extensionContext);
             List<OptionModifier> modifiers = getBrowserOptionModifiers(extensionContext);
-            WebDriver driver = createDriver(modifiers, driverPostInterceptorList);
+            WebDriver driver = createDriver(modifiers, driverPostInterceptorList, getTestName(extensionContext));
             if (extensionContext.getTestMethod().isPresent()) {
                 getStore(extensionContext).put(DRIVER_KEY, driver);
             } else {
@@ -142,15 +147,19 @@ public class DriverParameterResolverExtension implements ParameterResolver, Afte
         return Optional.ofNullable(getStore(context).get(PROXY_KEY, ProxyWrapper.class));
     }
 
-    private WebDriver createDriver(List<OptionModifier> modifiers, List<WebDriverPostInterceptor> driverPostInterceptorList) {
+    private String getTestName(ExtensionContext context) {
+        return context.getRequiredTestClass().getSimpleName() + "_" + context.getRequiredTestMethod().getName();
+    }
+
+    private WebDriver createDriver(List<OptionModifier> modifiers, List<WebDriverPostInterceptor> driverPostInterceptorList, String testName) {
         String seleniumHub = System.getProperty("seleniumHub");
         FirefoxOptions firefoxOptions;
         ChromeOptions chromeOptions;
         EdgeOptions edgeOptions;
         InternetExplorerOptions internetExplorerOptions;
         // change this to android and ios options class when the old options implementation is removed
-        DesiredCapabilities androidOptions;
-        DesiredCapabilities iOsOptions;
+        AndroidOptions androidOptions;
+        IOsOptions iOsOptions;
 
         // use new option modifiers if the list is not empty
         if (modifiers.isEmpty()) {
@@ -166,20 +175,37 @@ public class DriverParameterResolverExtension implements ParameterResolver, Afte
             chromeOptions = new ChromeOptions();
             edgeOptions = new EdgeOptions();
             internetExplorerOptions = new InternetExplorerOptions();
-            androidOptions = new DesiredCapabilities();
-            iOsOptions = new DesiredCapabilities();
+            androidOptions = new AndroidOptions();
+            iOsOptions = new IOsOptions();
+        }
+
+        if (isRemote()) {
+            if (getRemotePlatform() == BROWSERSTACK) {
+                List<BrowserstackEnvironment> browserstackEnvironments = BrowserstackEnvironment.parseFromSystemProperties();
+                if (browserstackEnvironments.size() != 1) {
+                    throw new BrowserstackEnvironmentException("Exactly one browserstack environment must be specified. " +
+                            "See BrowserstackSystemProperties class for more information.");
+                }
+                BrowserstackEnvironment browserstackEnv = browserstackEnvironments.get(0);
+                firefoxOptions = browserstackEnv.addToCapabilities(firefoxOptions, testName);
+                chromeOptions = browserstackEnv.addToCapabilities(chromeOptions, testName);
+                edgeOptions = browserstackEnv.addToCapabilities(edgeOptions, testName);
+                internetExplorerOptions = browserstackEnv.addToCapabilities(internetExplorerOptions, testName);
+                androidOptions = browserstackEnv.addToCapabilities(androidOptions, testName);
+                iOsOptions = browserstackEnv.addToCapabilities(iOsOptions, testName);
+            }
         }
 
         WebDriver driver;
         if (PlatformUtils.isAndroid()) {
-            if (RemoteSelectionUtils.isRemote()) {
+            if (isRemote()) {
                 URL seleniumHubUrl = convertSeleniumHubToURL(seleniumHub);
                 driver = new AndroidDriver<>(seleniumHubUrl, androidOptions);
             } else {
                 driver = new AndroidDriver<>(androidOptions);
             }
         } else if (PlatformUtils.isIOS()) {
-            if (RemoteSelectionUtils.isRemote()) {
+            if (isRemote()) {
                 URL seleniumHubUrl = convertSeleniumHubToURL(seleniumHub);
                 driver = new IOSDriver<>(seleniumHubUrl, iOsOptions);
             } else {
@@ -187,7 +213,7 @@ public class DriverParameterResolverExtension implements ParameterResolver, Afte
             }
             ((AppiumDriver) driver).context("NATIVE_APP");
         } else if (PlatformUtils.isLinux() || PlatformUtils.isWindows()) {
-            if (RemoteSelectionUtils.isRemote()) {
+            if (isRemote()) {
                 URL seleniumHubUrl = convertSeleniumHubToURL(seleniumHub);
                 RemoteWebDriver remoteDriver;
                 if (BrowserSelectionUtils.isFirefox()) {

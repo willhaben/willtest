@@ -17,6 +17,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>at.willhaben.willtest</groupId>
+            <artifactId>browserstack</artifactId>
+            <version>3.0.0-M2</version>
+        </dependency>
+        <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
         </dependency>
