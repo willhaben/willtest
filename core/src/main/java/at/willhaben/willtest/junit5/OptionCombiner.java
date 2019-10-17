@@ -30,6 +30,7 @@ public class OptionCombiner {
                     "created. May this is not a valid option class for the supported browsers.");
         }
         for (OptionModifier modifier : optionModifiers) {
+            options = modifier.modifyAllBrowsers(options);
             if (optionType.isAssignableFrom(FirefoxOptions.class)) {
                 options = (T) modifier.modifyFirefoxOptions(((FirefoxOptions) options));
             } else if (optionType.isAssignableFrom(ChromeOptions.class)) {
