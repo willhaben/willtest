@@ -1,13 +1,11 @@
 package at.willhaben.willtest.junit5.extensions;
 
-import at.willhaben.willtest.config.DefaultScreenshotProvider;
+import at.willhaben.willtest.config.DefaultScreenshotGenerator;
 import at.willhaben.willtest.junit5.FailureListener;
 import at.willhaben.willtest.junit5.ScreenshotInterceptor;
 import at.willhaben.willtest.util.TestReportFile;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.ScreenshotException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +16,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
-import java.util.Optional;
 
 import static at.willhaben.willtest.util.AnnotationHelper.getBrowserUtilExtensionList;
 import static at.willhaben.willtest.util.AssumptionUtil.isAssumptionViolation;
@@ -67,7 +64,7 @@ public class ScreenshotProvider implements FailureListener {
         return () -> new ShootingStrategy() {
             @Override
             public BufferedImage getScreenshot(WebDriver webDriver) {
-                return new DefaultScreenshotProvider().takeScreenshot(webDriver);
+                return new DefaultScreenshotGenerator().takeScreenshot(webDriver);
             }
         };
     }

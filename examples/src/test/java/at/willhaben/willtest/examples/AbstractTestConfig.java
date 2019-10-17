@@ -1,6 +1,6 @@
-package at.willhaben.willtest.examples.junit5tests;
+package at.willhaben.willtest.examples;
 
-import at.willhaben.willtest.examples.junit5tests.config.CustomShootingStrategy;
+import at.willhaben.willtest.examples.config.CustomShootingStrategy;
 import at.willhaben.willtest.junit5.BrowserUtil;
 import at.willhaben.willtest.junit5.extensions.DriverParameterResolverExtension;
 import at.willhaben.willtest.junit5.extensions.ScreenshotProvider;

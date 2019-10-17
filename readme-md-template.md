@@ -18,8 +18,8 @@ complete tasks like:
 * Support for mobile tests with appium (Android, iOS)
 
 ## Requirements
-* Currently Selenium with version [3.14.0] is used
-* JUnit 5 with version [5.5.2] is used
+* Currently Selenium with version [${version.selenium}] is used
+* JUnit 5 with version [${junit-jupiter-engine.version}] is used
 
 ## Getting Started
 The code is built up from several small building blocks. Only the ```core``` module is needed to start
@@ -30,13 +30,13 @@ and an abstract ```PageObject``` which can be extended.
 <dependency>
     <groupId>at.willhaben.willtest</groupId>
     <artifactId>core</artifactId>
-    <version>3.0.0-M2</version>
+    <version>${version}</version>
     <scope>compile</scope>
 </dependency>
 <dependency>
     <groupId>at.willhaben.willtest</groupId>
     <artifactId>misc</artifactId>
-    <version>3.0.0-M2</version>
+    <version>${version}</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -209,4 +209,4 @@ Do not edit the *README.md* because it is auto generated. Use the *readme-md-tem
 version in the README.
 
 ## License
-MIT, Copyright (c) 2019 willhaben internet service GmbH & Co KG
+MIT, Copyright (c) ${current.year} willhaben internet service GmbH & Co KG

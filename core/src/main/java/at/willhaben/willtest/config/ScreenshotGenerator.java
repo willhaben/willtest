@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 /**
  * Allows to use a custom screenshot library or to implement own screenshot behaviour.
  */
-public interface ScreenshotProvider {
+public interface ScreenshotGenerator {
 
     /**
      * This method is called if an error occurred in the test.

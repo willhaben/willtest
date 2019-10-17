@@ -1,4 +1,4 @@
-package at.willhaben.willtest.examples.junit5tests;
+package at.willhaben.willtest.examples;
 
 import at.willhaben.willtest.junit5.WebDriverPostInterceptor;
 import org.openqa.selenium.WebDriver;

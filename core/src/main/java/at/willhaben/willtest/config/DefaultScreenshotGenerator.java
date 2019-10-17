@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * Takes a simple screenshot in case of an error. Only the viewport of the browser is captured.
  */
-public class DefaultScreenshotProvider implements ScreenshotProvider {
+public class DefaultScreenshotGenerator implements ScreenshotGenerator {
 
     @Override
     public BufferedImage takeScreenshot(WebDriver webDriver) {
