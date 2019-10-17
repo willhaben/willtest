@@ -26,15 +26,9 @@ public class ScreenshotProvider implements FailureListener {
 
     @Override
     public void onFailure(ExtensionContext context, WebDriver driver, Throwable throwable) throws Throwable {
-        try {
-            if (!isAssumptionViolation(throwable)) {
-                createScreenshot(context, driver);
-            }
-        } catch (Throwable th) {
-            throwable.addSuppressed(th);
-            throwable.addSuppressed(new ScreenshotException("Screenshot couldn't be made!"));
+        if (!isAssumptionViolation(throwable)) {
+            createScreenshot(context, driver);
         }
-        throw throwable;
     }
 
     public void createScreenshot(ExtensionContext context, WebDriver driver) throws Throwable {
