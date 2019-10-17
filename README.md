@@ -22,7 +22,7 @@ complete tasks like:
 * JUnit 5 with version [5.5.2] is used
 
 ## Getting Started
-The code is built up from several small building blocks. Only the ```core``` module is needed to start start
+The code is built up from several small building blocks. Only the ```core``` module is needed to start
 writing browser tests. Nevertheless the ```misc``` module will speed up development with some helper classes
 and an abstract ```PageObject``` which can be extended.
 
@@ -42,10 +42,10 @@ and an abstract ```PageObject``` which can be extended.
 ```
 
 [Geckodriver](https://github.com/mozilla/geckodriver/releases) is also needed to run a test with Firefox + Selenium.
-The path of geckodriver executable is expected in [webdriver.gecko.driver](http://learn-automation.com/use-firefox-selenium-using-geckodriver-selenium-3/) 
-system property. In the [POM of the examples module](https://github.com/willhaben/willtest/blob/master/examples/pom.xml)
-there is an [automated way](https://github.com/webdriverextensions/webdriverextensions-maven-plugin) 
-shown, which downloads and applies the geckodriver and chromedriver in surefire settings.
+The path of the geckodriver executable is expected in the [webdriver.gecko.driver](http://learn-automation.com/use-firefox-selenium-using-geckodriver-selenium-3/) 
+system property. An [automated way](https://github.com/webdriverextensions/webdriverextensions-maven-plugin)
+is shown in the [POM of the examples module](https://github.com/willhaben/willtest/blob/master/examples/pom.xml).
+It downloads and applies the geckodriver and chromedriver in the surefire settings.
 
 Now the environment is ready to be used like this:
 
@@ -74,9 +74,9 @@ class FirstExample {
 }
 ```
 
-If the test class is executed (it can be found in examples module), screenshot and 
-HTML source are automatically saved into the surefire reports case of the ```buggyTest``` method. 
-This is done by the Willtest framework when u specify the two provider classes in the ```@BrowserUtil```
+If the test class is executed (it can be found in the examples module) a screenshot and 
+an HTML source are automatically saved into the surefire reports, in case of the ```buggyTest``` method. 
+This is done by the Willtest framework when you specify the two provider classes in the ```@BrowserUtil```
 annotation.
 
 ## Recipes
@@ -94,7 +94,7 @@ needs to be changed there are some properties to change this.
 |seleniumHub|Specify the url to the selenium grid or remote browser|EMPTY|```http://sel-grid:1234/wd/hub```|
 
 ### PageObject
-To write tests with the page-object-pattern you can use the provided ```PageObject``` as base
+To write tests with the page-object-pattern you can use the provided ```PageObject``` as a base
 class. It provides some commonly needed functions to improve the readability of your page objects and tests.
 Every method is documented in JavaDoc.
 
@@ -132,7 +132,7 @@ class FirstExample {}
 ```
 
 #### Webdriver modifications
-If it is needed to modify the ```WebDriver``` (e.g. maximise the browser) the ```WebDriverPostInterceptor``` interface 
+If you need to modify the ```WebDriver``` (e.g. maximise the browser) the ```WebDriverPostInterceptor``` interface 
 can be used.
 
 ```java
@@ -150,20 +150,20 @@ class FirstExample {}
 ```
 
 #### On failure behaviour
-When it is needed to clear up resources or signal a test failure then the interface ```FailureListener``` must be used.
+When you need to clear up resources or signal a test failure then the interface ```FailureListener``` must be used.
 
 ### File Upload
-The willtest framework configures by default a simple way to upload any file from the filesystem or from the classpath.
-Files from jars on the classpath are also supported. It also does not matter if your test runs in a local browser, or in
+The Willtest framework configures by default a simple way to upload any file from the filesystem or from the classpath.
+Files from jars on the classpath are also supported. It does not matter if your test runs in a local browser, or in
 a Selenium HUB.
 
-Uploading of a simple file is that simple:
+Uploading a simple file is that simple:
 
 ```java
 htmlInputElementWithFileType.sendKeys(pathToFile);
 ```
 
-Uploading of a classpath resource is slightly more complicated. It is necessary to copy the file to a temp directory
+Uploading a classpath resource is slightly more complicated. It is necessary to copy the file to a temp directory
 and use this path with the ```sendKeys``` method. The TempDirectory extension from 
 [Junit Pioneer](https://junit-pioneer.org/) can be used for this.
  
