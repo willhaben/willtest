@@ -31,16 +31,22 @@ public class OptionCombiner {
         }
         for (OptionModifier modifier : optionModifiers) {
             if (optionType.isAssignableFrom(FirefoxOptions.class)) {
+                options = modifier.modifyAllBrowsers(options);
                 options = (T) modifier.modifyFirefoxOptions(((FirefoxOptions) options));
             } else if (optionType.isAssignableFrom(ChromeOptions.class)) {
+                options = modifier.modifyAllBrowsers(options);
                 options = (T) modifier.modifyChromeOptions(((ChromeOptions) options));
             } else if (optionType.isAssignableFrom(EdgeOptions.class)) {
+                options = modifier.modifyAllBrowsers(options);
                 options = (T) modifier.modifyEdgeOptions(((EdgeOptions) options));
             } else if (optionType.isAssignableFrom(InternetExplorerOptions.class)) {
+                options = modifier.modifyAllBrowsers(options);
                 options = (T) modifier.modifyInternetExplorerOptions(((InternetExplorerOptions) options));
             } else if (optionType.isAssignableFrom(AndroidOptions.class)) {
+                options = modifier.modifyAllBrowsers(options);
                 options = (T) modifier.modifyAndroidOptions(((AndroidOptions) options));
             } else if (optionType.isAssignableFrom(IOsOptions.class)) {
+                options = modifier.modifyAllBrowsers(options);
                 options = (T) modifier.modifyIOsOptions(((IOsOptions) options));
             } else {
                 throw new BrowserNotSupportedException("The options class [" + optionType.getName() +
