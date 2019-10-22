@@ -2,6 +2,7 @@ package at.willhaben.willtest.junit5;
 
 import at.willhaben.willtest.util.AndroidOptions;
 import at.willhaben.willtest.util.IOsOptions;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -32,4 +33,6 @@ public interface OptionModifier extends BrowserUtilExtension {
     default IOsOptions modifyIOsOptions(IOsOptions options) {
         return options;
     }
+
+    default <T extends MutableCapabilities> T modifyAllBrowsers(T options) { return options; }
 }

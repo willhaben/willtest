@@ -4,6 +4,7 @@ import at.willhaben.willtest.browserstack.BrowserstackEnvironment;
 import at.willhaben.willtest.browserstack.exception.BrowserstackEnvironmentException;
 import at.willhaben.willtest.junit5.*;
 import at.willhaben.willtest.proxy.BrowserProxyBuilder;
+import at.willhaben.willtest.proxy.ProxyOptionModifier;
 import at.willhaben.willtest.proxy.ProxyWrapper;
 import at.willhaben.willtest.proxy.impl.ProxyWrapperImpl;
 import at.willhaben.willtest.util.*;
@@ -32,9 +33,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static at.willhaben.willtest.util.AnnotationHelper.getBrowserUtilExtensionList;
 import static at.willhaben.willtest.util.AssumptionUtil.isAssumptionViolation;
@@ -68,16 +67,15 @@ public class DriverParameterResolverExtension implements ParameterResolver, Afte
         } else if (parameterType.isAssignableFrom(ProxyWrapper.class) && proxyCreatedInBeforeEach.isPresent()) {
             return proxyCreatedInBeforeEach.get();
         } else if (parameterType.isAssignableFrom(WebDriver.class)) {
-            DesiredCapabilities fixedCapabilities = new DesiredCapabilities();
+            List<OptionModifier> modifiers = new ArrayList<>();
             if (shouldStartProxy(extensionContext)) {
                 BrowserMobProxy proxy = BrowserProxyBuilder.builder()
                         .startProxy();
-                fixedCapabilities.setCapability(CapabilityType.PROXY, BrowserProxyBuilder.createSeleniumProxy(proxy));
-                fixedCapabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
+                modifiers.add(new ProxyOptionModifier(proxy));
                 getStore(extensionContext).put(PROXY_KEY, new ProxyWrapperImpl(proxy));
             }
             List<WebDriverPostInterceptor> driverPostInterceptorList = getBrowserPostProcess(extensionContext);
-            List<OptionModifier> modifiers = getBrowserOptionModifiers(extensionContext);
+            modifiers.addAll(getBrowserOptionModifiers(extensionContext));
             WebDriver driver = createDriver(modifiers, driverPostInterceptorList, getTestName(extensionContext));
             if (extensionContext.getTestMethod().isPresent()) {
                 getStore(extensionContext).put(DRIVER_KEY, driver);
@@ -162,7 +160,7 @@ public class DriverParameterResolverExtension implements ParameterResolver, Afte
         IOsOptions iOsOptions;
 
         // use new option modifiers if the list is not empty
-        if (modifiers.isEmpty()) {
+        if (!modifiers.isEmpty()) {
             OptionCombiner optionCombiner = new OptionCombiner(modifiers);
             firefoxOptions = optionCombiner.getBrowserOptions(FirefoxOptions.class);
             chromeOptions = optionCombiner.getBrowserOptions(ChromeOptions.class);
