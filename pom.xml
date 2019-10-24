@@ -193,7 +193,6 @@
         <module>core</module>
         <module>misc</module>
         <module>browserstack</module>
-        <module>log4j</module>
         <module>examples</module>
         <module>maven-utils</module>
     </modules>

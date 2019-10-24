@@ -30,11 +30,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>net.jsourcerer.webdriver</groupId>
             <artifactId>JSErrorCollector</artifactId>
             <version>0.6-atlassian-3</version>
