@@ -173,7 +173,6 @@ public class DriverParameterResolverExtension implements ParameterResolver, Befo
         ChromeOptions chromeOptions;
         EdgeOptions edgeOptions;
         InternetExplorerOptions internetExplorerOptions;
-        // change this to android and ios options class when the old options implementation is removed
         AndroidOptions androidOptions;
         IOsOptions iOsOptions;
 
