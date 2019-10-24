@@ -1,12 +1,11 @@
 package at.willhaben.willtest.junit5.extensions;
 
 import at.willhaben.willtest.config.DefaultScreenshotGenerator;
-import at.willhaben.willtest.junit5.FailureListener;
+import at.willhaben.willtest.junit5.TestFailureListener;
 import at.willhaben.willtest.junit5.ScreenshotInterceptor;
 import at.willhaben.willtest.util.TestReportFile;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.ScreenshotException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.yandex.qatools.ashot.AShot;
@@ -20,7 +19,7 @@ import java.util.List;
 import static at.willhaben.willtest.util.AnnotationHelper.getBrowserUtilExtensionList;
 import static at.willhaben.willtest.util.AssumptionUtil.isAssumptionViolation;
 
-public class ScreenshotProvider implements FailureListener {
+public class ScreenshotProvider implements TestFailureListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScreenshotProvider.class);
 
