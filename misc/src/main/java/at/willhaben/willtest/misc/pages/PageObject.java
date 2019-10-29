@@ -1,6 +1,5 @@
 package at.willhaben.willtest.misc.pages;
 
-import at.willhaben.willtest.config.SeleniumProvider;
 import at.willhaben.willtest.misc.utils.WhFluentWait;
 import at.willhaben.willtest.misc.utils.XPathOrCssUtil;
 import org.openqa.selenium.*;
@@ -30,12 +29,6 @@ public abstract class PageObject {
         initPage();
     }
 
-    protected PageObject(SeleniumProvider provider) {
-        this.driver = provider.getWebDriver();
-        initElements();
-        initPage();
-    }
-
     /**
      * @return current {@link WebDriver}
      */
@@ -52,7 +45,7 @@ public abstract class PageObject {
     }
 
     /**
-     * Called in the constructor {@link #PageObject(WebDriver)} or {@link #PageObject(SeleniumProvider)}. Can be
+     * Called in the constructor {@link #PageObject(WebDriver)}. Can be
      * overridden to wait for some conditions to become true to ensure the page is fully loaded.
      */
     public void initPage() {}

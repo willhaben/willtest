@@ -1,6 +1,6 @@
 package at.willhaben.willtest.junit5.extensions;
 
-import at.willhaben.willtest.junit5.FailureListener;
+import at.willhaben.willtest.junit5.TestFailureListener;
 import at.willhaben.willtest.util.TestReportFile;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openqa.selenium.WebDriver;
@@ -11,7 +11,7 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
-public class PageSourceProvider implements FailureListener {
+public class PageSourceProvider implements TestFailureListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PageSourceProvider.class);
 
