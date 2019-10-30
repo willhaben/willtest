@@ -31,7 +31,7 @@ public class XPathBuilder {
     /**
      * Modifies the last double slashed locator to a single slashed one. The element must be the direct
      * child of the parent locator to match. <br>
-     * XPATH: //div[@id='ID']//a[@class='CLASS']  --->   //div[@id='ID']//a[@class='CLASS']
+     * XPATH: //div[@id='ID']//a[@class='CLASS']  ---&gt;   //div[@id='ID']//a[@class='CLASS']
      * @return builder
      */
     public XPathBuilder directChild() {
