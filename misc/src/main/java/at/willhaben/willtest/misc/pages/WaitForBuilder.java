@@ -23,4 +23,11 @@ public class WaitForBuilder extends AbstractWaitingBuilder<WebElement> {
     public WebElement visible(long timeout) {
         return getPageObject().getWait().until(generateCondition(ConditionType.VISIBLE));
     }
+
+    public void visibleAfterClick(WebElement clickElement, WebElement visibleElement){
+        getPageObject().getWait().until(driver -> {
+            clickElement.click();
+            return visibleElement.isDisplayed();
+        });
+    }
 }
