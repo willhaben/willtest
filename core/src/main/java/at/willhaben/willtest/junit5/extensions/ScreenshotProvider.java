@@ -17,7 +17,7 @@ import java.io.File;
 import java.util.List;
 
 import static at.willhaben.willtest.util.AnnotationHelper.getBrowserUtilExtensionList;
-import static at.willhaben.willtest.util.AssumptionUtil.isAssumptionViolation;
+import static at.willhaben.willtest.util.ExceptionChecker.isAssumptionViolation;
 
 public class ScreenshotProvider implements TestFailureListener {
 
