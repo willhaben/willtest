@@ -7,10 +7,7 @@ import at.willhaben.willtest.proxy.BrowserProxyBuilder;
 import at.willhaben.willtest.proxy.ProxyOptionModifier;
 import at.willhaben.willtest.proxy.ProxyWrapper;
 import at.willhaben.willtest.proxy.impl.ProxyWrapperImpl;
-import at.willhaben.willtest.util.AndroidOptions;
-import at.willhaben.willtest.util.BrowserSelectionUtils;
-import at.willhaben.willtest.util.IOsOptions;
-import at.willhaben.willtest.util.PlatformUtils;
+import at.willhaben.willtest.util.*;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
@@ -40,14 +37,14 @@ import java.util.List;
 import java.util.Optional;
 
 import static at.willhaben.willtest.util.AnnotationHelper.getBrowserUtilExtensionList;
-import static at.willhaben.willtest.util.AssumptionUtil.isAssumptionViolation;
+import static at.willhaben.willtest.util.ExceptionChecker.isAssumptionViolation;
 import static at.willhaben.willtest.util.RemoteSelectionUtils.RemotePlatform.BROWSERSTACK;
 import static at.willhaben.willtest.util.RemoteSelectionUtils.getRemotePlatform;
 import static at.willhaben.willtest.util.RemoteSelectionUtils.isRemote;
 
 
 public class DriverParameterResolverExtension implements ParameterResolver, BeforeEachCallback,
-        AfterEachCallback, AfterAllCallback, TestExecutionExceptionHandler {
+        AfterEachCallback, AfterAllCallback, TestExecutionExceptionHandler, LifecycleMethodExecutionExceptionHandler {
 
     public static final String DRIVER_KEY = "wh-webDriver";
     private static final String BEFOREALL_DRIVER_KEY = "wh-beforeall-webDriver";
@@ -128,6 +125,19 @@ public class DriverParameterResolverExtension implements ParameterResolver, Befo
         if (isAssumptionViolation(throwable)) {
             throw throwable;
         }
+        handleValidTestFailures(context, throwable);
+        throw throwable;
+    }
+
+    @Override
+    public void handleAfterEachMethodExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
+        if (ExceptionChecker.isAssertJMultipleFailureError(throwable)) {
+            handleValidTestFailures(context, throwable);
+        }
+        throw throwable;
+    }
+
+    private void handleValidTestFailures(ExtensionContext context, Throwable throwable) throws Throwable {
         Optional<WebDriver> driver = getDriverFromStore(context, DRIVER_KEY);
         if (driver.isPresent()) {
             for (TestFailureListener testFailureListener : getFailureListeners(context)) {
@@ -138,7 +148,6 @@ public class DriverParameterResolverExtension implements ParameterResolver, Befo
                 }
             }
         }
-        throw throwable;
     }
 
     public boolean shouldStartProxy(ExtensionContext context) {
