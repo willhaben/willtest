@@ -26,7 +26,7 @@ public class SeleniumProxy extends Proxy {
             proxyStr = String.format("%s:%d", proxyUrl, inetSocketAddress.getPort());
             LOGGER.debug("Use the following proxy address for the browser to connect '" + proxyStr + "'. " +
                     "(selected from system property [" + PROXY_URL_PROPERTY_KEY + "])");
-        } else if (!RemoteSelectionUtils.isRemote() && (isOnMacOS() || isLinux())) {
+        } else if (!RemoteSelectionUtils.isRemote() && isOnMacOS()) {
             proxyStr = String.format("%s:%d", "localhost", inetSocketAddress.getPort());
         } else {
             proxyStr = String.format("%s:%d", ClientUtil.getConnectableAddress().getHostAddress(), inetSocketAddress.getPort());
@@ -39,9 +39,5 @@ public class SeleniumProxy extends Proxy {
 
     private boolean isOnMacOS() {
         return System.getProperty("os.name").startsWith("Mac");
-    }
-
-    private boolean isLinux() {
-        return System.getProperty("os.name").startsWith("Linux");
     }
 }
