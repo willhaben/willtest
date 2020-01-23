@@ -73,11 +73,9 @@
             </roles>
         </developer>
         <developer>
-            <email>michael.weisgrab@willhaben.at</email>
+            <email>michael.weisgrab@gmail.com</email>
             <name>Michael Weisgrab</name>
             <url>https://github.com/Micky002</url>
-            <organization>willhaben internet service GmbH &amp; Co KG</organization>
-            <organizationUrl>https://willhaben.at</organizationUrl>
             <id>michael.weisgrab</id>
             <roles>
                 <role>developer</role>
