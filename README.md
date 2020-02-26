@@ -30,13 +30,13 @@ and an abstract ```PageObject``` which can be extended.
 <dependency>
     <groupId>at.willhaben.willtest</groupId>
     <artifactId>core</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.1</version>
     <scope>compile</scope>
 </dependency>
 <dependency>
     <groupId>at.willhaben.willtest</groupId>
     <artifactId>misc</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.1</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -209,4 +209,4 @@ Do not edit the *README.md* because it is auto generated. Use the *readme-md-tem
 version in the README.
 
 ## License
-MIT, Copyright (c) 2019 willhaben internet service GmbH & Co KG
+MIT, Copyright (c) 2020 willhaben internet service GmbH & Co KG
