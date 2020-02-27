@@ -83,4 +83,5 @@ buildNumber.properties
 */drivers
 
 .generated
-/core/allure-results/
+**/allure-results/
+**/allure-report/
