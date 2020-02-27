@@ -1,9 +1,11 @@
 package at.willhaben.willtest.junit5.extensions;
 
 import at.willhaben.willtest.config.DefaultScreenshotGenerator;
-import at.willhaben.willtest.junit5.TestFailureListener;
 import at.willhaben.willtest.junit5.ScreenshotInterceptor;
+import at.willhaben.willtest.junit5.TestFailureListener;
 import at.willhaben.willtest.util.TestReportFile;
+import com.google.common.io.Files;
+import io.qameta.allure.Allure;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
@@ -30,7 +32,7 @@ public class ScreenshotProvider implements TestFailureListener {
         }
     }
 
-    public File createScreenshot(ExtensionContext context, WebDriver driver) throws Throwable {
+    public void createScreenshot(ExtensionContext context, WebDriver driver) throws Throwable {
         File screenshotFile;
         ScreenshotInterceptor screenshotInterceptor = getScreenshotInterceptor(context);
         BufferedImage screenShot = new AShot().shootingStrategy(screenshotInterceptor
@@ -41,7 +43,7 @@ public class ScreenshotProvider implements TestFailureListener {
                 context.getRequiredTestClass().getSimpleName() + "." +
                 context.getRequiredTestMethod().getName() + " to " + screenshotFile.getAbsolutePath());
         ImageIO.write(screenShot, "png", screenshotFile);
-        return screenshotFile;
+        Allure.addAttachment("Error", Files.asByteSource(screenshotFile).openStream());
     }
 
     private ScreenshotInterceptor getScreenshotInterceptor(ExtensionContext context) {
