@@ -43,7 +43,7 @@ public class ScreenshotProvider implements TestFailureListener {
                 context.getRequiredTestClass().getSimpleName() + "." +
                 context.getRequiredTestMethod().getName() + " to " + screenshotFile.getAbsolutePath());
         ImageIO.write(screenShot, "png", screenshotFile);
-        Allure.addAttachment("Error", Files.asByteSource(screenshotFile).openStream());
+        Allure.addAttachment(context.getRequiredTestMethod().getName(), Files.asByteSource(screenshotFile).openStream());
     }
 
     private ScreenshotInterceptor getScreenshotInterceptor(ExtensionContext context) {
