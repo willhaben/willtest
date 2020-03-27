@@ -24,6 +24,7 @@ import static at.willhaben.willtest.util.ExceptionChecker.isAssumptionViolation;
 public class ScreenshotProvider implements TestFailureListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScreenshotProvider.class);
+    public static final String ALLURE_FLAG = "allure";
 
     @Override
     public void onFailure(ExtensionContext context, WebDriver driver, Throwable throwable) throws Throwable {
@@ -43,7 +44,10 @@ public class ScreenshotProvider implements TestFailureListener {
                 context.getRequiredTestClass().getSimpleName() + "." +
                 context.getRequiredTestMethod().getName() + " to " + screenshotFile.getAbsolutePath());
         ImageIO.write(screenShot, "png", screenshotFile);
-        Allure.addAttachment(context.getRequiredTestMethod().getName(), Files.asByteSource(screenshotFile).openStream());
+        String allureFlag = System.getProperty(ALLURE_FLAG);
+        if (allureFlag.equals("true")) {
+            Allure.addAttachment(context.getRequiredTestMethod().getName(), Files.asByteSource(screenshotFile).openStream());
+        }
     }
 
     private ScreenshotInterceptor getScreenshotInterceptor(ExtensionContext context) {
