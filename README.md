@@ -200,6 +200,10 @@ class ProxyExample {
 If the site has a fixed top bar it is possible to provide a custom ```ShootingStrategy``` to cut this out on the
 screenshot. See the ```ScreenshotProviderExample```.
 
+##Allure
+If you want to use allure reporting, add all dependencies (see the [allure-java github page](https://github.com/allure-framework/allure-java)) to your repository and call the mvn install or test with -Dallure=true.
+Screenshots will be added automatically if you use them.
+
 ## Contribution
 Willhaben accepts pull requests or other type of feedback. We do our best to reply in a short period of time.
 
@@ -209,4 +213,4 @@ Do not edit the *README.md* because it is auto generated. Use the *readme-md-tem
 version in the README.
 
 ## License
-MIT, Copyright (c) 2019 willhaben internet service GmbH & Co KG
+MIT, Copyright (c) 2020 willhaben internet service GmbH & Co KG
