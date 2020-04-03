@@ -236,8 +236,7 @@
                     <configuration>
                         <reportVersion>2.4.1</reportVersion>
                         <properties>
-                            <allure.issues.tracker.pattern>https://jira.willhaben.at/browse/%s
-                            </allure.issues.tracker.pattern>
+                            <allure.issues.tracker.pattern>https://jira.willhaben.at/browse/%s</allure.issues.tracker.pattern>
                         </properties>
                     </configuration>
                 </plugin>
