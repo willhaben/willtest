@@ -62,6 +62,17 @@
 
     <developers>
         <developer>
+            <email>florian.mautendorfer@gmail.com</email>
+            <name>Florian mautendorfer</name>
+            <url>https://github.com/SporeTec</url>
+            <organization>willhaben internet service GmbH &amp; Co KG</organization>
+            <organizationUrl>https://willhaben.at</organizationUrl>
+            <id>florian.mautendorfer</id>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+        <developer>
             <email>christoph.putz@willhaben.at</email>
             <name>Christoph Putz</name>
             <url>https://github.com/Seijan</url>
@@ -101,10 +112,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.selenium>3.14.0</version.selenium>
         <junit-jupiter-engine.version>5.5.2</junit-jupiter-engine.version>
-        <log4j-core.version>2.11.1</log4j-core.version>
-        <version.log4j>1.2.16</version.log4j>
+        <log4j-core.version>2.13.1</log4j-core.version>
+        <version.log4j>1.2.17</version.log4j>
         <hamcrest.core.version>2.2</hamcrest.core.version>
-        <aspectj.version>1.8.10</aspectj.version>
+        <aspectj.version>1.9.5</aspectj.version>
     </properties>
 
     <dependencyManagement>
@@ -178,7 +189,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
-                <version>1.7.26</version>
+                <version>1.7.30</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -216,18 +227,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.22.1</version>
-                    <configuration>
-                        <testFailureIgnore>false</testFailureIgnore>
-                        <argLine>
-                            -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
-                        </argLine>
-                        <systemProperties>
-                            <property>
-                                <name>junit.jupiter.extensions.autodetection.enabled</name>
-                                <value>true</value>
-                            </property>
-                        </systemProperties>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>io.qameta.allure</groupId>
