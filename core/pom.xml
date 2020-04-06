@@ -5,11 +5,11 @@
     <parent>
         <groupId>at.willhaben.willtest</groupId>
         <artifactId>willtest</artifactId>
-        <version>3.2.0</version>
+        <version>3.1.1</version>
     </parent>
 
     <artifactId>core</artifactId>
-    <version>3.2.0</version>
+    <version>3.1.1</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -19,7 +19,7 @@
         <dependency>
             <groupId>at.willhaben.willtest</groupId>
             <artifactId>browserstack</artifactId>
-            <version>3.2.0</version>
+            <version>3.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
@@ -108,4 +108,23 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+     <build>
+            <plugins>
+                <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                        <testFailureIgnore>false</testFailureIgnore>
+                        <argLine>
+                            -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                        </argLine>
+                        <systemProperties>
+                            <property>
+                                <name>junit.jupiter.extensions.autodetection.enabled</name>
+                                <value>true</value>
+                            </property>
+                        </systemProperties>
+                    </configuration>
+                </plugin>
+            </plugins>
+     </build>
 </project>
