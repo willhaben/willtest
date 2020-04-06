@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>at.willhaben.willtest</groupId>
     <artifactId>willtest</artifactId>
-    <version>3.1.1</version>
+    <version>3.2.0</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -112,10 +112,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.selenium>3.14.0</version.selenium>
         <junit-jupiter-engine.version>5.5.2</junit-jupiter-engine.version>
-        <log4j-core.version>2.13.1</log4j-core.version>
-        <version.log4j>1.2.17</version.log4j>
+        <log4j-core.version>2.11.1</log4j-core.version>
+        <version.log4j>1.2.16</version.log4j>
         <hamcrest.core.version>2.2</hamcrest.core.version>
-        <aspectj.version>1.9.5</aspectj.version>
+        <aspectj.version>1.8.0</aspectj.version>
     </properties>
 
     <dependencyManagement>
@@ -227,6 +227,18 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.22.1</version>
+                    <configuration>
+                        <testFailureIgnore>false</testFailureIgnore>
+                        <argLine>
+                            -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                        </argLine>
+                        <systemProperties>
+                            <property>
+                                <name>junit.jupiter.extensions.autodetection.enabled</name>
+                                <value>true</value>
+                            </property>
+                        </systemProperties>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>io.qameta.allure</groupId>

@@ -200,8 +200,8 @@ class ProxyExample {
 If the site has a fixed top bar it is possible to provide a custom ```ShootingStrategy``` to cut this out on the
 screenshot. See the ```ScreenshotProviderExample```.
 
-##Allure
-If you want to use allure reporting, add all dependencies (see the [allure-java github page](https://github.com/allure-framework/allure-java)) to your repository and call the mvn install or test with -Dallure=true.
+## Allure
+If you want to use allure reporting, add all dependencies (see the [allure-java github page](https://github.com/allure-framework/allure-java)) to your repository and call the mvn install or test with `-Dallure=true`.
 Screenshots will be added automatically if you use them.
 
 ## Contribution
