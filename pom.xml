@@ -112,10 +112,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.selenium>3.14.0</version.selenium>
         <junit-jupiter-engine.version>5.5.2</junit-jupiter-engine.version>
-        <log4j-core.version>2.13.1</log4j-core.version>
-        <version.log4j>1.2.17</version.log4j>
+        <log4j-core.version>2.11.1</log4j-core.version>
+        <version.log4j>1.2.16</version.log4j>
         <hamcrest.core.version>2.2</hamcrest.core.version>
-        <aspectj.version>1.9.5</aspectj.version>
+        <aspectj.version>1.8.0</aspectj.version>
     </properties>
 
     <dependencyManagement>
