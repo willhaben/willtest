@@ -36,7 +36,8 @@ public class WhFluentWait<T> extends FluentWait<T> {
             if (Objects.nonNull(errorMessage) && !"".equals(errorMessage)) {
                 throw new AssertionError(errorMessage, e);
             } else {
-                throw e;
+                //Regex replacing parts that hinder allure from grouping erros in the report when using "require" without custom error messages
+                throw new TimeoutException(e.getMessage().replaceAll("Build info:(?:.+\\s+)*Driver info:.+",""), e.getCause());
             }
         }
     }
