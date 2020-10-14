@@ -63,7 +63,7 @@
     <developers>
         <developer>
             <email>florian.mautendorfer@gmail.com</email>
-            <name>Florian mautendorfer</name>
+            <name>Florian Mautendorfer</name>
             <url>https://github.com/SporeTec</url>
             <organization>willhaben internet service GmbH &amp; Co KG</organization>
             <organizationUrl>https://willhaben.at</organizationUrl>
@@ -115,7 +115,8 @@
         <log4j-core.version>2.11.1</log4j-core.version>
         <version.log4j>1.2.16</version.log4j>
         <hamcrest.core.version>2.2</hamcrest.core.version>
-        <aspectj.version>1.8.0</aspectj.version>
+        <aspectj.version>1.9.6</aspectj.version>
+        <allure.version>2.13.6</allure.version>
     </properties>
 
     <dependencyManagement>
