@@ -18,8 +18,6 @@
 
     <properties>
         <runRealBrowserTests>false</runRealBrowserTests>
-        <geckodriver.version>0.27.0</geckodriver.version>
-        <chromedriver.version>86.0.4240.22</chromedriver.version>
         <driver.extension/>
     </properties>
 
