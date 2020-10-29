@@ -18,8 +18,8 @@ complete tasks like:
 * Support for mobile tests with appium (Android, iOS)
 
 ## Requirements
-* Currently Selenium with version [3.14.0] is used
-* JUnit 5 with version [5.5.2] is used
+* Currently Selenium with version [3.141.59] is used
+* JUnit 5 with version [5.7.0] is used
 
 ## Getting Started
 The code is built up from several small building blocks. Only the ```core``` module is needed to start
