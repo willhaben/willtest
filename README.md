@@ -18,8 +18,8 @@ complete tasks like:
 * Support for mobile tests with appium (Android, iOS)
 
 ## Requirements
-* Currently Selenium with version [3.14.0] is used
-* JUnit 5 with version [5.5.2] is used
+* Currently Selenium with version [3.141.59] is used
+* JUnit 5 with version [5.7.0] is used
 
 ## Getting Started
 The code is built up from several small building blocks. Only the ```core``` module is needed to start
@@ -30,13 +30,13 @@ and an abstract ```PageObject``` which can be extended.
 <dependency>
     <groupId>at.willhaben.willtest</groupId>
     <artifactId>core</artifactId>
-    <version>3.1.3</version>
+    <version>3.1.4</version>
     <scope>compile</scope>
 </dependency>
 <dependency>
     <groupId>at.willhaben.willtest</groupId>
     <artifactId>misc</artifactId>
-    <version>3.1.3</version>
+    <version>3.1.4</version>
     <scope>compile</scope>
 </dependency>
 ```
