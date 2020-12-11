@@ -7,11 +7,11 @@
     <parent>
         <groupId>at.willhaben.willtest</groupId>
         <artifactId>willtest</artifactId>
-        <version>3.1.5</version>
+        <version>3.1.6</version>
     </parent>
 
     <artifactId>browserstack</artifactId>
-    <version>3.1.5</version>
+    <version>3.1.6</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>

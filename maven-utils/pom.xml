@@ -5,7 +5,7 @@
     <parent>
         <artifactId>willtest</artifactId>
         <groupId>at.willhaben.willtest</groupId>
-        <version>3.1.5</version>
+        <version>3.1.6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>maven-utils</artifactId>
