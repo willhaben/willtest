@@ -220,6 +220,14 @@ public class DriverParameterResolverExtension implements ParameterResolver, Befo
             }
         }
 
+        //adding a container name for moon-ui
+        firefoxOptions.setCapability("name", testName);
+        chromeOptions.setCapability("name", testName);
+        edgeOptions.setCapability("name", testName);
+        internetExplorerOptions.setCapability("name", testName);
+        androidOptions.setCapability("name", testName);
+        iOsOptions.setCapability("name", testName);
+
         WebDriver driver;
         if (PlatformUtils.isAndroid()) {
             if (isRemote()) {
