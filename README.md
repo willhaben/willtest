@@ -30,13 +30,13 @@ and an abstract ```PageObject``` which can be extended.
 <dependency>
     <groupId>at.willhaben.willtest</groupId>
     <artifactId>core</artifactId>
-    <version>3.1.8</version>
+    <version>3.1.9</version>
     <scope>compile</scope>
 </dependency>
 <dependency>
     <groupId>at.willhaben.willtest</groupId>
     <artifactId>misc</artifactId>
-    <version>3.1.8</version>
+    <version>3.1.9</version>
     <scope>compile</scope>
 </dependency>
 ```
